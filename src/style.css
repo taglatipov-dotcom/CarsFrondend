@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
+@import "tailwindcss";
+
+
+@keyframes fadeIn {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* ============ СТИЛИ ДЛЯ HTML-КОНТЕНТА СТАТЬИ (с API) ============ */
+.article-content {
+    color: #334155;
+    font-size: 17px;
+    line-height: 1.75;
+}
+
+.article-content p {
+    margin-bottom: 1.25rem;
+}
+
+.article-content p.lead {
+    font-size: 1.25rem;
+    line-height: 1.65;
+    color: #1e293b;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    border-left: 4px solid transparent;
+    border-image: linear-gradient(to bottom, #8b5cf6, #d946ef) 1;
+}
+
+.article-content h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.article-content h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.article-content h2:first-child,
+.article-content h3:first-child {
+    margin-top: 0;
+}
+
+.article-content strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.article-content ul,
+.article-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.article-content ul { list-style-type: disc; }
+.article-content ol { list-style-type: decimal; }
+
+.article-content li::marker {
+    color: #8b5cf6;
+    font-weight: 700;
+}
+
+.article-content a {
+    color: #8b5cf6;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+}
+
+.article-content a:hover {
+    color: #d946ef;
+}
+
+.article-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    margin: 2rem 0;
+}
+
+.article-content iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    margin: 2rem 0;
+    border: none;
+}
+
+.article-content blockquote {
+    background: linear-gradient(135deg, #f5f3ff 0%, #fdf4ff 100%);
+    border-left: 4px solid #8b5cf6;
+    border-radius: 0 1rem 1rem 0;
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #4c1d95;
+}
+
+.article-content blockquote p {
+    margin: 0;
+}
+
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+}
+
+.article-content thead {
+    background: linear-gradient(to right, #8b5cf6, #d946ef);
+    color: white;
+}
+
+.article-content th,
+.article-content td {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.article-content th {
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.article-content tbody tr {
+    background: white;
+    transition: background 0.2s;
+}
+
+.article-content tbody tr:hover {
+    background: #f8fafc;
+}
+
+.article-content tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 640px) {
+    .article-content {
+        font-size: 16px;
+    }
+
+    .article-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .article-content h3 {
+        font-size: 1.2rem;
+    }
+
+    .article-content p.lead {
+        font-size: 1.1rem;
+    }
+
+    .article-content table {
+        font-size: 0.85rem;
+    }
+
+    .article-content th,
+    .article-content td {
+        padding: 0.6rem 0.75rem;
+    }
+}
+
+/* ============ ФИОЛЕТОВЫЕ ГРАНИЦЫ ТАБЛИЦ В CAR DETAILS ============ */
+
+.car-details-tabs .ant-descriptions-view {
+    border: 1px solid #a855f7 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.car-details-tabs .ant-descriptions-row > th,
+.car-details-tabs .ant-descriptions-row > td {
+    border-bottom: 1px solid #a855f7 !important;
+    border-right: 1px solid #a855f7 !important;
+}
+
+.car-details-tabs .ant-descriptions-row > th:last-child,
+.car-details-tabs .ant-descriptions-row > td:last-child {
+    border-right: none !important;
+}
+
+.car-details-tabs .ant-descriptions-row:last-child > th,
+.car-details-tabs .ant-descriptions-row:last-child > td {
+    border-bottom: none !important;
+}
+
+/* ============ КАСТОМНАЯ ПАГИНАЦИЯ В КАТАЛОГЕ ============ */
+
+.catalog-pagination .ant-pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.catalog-pagination .ant-pagination-total-text {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    margin-right: 20px !important;
+    line-height: 1 !important;
+}
+
+.catalog-pagination .ant-pagination-item {
+    min-width: 52px !important;
+    height: 52px !important;
+    line-height: 50px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    background-color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.catalog-pagination .ant-pagination-item a {
+    color: #334155 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.catalog-pagination .ant-pagination-item:hover {
+    background-color: #f1f5f9 !important;
+    transform: translateY(-1px);
+}
+
+.catalog-pagination .ant-pagination-item:hover a {
+    color: #7c3aed !important;
+}
+
+.catalog-pagination .ant-pagination-item-active {
+    background: linear-gradient(to right, #7c3aed, #d946ef) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
+}
+
+.catalog-pagination .ant-pagination-item-active a {
+    color: #ffffff !important;
+}
+
+.catalog-pagination .ant-pagination-item-active:hover {
+    background: linear-gradient(to right, #8b5cf6, #e879f9) !important;
+}
+
+.catalog-pagination .ant-pagination-item-active:hover a {
+    color: #ffffff !important;
+}
+
+.catalog-pagination .ant-pagination-prev,
+.catalog-pagination .ant-pagination-next {
+    min-width: 52px !important;
+    height: 52px !important;
+    line-height: 52px !important;
+    border-radius: 12px !important;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.catalog-pagination .ant-pagination-prev .ant-pagination-item-link,
+.catalog-pagination .ant-pagination-next .ant-pagination-item-link {
+    color: #ffffff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    background-color: transparent !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.catalog-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+.catalog-pagination .ant-pagination-next:hover .ant-pagination-item-link {
+    color: #67e8f9 !important;
+}
+
+.catalog-pagination .ant-pagination-prev .anticon,
+.catalog-pagination .ant-pagination-next .anticon {
+    font-size: 22px !important;
+}
+
+.catalog-pagination .ant-pagination-disabled .ant-pagination-item-link {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.catalog-pagination .ant-pagination-item:focus-visible,
+.catalog-pagination .ant-pagination-item:hover {
+    outline: none !important;
+}
