@@ -1,5 +1,5 @@
 // ============ ADMIN API ============
-import { adminFetch } from './authApi';
+import { adminFetch } from './AuthApi.js';
 
 /* ============ СПРАВОЧНИКИ ДЛЯ ФОРМЫ ============ */
 export const CAR_DICTIONARIES = {

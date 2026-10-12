@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, Rate, Avatar, Spin, Button } from 'antd';
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
-import { fetchReviews, getReviewsCache } from '../services/mockApi';
+import { fetchReviews, getReviewsCache } from '../services/MockApi.js';
 import ReviewSubmitModal from '../components/ReviewSubmitModal';
 
 export default function Reviews() {

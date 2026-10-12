@@ -14,8 +14,8 @@ import {
     adminFetchPendingReviews,
     adminApproveReview,
     adminRejectReview,
-} from '../../services/adminApi';
-import { invalidateReviewsCache } from '../../services/mockApi';
+} from '../../services/AdminApi.js';
+import { invalidateReviewsCache } from '../../services/MockApi.js';
 
 export default function AdminReviews() {
     const [reviews, setReviews] = useState([]);

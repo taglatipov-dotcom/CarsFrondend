@@ -8,8 +8,8 @@ import {
 } from '@ant-design/icons';
 import {
     adminFetchCarsList, adminDeleteCar,
-} from '../../services/adminApi';
-import { invalidateCarsCache } from '../../services/mockApi';
+} from '../../services/AdminApi.js';
+import { invalidateCarsCache } from '../../services/MockApi.js';
 
 export default function AdminCars() {
     const [cars, setCars] = useState([]);

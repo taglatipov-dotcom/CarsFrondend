@@ -9,8 +9,8 @@ import {
 } from '@ant-design/icons';
 import {
     adminFetchReviewRaw, adminCreateReview, adminUpdateReview,
-} from '../../services/adminApi';
-import { invalidateReviewsCache } from '../../services/mockApi';
+} from '../../services/AdminApi.js';
+import { invalidateReviewsCache } from '../../services/MockApi.js';
 import ImageUploader from '../../components/ImageUploader';
 
 const { TextArea } = Input;

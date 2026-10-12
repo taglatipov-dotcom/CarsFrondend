@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { useState } from 'react';
 import LeadModal from './LeadModal';
-import { isAuthenticated } from '../services/authApi';
+import { isAuthenticated } from '../services/AuthApi.js';
 
 const { Header, Content, Footer } = AntLayout;
 

@@ -20,7 +20,7 @@ import AdminReviewForm from './pages/Admin/AdminReviewForm';
 import AdminLeads from './pages/Admin/AdminLeads';
 import AdminLogin from './pages/Admin/AdminLogin';
 
-import { isAuthenticated } from './services/authApi';
+import { isAuthenticated } from './services/AuthApi.js';
 
 const STATIC_TITLES = {
     '/':              'Главная',

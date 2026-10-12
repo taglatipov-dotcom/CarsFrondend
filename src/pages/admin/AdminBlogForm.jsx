@@ -13,8 +13,8 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import {
     adminFetchBlogRaw, adminCreateBlog, adminUpdateBlog,
-} from '../../services/adminApi';
-import { invalidateBlogsCache } from '../../services/mockApi';
+} from '../../services/AdminApi.js';
+import { invalidateBlogsCache } from '../../services/MockApi.js';
 import ImageUploader from '../../components/ImageUploader';
 
 const { TextArea } = Input;

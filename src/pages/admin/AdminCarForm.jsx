@@ -10,8 +10,8 @@ import {
 import {
     CAR_DICTIONARIES,
     adminFetchCarRaw, adminCreateCar, adminUpdateCar,
-} from '../../services/adminApi';
-import { invalidateCarsCache, BODY_TYPE_LABELS } from '../../services/mockApi';
+} from '../../services/AdminApi.js';
+import { invalidateCarsCache, BODY_TYPE_LABELS } from '../../services/MockApi.js';
 import MultiImageUploader from '../../components/MultiImageUploader';
 
 const { TextArea } = Input;

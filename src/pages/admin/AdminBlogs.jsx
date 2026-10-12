@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined,
 } from '@ant-design/icons';
-import { adminFetchBlogsList, adminDeleteBlog } from '../../services/adminApi';
-import { invalidateBlogsCache } from '../../services/mockApi';
+import { adminFetchBlogsList, adminDeleteBlog } from '../../services/AdminApi.js';
+import { invalidateBlogsCache } from '../../services/MockApi.js';
 
 export default function AdminBlogs() {
     const [blogs, setBlogs] = useState([]);

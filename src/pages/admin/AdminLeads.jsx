@@ -14,7 +14,7 @@ import {
     adminDeleteLead,
     LEAD_STATUSES,
     getLeadStatusMeta,
-} from '../../services/adminApi';
+} from '../../services/AdminApi.js';
 
 const { TextArea } = Input;
 

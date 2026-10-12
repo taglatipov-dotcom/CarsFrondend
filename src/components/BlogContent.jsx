@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, Tag, Avatar, Spin, Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { CalendarOutlined, UserOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { fetchBlogs, getBlogsCache } from '../services/mockApi';
+import { fetchBlogs, getBlogsCache } from '../services/MockApi.js';
 
 export default function BlogContent() {
     // Синхронно проверяем кэш — если данные уже есть, сразу рендерим их

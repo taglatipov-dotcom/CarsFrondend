@@ -3,7 +3,7 @@ import { Modal, Form, Input, Rate, Button, message } from 'antd';
 import {
     UserOutlined, CarOutlined, CheckCircleFilled,
 } from '@ant-design/icons';
-import { submitReview } from '../services/mockApi';
+import { submitReview } from '../services/MockApi.js';
 
 const { TextArea } = Input;
 

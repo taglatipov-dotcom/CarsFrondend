@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands,
     isBudgetCustomCar,
-} from '../services/mockApi';
+} from '../services/MockApi.js';
 import {
     FilterOutlined,
     ClearOutlined,

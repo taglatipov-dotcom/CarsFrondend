@@ -6,7 +6,7 @@ import {
     LoadingOutlined,
     PictureOutlined,
 } from '@ant-design/icons';
-import { uploadImage } from '../services/uploadApi';
+import { uploadImage } from '../services/UploadApi.js';
 
 const API_BASE_URL =
     typeof window !== 'undefined'

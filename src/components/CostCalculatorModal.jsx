@@ -10,7 +10,7 @@ import {
     CarFilled,
 } from '@ant-design/icons';
 import LeadModal from './LeadModal';
-import { fetchCarCost, normalizeCostBreakdown } from '../services/mockApi';
+import { fetchCarCost, normalizeCostBreakdown } from '../services/MockApi.js';
 
 /* Ставка нашей комиссии от суммы всех расходов (цена авто + таможня + логистика) */
 const COMMISSION_RATE = 0.03;

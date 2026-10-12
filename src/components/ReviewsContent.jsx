@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, Rate, Avatar, Button, Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { fetchReviews, getReviewsCache } from '../services/mockApi';
+import { fetchReviews, getReviewsCache } from '../services/MockApi.js';
 
 export default function ReviewsContent() {
     // Синхронно проверяем кэш — если данные уже есть, сразу рендерим их

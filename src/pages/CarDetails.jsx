@@ -16,7 +16,7 @@ import {
     CloseOutlined,
     PhoneOutlined
 } from '@ant-design/icons';
-import { fetchCarById, translateBodyType } from '../services/mockApi';
+import { fetchCarById, translateBodyType } from '../services/MockApi.js';
 import CostCalculatorModal from '../components/CostCalculatorModal';
 import LeadModal from '../components/LeadModal';
 

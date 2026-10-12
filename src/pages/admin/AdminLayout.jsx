@@ -10,7 +10,7 @@ import {
     LogoutOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { getUsername, logout } from '../../services/authApi';
+import { getUsername, logout } from '../../services/AuthApi.js';
 
 const { Sider, Header, Content } = Layout;
 

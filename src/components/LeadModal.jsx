@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Modal, Form, Input, Checkbox, Button, Select, message } from 'antd';
 import { PhoneOutlined, CheckCircleFilled, MessageOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { sendLead } from '../services/mockApi';
+import { sendLead } from '../services/MockApi.js';
 
 const { TextArea } = Input;
 

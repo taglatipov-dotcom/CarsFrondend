@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Input, Button, Alert, message } from 'antd';
 import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { login, isAuthenticated } from '../../services/authApi';
+import { login, isAuthenticated } from '../../services/AuthApi.js';
 
 export default function AdminLogin() {
     const [form] = Form.useForm();

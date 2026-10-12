@@ -8,7 +8,7 @@ import {
     ClockCircleOutlined,
     HomeOutlined
 } from '@ant-design/icons';
-import { fetchBlogById } from '../services/mockApi';
+import { fetchBlogById } from '../services/MockApi.js';
 
 export default function BlogPost() {
     const { id } = useParams();

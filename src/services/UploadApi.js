@@ -1,5 +1,5 @@
 // ============ UPLOAD API ============
-import { getToken, clearAuth } from './authApi';
+import { getToken, clearAuth } from './AuthApi.js';
 
 const API_BASE_URL =
     typeof window !== 'undefined'

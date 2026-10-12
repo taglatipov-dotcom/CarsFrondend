@@ -8,7 +8,7 @@ import {
     CarOutlined,
     ArrowRightOutlined
 } from '@ant-design/icons';
-import { fetchCars } from '../services/mockApi';
+import { fetchCars } from '../services/MockApi.js';
 import LeadModal from '../components/LeadModal';
 import AboutContent from '../components/AboutContent';
 import BlogContent from '../components/BlogContent';
