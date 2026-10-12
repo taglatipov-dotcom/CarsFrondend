@@ -345,7 +345,7 @@ export default function AdminReviews() {
                     <Button
                         type="primary"
                         icon={<PlusOutlined />}
-                        onClick={() => navigate('/admin/reviews/new')}
+                        onClick={() => navigate('/Admin/reviews/new')}
                     >
                         Добавить отзыв
                     </Button>

@@ -46,7 +46,7 @@ export function logout() {
 
 /**
  * Общая обёртка для всех запросов админки.
- * Добавляет Authorization, а при 401 — чистит токен и редиректит на /admin/login.
+ * Добавляет Authorization, а при 401 — чистит токен и редиректит на /Admin/login.
  */
 export async function adminFetch(path, options = {}) {
     const token = getToken();
@@ -62,7 +62,7 @@ export async function adminFetch(path, options = {}) {
     if (res.status === 401) {
         clearAuth();
         if (window.location.pathname !== '/admin/login') {
-            window.location.href = '/admin/login';
+            window.location.href = '/Admin/login';
         }
         throw new Error('Сессия истекла, войдите заново');
     }

@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-    Table, Button, Input, Popconfirm, message, Tag, Image, Space, Card, Spin,
+    Table, Button, Input, Popconfirm, message, Tag, Image, Space, Card,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined,
 } from '@ant-design/icons';
-import {
-    adminFetchCarsList, adminDeleteCar,
-} from '../../services/AdminApi.js';
-import { invalidateCarsCache } from '../../services/MockApi.js';
+import { adminFetchBlogsList, adminDeleteBlog } from '../../services/AdminApi.js';
+import { invalidateBlogsCache } from '../../services/MockApi.js';
 
-export default function AdminCars() {
-    const [cars, setCars] = useState([]);
+export default function AdminBlogs() {
+    const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const navigate = useNavigate();
@@ -20,10 +18,10 @@ export default function AdminCars() {
     const load = async () => {
         setLoading(true);
         try {
-            const data = await adminFetchCarsList();
-            setCars(Array.isArray(data) ? data : []);
+            const data = await adminFetchBlogsList();
+            setBlogs(Array.isArray(data) ? data : []);
         } catch (e) {
-            message.error('Не удалось загрузить список: ' + e.message);
+            message.error('Не удалось загрузить список статей: ' + e.message);
         } finally {
             setLoading(false);
         }
@@ -33,26 +31,27 @@ export default function AdminCars() {
 
     const handleDelete = async (id) => {
         try {
-            await adminDeleteCar(id);
-            invalidateCarsCache();
-            message.success(`Автомобиль #${id} удалён`);
-            setCars((prev) => prev.filter((c) => c.id !== id));
+            await adminDeleteBlog(id);
+            invalidateBlogsCache();
+            message.success(`Статья #${id} удалена`);
+            setBlogs((prev) => prev.filter((b) => b.id !== id));
         } catch (e) {
             message.error('Ошибка удаления: ' + e.message);
         }
     };
 
     const filtered = useMemo(() => {
-        if (!search.trim()) return cars;
+        if (!search.trim()) return blogs;
         const q = search.toLowerCase();
-        return cars.filter(
-            (c) =>
-                String(c.id).includes(q) ||
-                (c.brend || '').toLowerCase().includes(q) ||
-                (c.model || '').toLowerCase().includes(q) ||
-                (c.car_name || '').toLowerCase().includes(q)
+        return blogs.filter(
+            (b) =>
+                String(b.id).includes(q) ||
+                (b.title || '').toLowerCase().includes(q) ||
+                (b.slug || '').toLowerCase().includes(q) ||
+                (b.tag || '').toLowerCase().includes(q) ||
+                (b.author || '').toLowerCase().includes(q),
         );
-    }, [cars, search]);
+    }, [blogs, search]);
 
     const columns = [
         {
@@ -63,46 +62,43 @@ export default function AdminCars() {
             defaultSortOrder: 'ascend',
         },
         {
-            title: 'Фото',
-            dataIndex: 'images',
-            width: 80,
-            render: (images, record) => {
-                const url = (images && images[0]) || (record.photos && record.photos[0]);
-                return url ? (
+            title: 'Обложка',
+            dataIndex: 'image',
+            width: 100,
+            render: (url) =>
+                url ? (
                     <Image
                         src={url}
-                        width={56}
-                        height={40}
+                        width={72}
+                        height={48}
                         style={{ objectFit: 'cover', borderRadius: 6 }}
                         preview={false}
-                        fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI0MCI+PHJlY3Qgd2lkdGg9IjU2IiBoZWlnaHQ9IjQwIiBmaWxsPSIjZTJlOGYwIi8+PC9zdmc+"
+                        fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MiIgaGVpZ2h0PSI0OCI+PHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjQ4IiBmaWxsPSIjZTJlOGYwIi8+PC9zdmc+"
                     />
                 ) : (
-                    <div className="w-14 h-10 bg-slate-100 rounded" />
-                );
-            },
+                    <div className="w-[72px] h-[48px] bg-slate-100 rounded" />
+                ),
         },
         {
-            title: 'Марка',
-            dataIndex: 'brend',
-            render: (v) => <span className="font-semibold">{v || '—'}</span>,
-        },
-        { title: 'Модель', dataIndex: 'model' },
-        { title: 'Год', dataIndex: 'year', width: 80 },
-        {
-            title: 'Цена в Китае',
-            dataIndex: 'china_price',
-            width: 150,
-            render: (v) =>
-                v ? `${Number(v).toLocaleString('ru-RU')} ¥` : <span className="text-slate-400">—</span>,
+            title: 'Заголовок',
+            dataIndex: 'title',
+            render: (v, r) => (
+                <div>
+                    <div className="font-semibold text-slate-800">{v}</div>
+                    <div className="text-xs text-slate-400 mt-0.5">
+                        slug: {r.slug}
+                    </div>
+                </div>
+            ),
         },
         {
-            title: 'Популярность',
-            dataIndex: 'popularity_rank',
-            width: 120,
-            render: (v) =>
-                v ? <Tag color="purple">#{v}</Tag> : <span className="text-slate-400">—</span>,
+            title: 'Тег',
+            dataIndex: 'tag',
+            width: 130,
+            render: (v) => (v ? <Tag color="purple">{v}</Tag> : '—'),
         },
+        { title: 'Дата', dataIndex: 'date', width: 140 },
+        { title: 'Автор', dataIndex: 'author', width: 180 },
         {
             title: 'Действия',
             width: 160,
@@ -112,13 +108,13 @@ export default function AdminCars() {
                     <Button
                         size="small"
                         icon={<EditOutlined />}
-                        onClick={() => navigate(`/admin/cars/${record.id}/edit`)}
+                        onClick={() => navigate(`/admin/blog/${record.id}/edit`)}
                     >
                         Изменить
                     </Button>
                     <Popconfirm
-                        title="Удалить автомобиль?"
-                        description={`#${record.id} ${record.brend || ''} ${record.model || ''}`}
+                        title="Удалить статью?"
+                        description={`#${record.id} ${record.title || ''}`}
                         okText="Удалить"
                         cancelText="Отмена"
                         okButtonProps={{ danger: true }}
@@ -135,19 +131,19 @@ export default function AdminCars() {
         <Card
             title={
                 <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-lg font-bold">Автомобили</span>
-                    <Tag color="blue">{cars.length} шт.</Tag>
+                    <span className="text-lg font-bold">Статьи блога</span>
+                    <Tag color="blue">{blogs.length} шт.</Tag>
                 </div>
             }
             extra={
                 <Space>
                     <Input
-                        placeholder="Поиск по ID / марке / модели"
+                        placeholder="Поиск по ID / заголовку / slug / тегу"
                         prefix={<SearchOutlined />}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         allowClear
-                        style={{ width: 280 }}
+                        style={{ width: 320 }}
                     />
                     <Button icon={<ReloadOutlined />} onClick={load}>
                         Обновить
@@ -155,9 +151,9 @@ export default function AdminCars() {
                     <Button
                         type="primary"
                         icon={<PlusOutlined />}
-                        onClick={() => navigate('/admin/cars/new')}
+                        onClick={() => navigate('/Admin/blog/new')}
                     >
-                        Добавить
+                        Добавить статью
                     </Button>
                 </Space>
             }

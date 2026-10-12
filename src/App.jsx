@@ -45,13 +45,13 @@ function resolveTitle(pathname) {
     if (pathname.startsWith('/blog/')) return 'Статья — Блог';
     if (pathname.startsWith('/car/')) return 'Автомобиль — Каталог';
 
-    if (pathname === '/admin/cars/new') return 'Новое авто — Админка';
+    if (pathname === '/Admin/cars/new') return 'Новое авто — Админка';
     if (/^\/admin\/cars\/\d+\/edit$/.test(pathname)) return 'Редактирование авто — Админка';
 
-    if (pathname === '/admin/blog/new') return 'Новая статья — Админка';
+    if (pathname === '/Admin/blog/new') return 'Новая статья — Админка';
     if (/^\/admin\/blog\/\d+\/edit$/.test(pathname)) return 'Редактирование статьи — Админка';
 
-    if (pathname === '/admin/reviews/new') return 'Новый отзыв — Админка';
+    if (pathname === '/Admin/reviews/new') return 'Новый отзыв — Админка';
     if (/^\/admin\/reviews\/\d+\/edit$/.test(pathname)) return 'Редактирование отзыва — Админка';
 
     return BASE_TITLE;

@@ -17,18 +17,18 @@ const { Sider, Header, Content } = Layout;
 export default function AdminLayout() {
     const location = useLocation();
     const navigate = useNavigate();
-    const username = getUsername() || 'admin';
+    const username = getUsername() || 'Admin';
 
     let selectedKey = 'cars-list';
     const p = location.pathname;
 
-    if (p === '/admin/cars/new') selectedKey = 'cars-new';
+    if (p === '/Admin/cars/new') selectedKey = 'cars-new';
     else if (/^\/admin\/cars\/\d+\/edit$/.test(p)) selectedKey = 'cars-edit';
     else if (p === '/admin/blog') selectedKey = 'blog-list';
-    else if (p === '/admin/blog/new') selectedKey = 'blog-new';
+    else if (p === '/Admin/blog/new') selectedKey = 'blog-new';
     else if (/^\/admin\/blog\/\d+\/edit$/.test(p)) selectedKey = 'blog-edit';
     else if (p === '/admin/reviews') selectedKey = 'reviews-list';
-    else if (p === '/admin/reviews/new') selectedKey = 'reviews-new';
+    else if (p === '/Admin/reviews/new') selectedKey = 'reviews-new';
     else if (/^\/admin\/reviews\/\d+\/edit$/.test(p)) selectedKey = 'reviews-edit';
     else if (p === '/admin/leads') selectedKey = 'leads-list';
 
@@ -74,7 +74,7 @@ export default function AdminLayout() {
                                     key: 'cars-new',
                                     icon: <PlusCircleOutlined />,
                                     label: 'Добавить авто',
-                                    onClick: () => navigate('/admin/cars/new'),
+                                    onClick: () => navigate('/Admin/cars/new'),
                                 },
                             ],
                         },
@@ -94,7 +94,7 @@ export default function AdminLayout() {
                                     key: 'blog-new',
                                     icon: <PlusCircleOutlined />,
                                     label: 'Добавить статью',
-                                    onClick: () => navigate('/admin/blog/new'),
+                                    onClick: () => navigate('/Admin/blog/new'),
                                 },
                             ],
                         },
@@ -114,7 +114,7 @@ export default function AdminLayout() {
                                     key: 'reviews-new',
                                     icon: <PlusCircleOutlined />,
                                     label: 'Добавить отзыв',
-                                    onClick: () => navigate('/admin/reviews/new'),
+                                    onClick: () => navigate('/Admin/reviews/new'),
                                 },
                             ],
                         },
