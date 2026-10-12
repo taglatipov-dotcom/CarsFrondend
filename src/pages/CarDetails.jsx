@@ -269,7 +269,7 @@ export default function CarDetails() {
                                 )}
                                 {car.oldPrice && (
                                     <span className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-base font-bold px-3.5 py-1.5 rounded-full shadow-lg">
-                                        СКИДКА {(car.oldPrice - car.price).toLocaleString('ru-RU')} ₽
+                                        СКИДКА {(car.oldPrice - car.price).toLocaleString('ru-RU')} ¥
                                     </span>
                                 )}
                             </div>
@@ -292,15 +292,15 @@ export default function CarDetails() {
                             <div className="mb-6">
                                 <div className="flex items-baseline gap-3">
                                     <span className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                                        {car.price.toLocaleString('ru-RU')} ₽
+                                        {car.price.toLocaleString('ru-RU')} ¥
                                     </span>
                                     {car.oldPrice && (
                                         <span className="text-2xl text-slate-400 line-through">
-                                            {car.oldPrice.toLocaleString('ru-RU')} ₽
+                                            {car.oldPrice.toLocaleString('ru-RU')} ¥
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-base text-slate-500 mt-2">Цена во Владивостоке, без учёта доставки в ваш город</p>
+                                <p className="text-base text-slate-500 mt-2">Цена в Китае, без учёта таможенных и логистических затрат</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 mb-6">
@@ -437,7 +437,7 @@ export default function CarDetails() {
                 subtitle={`Задайте вопрос по ${car.name}`}
                 successText="Эксперт свяжется с вами в течение 15 минут"
                 defaultValues={{
-                    preferences: `Интересует ${car.name} (${car.year} г.), цена ${car.price.toLocaleString('ru-RU')} ₽`
+                    preferences: `Интересует ${car.name} (${car.year} г.), цена ${car.price.toLocaleString('ru-RU')} ¥`
                 }}
             />
         </div>

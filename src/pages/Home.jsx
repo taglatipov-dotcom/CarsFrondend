@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from 'antd';
+import { useState, useEffect } from 'react';
+import { Button, Spin } from 'antd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
     SafetyCertificateOutlined,
@@ -8,7 +8,7 @@ import {
     CarOutlined,
     ArrowRightOutlined
 } from '@ant-design/icons';
-import { mockCars } from '../services/mockApi';
+import { fetchCars } from '../services/mockApi';
 import LeadModal from '../components/LeadModal';
 import AboutContent from '../components/AboutContent';
 import BlogContent from '../components/BlogContent';
@@ -18,8 +18,33 @@ const SCROLL_KEY = 'homeScrollPosition';
 
 export default function Home() {
     const [leadModalOpen, setLeadModalOpen] = useState(false);
+    const [popularCars, setPopularCars] = useState([]);
+    const [carsLoading, setCarsLoading] = useState(true);
+    const [carsError, setCarsError] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+
+    /* ============ ЗАГРУЗКА ПОПУЛЯРНЫХ МАШИН С БЭКЕНДА ============ */
+    useEffect(() => {
+        let ignore = false;
+
+        fetchCars({ filters: {}, page: 1, limit: 9 })
+            .then((res) => {
+                if (ignore) return;
+                setPopularCars(res.cars);
+                setCarsLoading(false);
+            })
+            .catch((err) => {
+                if (ignore) return;
+                console.error('[Home] Ошибка загрузки машин:', err);
+                setCarsError(true);
+                setCarsLoading(false);
+            });
+
+        return () => {
+            ignore = true;
+        };
+    }, []);
 
     /* ============ СОХРАНЕНИЕ И ВОССТАНОВЛЕНИЕ ПОЗИЦИИ СКРОЛЛА ============ */
     useEffect(() => {
@@ -67,7 +92,7 @@ export default function Home() {
                         </span>
                     </h1>
                     <p className="text-slate-100 text-xl md:text-2xl max-w-3xl mx-auto font-light drop-shadow-lg mb-10">
-                        Привозим электрокары и гибриды из Китая с полным таможенным оформлением. Прозрачный расчет, гарантия и доставка до вашего города.
+                        Привозим автомобили из Китая с полным таможенным оформлением. Прозрачный расчет, гарантия и доставка до вашего города.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-3xl mx-auto">
                         <Link to="/catalog" state={{ resetScroll: true }} className="w-full sm:flex-1">
@@ -136,38 +161,68 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {mockCars.slice(0, 9).map(car => (
-                            <div
-                                key={car.id}
-                                onClick={() => navigate(`/car/${car.id}`)}
-                                className="group relative rounded-2xl overflow-hidden h-80 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                    {carsLoading ? (
+                        <div className="flex justify-center items-center py-24">
+                            <Spin size="large" />
+                        </div>
+                    ) : carsError ? (
+                        <div className="text-center py-16 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl">
+                            <h3 className="text-2xl font-bold text-slate-500 mb-2">
+                                Не удалось загрузить автомобили
+                            </h3>
+                            <p className="text-slate-400 mb-6 text-base">
+                                Проверьте соединение и попробуйте обновить страницу
+                            </p>
+                            <Button
+                                onClick={() => window.location.reload()}
+                                className="!bg-slate-900 !text-white rounded-xl h-10 px-6"
                             >
-                                <img
-                                    alt={car.name}
-                                    src={car.images[0]}
-                                    style={{ objectPosition: 'center 60%' }}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
+                                Обновить
+                            </Button>
+                        </div>
+                    ) : popularCars.length === 0 ? (
+                        <div className="text-center py-16 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl">
+                            <h3 className="text-2xl font-bold text-slate-500 mb-2">
+                                Автомобили скоро появятся
+                            </h3>
+                            <p className="text-slate-400 text-base">
+                                Загляните в каталог чуть позже
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {popularCars.map(car => (
+                                <div
+                                    key={car.id}
+                                    onClick={() => navigate(`/car/${car.id}`)}
+                                    className="group relative rounded-2xl overflow-hidden h-80 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                                >
+                                    <img
+                                        alt={car.name}
+                                        src={car.images[0]}
+                                        style={{ objectPosition: 'center 60%' }}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
 
-                                <div className="flex-1 relative z-10"></div>
+                                    <div className="flex-1 relative z-10"></div>
 
-                                <div className="relative z-10 bg-white/65 backdrop-blur-md border-t border-white/50 p-4">
-                                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
-                                        <h3 className="text-lg font-bold text-slate-800 line-clamp-1">
-                                            {car.name}
-                                        </h3>
-                                        <span className="text-sm text-slate-700 font-medium shrink-0">
-                                            {car.year} г.
-                                        </span>
-                                    </div>
-                                    <div className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                                        {car.price.toLocaleString('ru-RU')} ₽
+                                    <div className="relative z-10 bg-white/65 backdrop-blur-md border-t border-white/50 p-4">
+                                        <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                                            <h3 className="text-lg font-bold text-slate-800 line-clamp-1">
+                                                {car.name}
+                                            </h3>
+                                            <span className="text-sm text-slate-700 font-medium shrink-0">
+                                                {car.year} г.
+                                            </span>
+                                        </div>
+                                        <div className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
+                                            {car.price.toLocaleString('ru-RU')} ¥
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="mt-12">
                         <Link to="/catalog" state={{ resetScroll: true }} className="block">

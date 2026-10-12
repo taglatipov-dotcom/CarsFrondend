@@ -314,3 +314,82 @@
 .catalog-pagination .ant-pagination-item:hover {
     outline: none !important;
 }
+
+/* ============ RICH TEXT EDITOR (Quill) В АДМИНКЕ ============ */
+.rich-editor .ql-toolbar.ql-snow {
+    border: 1px solid #d9d9d9;
+    border-radius: 8px 8px 0 0;
+    background: #fafafa;
+}
+
+.rich-editor .ql-container.ql-snow {
+    border: 1px solid #d9d9d9;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    font-family: inherit;
+    font-size: 16px;
+    min-height: 420px;
+    background: #ffffff;
+}
+
+.rich-editor .ql-editor {
+    min-height: 420px;
+    line-height: 1.7;
+    color: #1e293b;
+}
+
+.rich-editor .ql-editor h1,
+.rich-editor .ql-editor h2,
+.rich-editor .ql-editor h3,
+.rich-editor .ql-editor h4 {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.rich-editor .ql-editor blockquote {
+    border-left: 4px solid #8b5cf6;
+    background: #f5f3ff;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 16px;
+    color: #4c1d95;
+    font-style: italic;
+    margin: 1rem 0;
+}
+
+.rich-editor .ql-editor img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.rich-editor .ql-editor a {
+    color: #8b5cf6;
+    text-decoration: underline;
+}
+
+.rich-editor .ql-editor.ql-blank::before {
+    color: #94a3b8;
+    font-style: normal;
+}
+
+.rich-editor .ql-snow .ql-picker-label {
+    color: #334155;
+}
+
+.rich-editor .ql-snow .ql-stroke {
+    stroke: #475569;
+}
+
+.rich-editor .ql-snow .ql-fill {
+    fill: #475569;
+}
+
+.rich-editor .ql-snow .ql-picker-label:hover,
+.rich-editor .ql-snow button:hover {
+    color: #7c3aed;
+}
+
+.rich-editor .ql-snow .ql-picker-label:hover .ql-stroke,
+.rich-editor .ql-snow button:hover .ql-stroke {
+    stroke: #7c3aed;
+}

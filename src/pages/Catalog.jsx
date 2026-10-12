@@ -322,7 +322,7 @@ export default function Catalog() {
                                                         </span>
                                                     </div>
                                                     <div className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                                                        {car.price.toLocaleString('ru-RU')} ₽
+                                                        {car.price.toLocaleString('ru-RU')} ¥
                                                     </div>
                                                 </div>
                                             </div>
