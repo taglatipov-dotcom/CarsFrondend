@@ -3,7 +3,7 @@ import { Button, Spin, Divider, Switch, Tooltip, Modal, Input, Pagination } from
 import { useNavigate } from 'react-router-dom';
 import {
     fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands,
-    translateBodyType,
+    isBudgetCustomCar,
 } from '../services/mockApi';
 import {
     FilterOutlined,
@@ -90,7 +90,6 @@ export default function Catalog() {
         { value: 'Дизельный', label: 'Дизельный' },
     ];
 
-    // Отображаемое название vs значение для фильтра
     const bodyTypeOptions = [
         { value: 'All',   label: 'Все' },
         { value: 'SUV',   label: 'Внедорожник' },
@@ -177,9 +176,9 @@ export default function Catalog() {
                                         className={filter.budgetCustoms ? '!bg-amber-500' : ''}
                                     />
                                 </div>
-                                <Tooltip title="Авто не старше 2024 года, бензиновый двигатель, до 160 л.с.">
+                                <Tooltip title="Авто возрастом 3–5 лет, бензиновый или дизельный двигатель, объём до 1.5 л, мощность до 160 л.с.">
                                     <p className="text-sm text-amber-800 leading-snug m-0 cursor-help">
-                                        Год ≥ 2024 · Бензин · ≤ 160 л.с.
+                                        Возраст 3–5 лет · Бензин/Дизель · ≤ 1.5 л · ≤ 160 л.с.
                                     </p>
                                 </Tooltip>
                             </div>
@@ -296,10 +295,7 @@ export default function Catalog() {
                             <>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                                     {cars.map(car => {
-                                        const isBudgetCustoms =
-                                            car.year >= 2024 &&
-                                            car.engineType === 'Бензиновый' &&
-                                            car.horsepower <= 160;
+                                        const isBudget = isBudgetCustomCar(car);
 
                                         return (
                                             <div
@@ -314,7 +310,7 @@ export default function Catalog() {
                                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
 
-                                                {isBudgetCustoms && (
+                                                {isBudget && (
                                                     <span className="absolute top-2 left-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 z-20">
                                                         <FireOutlined /> Бюджет
                                                     </span>

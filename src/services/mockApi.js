@@ -26,8 +26,6 @@ async function httpPost(path, body) {
 
 
 // ============ ПЕРЕВОД ТИПОВ КУЗОВА ============
-// В БД и API хранятся английские коды — их и фильтруем, и храним в форме.
-// На экране показываем русские названия.
 export const BODY_TYPE_LABELS = {
     SUV:       'Внедорожник',
     Sedan:     'Седан',
@@ -39,6 +37,37 @@ export const BODY_TYPE_LABELS = {
 
 export const translateBodyType = (code) =>
     BODY_TYPE_LABELS[code] || code || '—';
+
+// ============ БЮДЖЕТНАЯ ТАМОЖНЯ ============
+// Критерии «бюджетного» авто:
+//   • возраст 3–5 лет (от текущего года)
+//   • мощность до 160 л.с.
+//   • двигатель бензиновый или дизельный
+//   • объём двигателя до 1.5 л
+export const BUDGET_AGE_MIN = 3;
+export const BUDGET_AGE_MAX = 5;
+export const BUDGET_HP_MAX = 160;
+export const BUDGET_VOLUME_MAX = 1.5;
+
+export const isBudgetCustomCar = (car) => {
+    if (!car) return false;
+
+    const currentYear = new Date().getFullYear();
+    const year = Number(car.year) || 0;
+    const age = year > 0 ? currentYear - year : Infinity;
+
+    const hp = Number(car.horsepower) || 0;
+    const volume = Number(car.engineVolume) || 0;
+    const type = car.engineType || '';
+
+    return (
+        age >= BUDGET_AGE_MIN &&
+        age <= BUDGET_AGE_MAX &&
+        hp > 0 && hp <= BUDGET_HP_MAX &&
+        (type === 'Бензиновый' || type === 'Дизельный') &&
+        volume > 0 && volume <= BUDGET_VOLUME_MAX
+    );
+};
 
 // ============ СПРАВОЧНИКИ (пока статические) ============
 // TODO: заменить на GET /brands, GET /dictionaries/*
@@ -97,12 +126,9 @@ function adaptCar(raw) {
     const driveShortMap = { 'полный': 'AWD', 'задний': 'RWD', 'передний': 'FWD' };
     const driveRuMap    = { 'полный': 'Полный', 'задний': 'Задний', 'передний': 'Передний' };
 
-    const carPrice  = Number(raw.china_price) || 0;
-    const logistics = 450000;
-    const customs   = Math.round(carPrice * 0.25);
-    const sbkts     = 150000;
-    const companyFee = 100000;
-    const price = carPrice + logistics + customs + sbkts + companyFee;
+    // На карточках сайта показываем реальную цену авто в юанях — то,
+    // что админ вводит в поле «Цена в Китае, ¥».
+    const price = Number(raw.china_price) || 0;
 
     const safety = [];
     if (raw.safety_abs) safety.push('ABS');
@@ -121,6 +147,7 @@ function adaptCar(raw) {
                 : ['https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=80&w=1200'];
 
     const hp = raw.horsepower ?? raw.engine_power ?? 0;
+    const engineVolume = Number(raw.engine_volume) || null;
 
     return {
         id: raw.id,
@@ -142,11 +169,13 @@ function adaptCar(raw) {
         location: raw.location || 'Шанхай',
         createdAt: raw.created_at || new Date().toISOString().slice(0, 10),
         engineType: raw.engine_type || '—',
+        engineVolume,           // ← числовое значение (1.4, 1.5, …) или null
         horsepower: hp,
         images,
 
         specs: {
             engine: raw.engine_type || '—',
+            engineVolume: engineVolume ? `${engineVolume} л` : '—',
             power: hp ? `${hp} л.с.` : '—',
             torque: raw.torque ? `${raw.torque} Нм` : '—',
             acceleration: raw.acceleration ? `${raw.acceleration} сек` : '—',
@@ -186,9 +215,6 @@ function adaptCar(raw) {
             raw.description ||
             `${name}${raw.year ? `, ${raw.year} год` : ''} — современный автомобиль с отличными характеристиками.`,
 
-        costBreakdown: { carPrice, logistics, customs, sbkts, companyFee },
-
-        // Сырые данные бэкенда — нужны для POST /cars/cal.
         _raw: raw,
     };
 }
@@ -250,9 +276,7 @@ export const fetchCars = async ({ filters = {}, page = 1, limit = 40 } = {}) => 
         result = result.filter((c) => c.price > 5000000);
     }
     if (budgetCustoms) {
-        result = result.filter(
-            (c) => c.year >= 2024 && c.engineType === 'Бензиновый' && c.horsepower <= 160
-        );
+        result = result.filter(isBudgetCustomCar);
     }
 
     result = [...result].sort((a, b) => a.popularityRank - b.popularityRank);
@@ -328,40 +352,35 @@ export const fetchCarCost = async (rawCar) => {
 };
 
 export const normalizeCostBreakdown = (raw, fallback = {}) => {
-    const pick = (...keys) => {
-        for (const k of keys) {
-            const v = raw?.[k];
-            if (v != null && v !== '' && !Number.isNaN(Number(v))) {
-                return Number(v);
-            }
-        }
-        return 0;
+    const num = (v) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
     };
 
-    const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+    const price  = num(raw?.price)  || num(fallback.price);
+    const sbor   = num(raw?.sbor)   || num(fallback.sbor);
+    const tax    = num(raw?.tax)    || num(fallback.tax);
+    const excise = num(raw?.excise) || num(fallback.excise);
+    const nds    = num(raw?.nds)    || num(fallback.nds);
+    const util   = num(raw?.util)   || num(fallback.util);
+
+    const apiTotal  = num(raw?.total)  || (sbor + tax + excise + nds + util);
+    const apiTotal2 = num(raw?.total2) || (price + apiTotal);
 
     return {
-        carPrice:   pick('car_price', 'carPrice', 'price', 'cost', 'china_price') || num(fallback.carPrice),
-        logistics:  pick('logistics', 'delivery', 'shipping', 'logistics_cost')     || num(fallback.logistics),
-        customs:    pick('customs', 'duty', 'customs_duty', 'customsDuty', 'customs_fee') || num(fallback.customs),
-        utilFee:    pick('util_fee', 'utilFee', 'utilization', 'utilization_fee', 'recycling_fee', 'recycling'),
-        excise:     pick('excise', 'excise_tax', 'exciseTax'),
-        vat:        pick('vat', 'nds', 'vat_amount'),
-        sbkts:      pick('sbkts', 'sbc', 'epc', 'sbkts_epc', 'sbkts_epc_cost') || num(fallback.sbkts),
-        companyFee: pick('company_fee', 'companyFee', 'commission', 'fee', 'service_fee') || num(fallback.companyFee),
-        total:      pick('total', 'total_price', 'totalPrice', 'grand_total', 'grandTotal'),
+        price,
+        sbor,
+        tax,
+        excise,
+        nds,
+        util,
+        apiTotal,
+        apiTotal2,
     };
 };
 
 /* ============ BLOG ============ */
-// Блог приходит с бэкенда:
-//   GET /blog          → список превью (без content)
-//   GET /blog/{id}     → полная статья с content
-//   GET /blog/slug/{slug} → то же по slug
 
-/**
- * Список статей для превью. Кэшируется на всё время жизни страницы.
- */
 export const fetchBlogs = async () => {
     if (_blogsCache) return _blogsCache;
 
@@ -370,10 +389,6 @@ export const fetchBlogs = async () => {
     return _blogsCache;
 };
 
-/**
- * Полная статья по id — с HTML-контентом.
- * Кэшируется отдельно, по одному объекту на статью.
- */
 export const fetchBlogById = async (id) => {
     const numericId = Number(id);
     if (!_blogByIdCache) _blogByIdCache = new Map();
@@ -393,7 +408,6 @@ export const fetchBlogById = async (id) => {
 };
 
 /* ============ REVIEWS ============ */
-// Отзывы приходят с бэкенда: GET /reviews
 export const fetchReviews = async () => {
     if (_reviewsCache) return _reviewsCache;
 
@@ -402,18 +416,11 @@ export const fetchReviews = async () => {
     return _reviewsCache;
 };
 
-/**
- * Публичная отправка отзыва — уходит на модерацию.
- * НЕ добавляем в _reviewsCache: отзыв появится на сайте только
- * после одобрения в админке.
- */
 export const submitReview = async (data) => {
     return httpPost('/reviews/submit', data);
 };
 
 /* ============ LEADS ============ */
-// Публичная отправка заявки → POST /leads.
-// Форма (LeadModal) шлёт camelCase, бэкенд ждёт snake_case — нормализуем.
 export const sendLead = async (data) => {
     const payload = {
         phone: data.phone || '',
@@ -439,16 +446,12 @@ export const invalidateCarsCache = () => {
 };
 
 /* ============ ИНВАЛИДАЦИЯ КЭША БЛОГА ============ */
-// Вызывается из админки после create/update/delete статьи,
-// чтобы публичные страницы подтянули свежие данные.
 export const invalidateBlogsCache = () => {
     _blogsCache = null;
     _blogByIdCache = null;
 };
 
 /* ============ ИНВАЛИДАЦИЯ КЭША ОТЗЫВОВ ============ */
-// Вызывается из админки после create/update/delete отзыва,
-// чтобы публичные страницы подтянули свежие данные.
 export const invalidateReviewsCache = () => {
     _reviewsCache = null;
 };

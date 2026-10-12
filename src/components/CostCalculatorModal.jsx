@@ -2,16 +2,21 @@ import { useState, useEffect, useMemo } from 'react';
 import { Modal, Statistic, Divider, Button, Spin, Alert } from 'antd';
 import {
     CarOutlined,
-    CarFilled,
     SafetyCertificateOutlined,
-    FileProtectOutlined,
     DollarOutlined,
     PhoneOutlined,
     DeleteOutlined,
     PercentageOutlined,
+    CarFilled,
 } from '@ant-design/icons';
 import LeadModal from './LeadModal';
 import { fetchCarCost, normalizeCostBreakdown } from '../services/mockApi';
+
+/* Ставка нашей комиссии от суммы всех расходов (цена авто + таможня + логистика) */
+const COMMISSION_RATE = 0.03;
+
+/* Фиксированные логистические расходы */
+const LOGISTICS_COST = 345000;
 
 export default function CostCalculatorModal({ car, visible, onClose }) {
     const [leadModalOpen, setLeadModalOpen] = useState(false);
@@ -30,8 +35,6 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
 
         const raw = car._raw;
 
-        // Если сырых данных нет (например, car пришёл из админки без адаптера) —
-        // используем клиентскую оценку и не идём на сервер.
         if (!raw) {
             setCostData(car.costBreakdown || null);
             setLoading(false);
@@ -47,7 +50,6 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
                 if (ignore) return;
                 console.error('[calculator] Ошибка запроса /cars/cal:', e);
                 setError(e.message || 'Не удалось получить расчёт');
-                // Fallback — клиентская оценка
                 setCostData(car.costBreakdown || null);
             })
             .finally(() => {
@@ -59,37 +61,51 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
         };
     }, [visible, car?.id]);
 
+    /* ============ СУММА БЕЗ КОМИССИИ И ИТОГ ============ */
+    const sumWithoutCommission = useMemo(() => {
+        if (!costData) return 0;
+        return (
+            (costData.price  || 0) +
+            (costData.sbor   || 0) +
+            (costData.tax    || 0) +
+            (costData.excise || 0) +
+            (costData.nds    || 0) +
+            (costData.util   || 0) +
+            LOGISTICS_COST
+        );
+    }, [costData]);
+
+    const commission = useMemo(
+        () => Math.round(sumWithoutCommission * COMMISSION_RATE),
+        [sumWithoutCommission],
+    );
+
+    const finalTotal = sumWithoutCommission + commission;
+
     /* ============ ПОДГОТОВКА ДАННЫХ ДЛЯ ДИАГРАММЫ ============ */
     const chartData = useMemo(() => {
         if (!costData) return [];
         return [
             {
-                key: 'car',
-                name: 'Стоимость авто',
-                value: Math.round(costData.carPrice || 0),
+                key: 'price',
+                name: 'Цена автомобиля',
+                value: Math.round(costData.price || 0),
                 color: '#1e293b',
                 Icon: CarOutlined,
             },
             {
-                key: 'logistics',
-                name: 'Логистика',
-                value: Math.round(costData.logistics || 0),
+                key: 'sbor',
+                name: 'Таможенный сбор',
+                value: Math.round(costData.sbor || 0),
                 color: '#22c55e',
-                Icon: CarFilled,
-            },
-            {
-                key: 'customs',
-                name: 'Таможенная пошлина',
-                value: Math.round(costData.customs || 0),
-                color: '#a855f7',
                 Icon: SafetyCertificateOutlined,
             },
             {
-                key: 'utilFee',
-                name: 'Утилизационный сбор',
-                value: Math.round(costData.utilFee || 0),
-                color: '#eab308',
-                Icon: DeleteOutlined,
+                key: 'tax',
+                name: 'Таможенная пошлина',
+                value: Math.round(costData.tax || 0),
+                color: '#a855f7',
+                Icon: SafetyCertificateOutlined,
             },
             {
                 key: 'excise',
@@ -99,33 +115,37 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
                 Icon: PercentageOutlined,
             },
             {
-                key: 'vat',
+                key: 'nds',
                 name: 'НДС',
-                value: Math.round(costData.vat || 0),
+                value: Math.round(costData.nds || 0),
                 color: '#06b6d4',
                 Icon: PercentageOutlined,
             },
             {
-                key: 'sbkts',
-                name: 'СБКТС и ЭПТС',
-                value: Math.round(costData.sbkts || 0),
-                color: '#f97316',
-                Icon: FileProtectOutlined,
+                key: 'util',
+                name: 'Утилизационный сбор',
+                value: Math.round(costData.util || 0),
+                color: '#eab308',
+                Icon: DeleteOutlined,
             },
             {
-                key: 'fee',
-                name: 'Комиссия',
-                value: Math.round(costData.companyFee || 0),
-                color: '#94a3b8',
+                key: 'logistics',
+                name: 'Логистические расходы',
+                value: LOGISTICS_COST,
+                color: '#10b981',
+                Icon: CarFilled,
+            },
+            {
+                key: 'commission',
+                name: 'Наша комиссия (3%)',
+                value: commission,
+                color: '#f97316',
                 Icon: DollarOutlined,
             },
         ].filter((item) => item.value > 0);
-    }, [costData]);
+    }, [costData, commission]);
 
-    const total = useMemo(() => {
-        if (costData?.total > 0) return costData.total;
-        return chartData.reduce((acc, curr) => acc + curr.value, 0);
-    }, [costData, chartData]);
+    const total = finalTotal;
 
     /* ============ SVG-ДОНАТ ============ */
     const radius = 70;
@@ -167,7 +187,7 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
                     <Statistic
                         title={
                             <span className="text-slate-300 text-base md:text-lg font-medium uppercase tracking-wider">
-                                Итоговая стоимость под ключ
+                                Полная стоимость
                             </span>
                         }
                         value={total}
@@ -310,7 +330,7 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
                 subtitle={`Заявка на ${car.name}`}
                 successText="Менеджер свяжется с вами в течение 15 минут"
                 defaultValues={{
-                    preferences: `Интересует ${car.name} (${car.year} г.). Итоговая стоимость под ключ: ${total.toLocaleString('ru-RU')} ₽. Хочу оформить заявку.`,
+                    preferences: `Интересует ${car.name} (${car.year} г.). Полная стоимость под ключ: ${total.toLocaleString('ru-RU')} ₽. Хочу оформить заявку.`,
                 }}
             />
         </>

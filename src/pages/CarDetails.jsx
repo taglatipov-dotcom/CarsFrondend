@@ -102,6 +102,7 @@ export default function CarDetails() {
             >
                 <Descriptions.Item label="Год выпуска">{car.year}</Descriptions.Item>
                 <Descriptions.Item label="Тип кузова">{translateBodyType(car.bodyType)}</Descriptions.Item>
+                <Descriptions.Item label="Объём двигателя">{car.specs.engineVolume}</Descriptions.Item>
                 <Descriptions.Item label="Цвет">{car.color}</Descriptions.Item>
                 <Descriptions.Item label="Привод">{car.drive}</Descriptions.Item>
                 <Descriptions.Item label="Пробег">
@@ -124,6 +125,7 @@ export default function CarDetails() {
                 contentStyle={{ fontSize: '16px', color: '#0f172a' }}
             >
                 <Descriptions.Item label="Двигатель">{car.specs.engine}</Descriptions.Item>
+                <Descriptions.Item label="Объём двигателя">{car.specs.engineVolume}</Descriptions.Item>
                 <Descriptions.Item label="Мощность">{car.specs.power}</Descriptions.Item>
                 <Descriptions.Item label="Крутящий момент">{car.specs.torque}</Descriptions.Item>
                 <Descriptions.Item label="Разгон 0-100 км/ч">{car.specs.acceleration}</Descriptions.Item>
