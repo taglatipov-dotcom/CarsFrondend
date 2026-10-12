@@ -1,10 +1,6 @@
 // ============ КОНФИГ API ============
-// Бэкенд работает на том же сервере, порт 8000.
-// Динамически собираем URL из текущего хоста — работает и на localhost, и на проде.
-const API_BASE_URL =
-    typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.hostname}:8000`
-        : 'http://localhost:8000';
+// Ходим через nginx-proxy на тот же origin: /api/* → 127.0.0.1:8000/*
+const API_BASE_URL = '/api';
 
 async function httpGet(path) {
     const res = await fetch(`${API_BASE_URL}${path}`, {
@@ -126,8 +122,8 @@ function adaptCar(raw) {
     const driveShortMap = { 'полный': 'AWD', 'задний': 'RWD', 'передний': 'FWD' };
     const driveRuMap    = { 'полный': 'Полный', 'задний': 'Задний', 'передний': 'Передний' };
 
-    // На карточках сайта показываем реальную цену авто в юанях — то,
-    // что админ вводит в поле «Цена в Китае, ¥».
+    // На карточках сайта показываем реальную цену авто в юанях — то, что
+    // админ вводит в поле «Цена в Китае, ¥».
     const price = Number(raw.china_price) || 0;
 
     const safety = [];
