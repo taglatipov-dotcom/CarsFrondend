@@ -16,7 +16,7 @@ import {
     CloseOutlined,
     PhoneOutlined
 } from '@ant-design/icons';
-import { fetchCarById } from '../services/mockApi';
+import { fetchCarById, translateBodyType } from '../services/mockApi';
 import CostCalculatorModal from '../components/CostCalculatorModal';
 import LeadModal from '../components/LeadModal';
 
@@ -100,9 +100,8 @@ export default function CarDetails() {
                 labelStyle={{ fontWeight: '600', color: '#475569', backgroundColor: '#f8fafc', width: '35%', fontSize: '16px' }}
                 contentStyle={{ fontWeight: '500', color: '#0f172a', fontSize: '16px' }}
             >
-                <Descriptions.Item label="VIN">{car.vin}</Descriptions.Item>
                 <Descriptions.Item label="Год выпуска">{car.year}</Descriptions.Item>
-                <Descriptions.Item label="Тип кузова">{car.bodyType}</Descriptions.Item>
+                <Descriptions.Item label="Тип кузова">{translateBodyType(car.bodyType)}</Descriptions.Item>
                 <Descriptions.Item label="Цвет">{car.color}</Descriptions.Item>
                 <Descriptions.Item label="Привод">{car.drive}</Descriptions.Item>
                 <Descriptions.Item label="Пробег">
@@ -278,7 +277,9 @@ export default function CarDetails() {
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2 mb-3">
                                 <Tag color="blue" className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold">{car.brand}</Tag>
-                                <Tag color="purple" className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold">{car.bodyType}</Tag>
+                                <Tag color="purple" className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold">
+                                    {translateBodyType(car.bodyType)}
+                                </Tag>
                             </div>
 
                             <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-800">{car.name}</h1>

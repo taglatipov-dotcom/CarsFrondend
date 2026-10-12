@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-    Card, Form, Input, Button, Space, message, Row, Col, Divider, Spin, Rate,
-    Avatar,
+    Card, Form, Input, Button, Space, message, Row, Col, Spin, Rate,
 } from 'antd';
 import {
     SaveOutlined, ArrowLeftOutlined, UserOutlined, CarOutlined,
@@ -12,6 +11,7 @@ import {
     adminFetchReviewRaw, adminCreateReview, adminUpdateReview,
 } from '../../services/adminApi';
 import { invalidateReviewsCache } from '../../services/mockApi';
+import ImageUploader from '../../components/ImageUploader';
 
 const { TextArea } = Input;
 
@@ -30,9 +30,6 @@ export default function AdminReviewForm() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(isEdit);
     const [submitting, setSubmitting] = useState(false);
-
-    // Следим за avatar для превью
-    const avatar = Form.useWatch('avatar', form);
 
     useEffect(() => {
         if (!isEdit) {
@@ -132,10 +129,7 @@ export default function AdminReviewForm() {
                                 }
                                 rules={[{ required: true, message: 'Введите имя' }]}
                             >
-                                <Input
-                                    size="large"
-                                    placeholder="Александр Смирнов"
-                                />
+                                <Input size="large" placeholder="Александр Смирнов" />
                             </Form.Item>
                         </Col>
 
@@ -158,25 +152,17 @@ export default function AdminReviewForm() {
                                 name="avatar"
                                 label={
                                     <span className="flex items-center gap-2">
-                                        <PictureOutlined /> URL аватара (опционально)
+                                        <PictureOutlined /> Аватар (опционально)
                                     </span>
                                 }
-                                tooltip="Если пусто — покажем стандартную иконку пользователя"
+                                tooltip="Если не загрузить — на сайте покажем стандартную иконку пользователя"
                             >
-                                <Input placeholder="https://i.pravatar.cc/150?u=..." />
+                                <ImageUploader
+                                    hint="Рекомендуем квадратное изображение от 200×200"
+                                    accept="image/jpeg,image/png,image/webp"
+                                />
                             </Form.Item>
                         </Col>
-
-                        {avatar && (
-                            <Col span={24}>
-                                <div className="mb-4 flex items-center gap-3">
-                                    <Avatar size={64} src={avatar} icon={<UserOutlined />} />
-                                    <span className="text-sm text-slate-500">
-                                        Предпросмотр аватара
-                                    </span>
-                                </div>
-                            </Col>
-                        )}
 
                         <Col span={24}>
                             <Form.Item

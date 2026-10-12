@@ -13,6 +13,9 @@ import { isAuthenticated } from '../services/authApi';
 
 const { Header, Content, Footer } = AntLayout;
 
+const PHONE_DISPLAY = '+7 (987) 498-17-37';
+const PHONE_HREF = 'tel:+79874981737';
+
 export default function Layout() {
     const location = useLocation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,10 +96,10 @@ export default function Layout() {
 
                     {/* Телефон — только на lg+ */}
                     <a
-                        href="tel:+79990000000"
+                        href={PHONE_HREF}
                         className="hidden lg:flex items-center gap-2 text-white text-sm xl:text-base font-semibold hover:text-cyan-400 transition-colors whitespace-nowrap"
                     >
-                        <PhoneOutlined /> +7 (999) 000-00-00
+                        <PhoneOutlined /> {PHONE_DISPLAY}
                     </a>
 
                     {/* Кнопка «Оставить заявку» — обёрнута в div, чтобы hidden работал надёжно */}
@@ -155,10 +158,10 @@ export default function Layout() {
                     <hr className="border-slate-700" />
 
                     <a
-                        href="tel:+79990000000"
+                        href={PHONE_HREF}
                         className="flex items-center gap-2 text-white text-base font-semibold whitespace-nowrap"
                     >
-                        <PhoneOutlined /> +7 (999) 000-00-00
+                        <PhoneOutlined /> {PHONE_DISPLAY}
                     </a>
 
                     <Button
@@ -209,10 +212,10 @@ export default function Layout() {
 
                     <div className="flex flex-col md:flex-row items-center gap-3 md:gap-8 text-lg md:text-xl">
                         <a
-                            href="tel:+79990000000"
+                            href={PHONE_HREF}
                             className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors font-medium whitespace-nowrap"
                         >
-                            <PhoneOutlined /> +7 (999) 000-00-00
+                            <PhoneOutlined /> {PHONE_DISPLAY}
                         </a>
                         <a
                             href="mailto:info@ilsatao.ru"

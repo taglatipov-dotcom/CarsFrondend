@@ -15,6 +15,7 @@ import {
     adminFetchBlogRaw, adminCreateBlog, adminUpdateBlog,
 } from '../../services/adminApi';
 import { invalidateBlogsCache } from '../../services/mockApi';
+import ImageUploader from '../../components/ImageUploader';
 
 const { TextArea } = Input;
 
@@ -77,16 +78,9 @@ const QUILL_FORMATS = [
 
 /**
  * Обёртка над Quill + textarea для HTML-режима.
- * Оба режима работают с одним и тем же строковым значением (HTML),
- * поэтому antd Form.Item корректно сохраняет его в поле `content`.
  */
 function RichTextEditor({ value = '', onChange }) {
-    const [mode, setMode] = useState('visual'); // 'visual' | 'html'
-
-    const isEmpty =
-        !value ||
-        value === '<p><br></p>' ||
-        value.replace(/<[^>]*>/g, '').trim() === '';
+    const [mode, setMode] = useState('visual');
 
     return (
         <div className="rich-editor">
@@ -139,13 +133,6 @@ function RichTextEditor({ value = '', onChange }) {
                     }}
                 />
             )}
-
-            {/* Скрытая валидация: content не должен быть пустым */}
-            <input
-                type="hidden"
-                value={isEmpty ? '' : 'filled'}
-                readOnly
-            />
         </div>
     );
 }
@@ -333,11 +320,12 @@ export default function AdminBlogForm() {
                                 name="image"
                                 label={
                                     <span className="flex items-center gap-2">
-                                        <PictureOutlined /> URL обложки
+                                        <PictureOutlined /> Обложка статьи
                                     </span>
                                 }
+                                tooltip="Рекомендуем горизонтальные картинки от 1200×600"
                             >
-                                <Input placeholder="https://images.unsplash.com/..." />
+                                <ImageUploader hint="JPG, PNG, WEBP до 10 МБ" />
                             </Form.Item>
                         </Col>
 
@@ -393,17 +381,6 @@ export default function AdminBlogForm() {
                             </Form.Item>
                         </Col>
                     </Row>
-
-                    {form.getFieldValue('image') && (
-                        <div className="mb-4">
-                            <img
-                                src={form.getFieldValue('image')}
-                                alt="preview"
-                                className="w-full max-w-md h-48 object-cover rounded-xl border border-slate-200"
-                                onError={(e) => (e.currentTarget.style.display = 'none')}
-                            />
-                        </div>
-                    )}
 
                     <Divider orientation="left">Содержимое статьи</Divider>
 

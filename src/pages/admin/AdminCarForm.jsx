@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     Card, Form, Input, InputNumber, Select, Button, Tabs,
-    Checkbox, Space, Switch, message, Row, Col, Divider, Spin,
+    Checkbox, Space, message, Row, Col, Divider, Spin,
 } from 'antd';
 import {
     SaveOutlined, ArrowLeftOutlined, PlusOutlined, DeleteOutlined,
@@ -11,7 +11,8 @@ import {
     CAR_DICTIONARIES,
     adminFetchCarRaw, adminCreateCar, adminUpdateCar,
 } from '../../services/adminApi';
-import { invalidateCarsCache } from '../../services/mockApi';
+import { invalidateCarsCache, BODY_TYPE_LABELS } from '../../services/mockApi';
+import MultiImageUploader from '../../components/MultiImageUploader';
 
 const { TextArea } = Input;
 
@@ -118,9 +119,15 @@ export default function AdminCarForm() {
         try {
             const values = await form.validateFields();
 
-            // Убираем возможный id/служебные поля
             const payload = { ...values };
             delete payload.id;
+
+            // Чистим пустые изображения (могли остаться после удаления в форме)
+            if (Array.isArray(payload.images)) {
+                payload.images = payload.images.filter(
+                    (url) => typeof url === 'string' && url.trim() !== '',
+                );
+            }
 
             setSubmitting(true);
 
@@ -135,7 +142,7 @@ export default function AdminCarForm() {
             invalidateCarsCache();
             navigate('/admin/cars');
         } catch (e) {
-            if (e?.errorFields) return; // ошибки валидации — antd сам подсветит
+            if (e?.errorFields) return;
             message.error('Ошибка сохранения: ' + e.message);
         } finally {
             setSubmitting(false);
@@ -230,7 +237,12 @@ export default function AdminCarForm() {
 
             <Col xs={12} md={6}>
                 <Form.Item name="body_type" label="Тип кузова">
-                    <Select options={CAR_DICTIONARIES.bodyTypes.map((b) => ({ value: b, label: b }))} />
+                    <Select
+                        options={CAR_DICTIONARIES.bodyTypes.map((b) => ({
+                            value: b,
+                            label: BODY_TYPE_LABELS[b] || b,
+                        }))}
+                    />
                 </Form.Item>
             </Col>
 
@@ -484,49 +496,15 @@ export default function AdminCarForm() {
             </Form.List>
 
             <Divider orientation="left" className="!mt-8">
-                Изображения (URL)
+                Изображения
             </Divider>
-            <Form.List name="images">
-                {(fields, { add, remove }) => (
-                    <>
-                        {fields.map(({ key, name, ...rest }) => (
-                            <div key={key} className="flex gap-3 mb-3 items-start">
-                                <Form.Item {...rest} name={[name]} className="!mb-0 flex-1">
-                                    <Input placeholder="https://..." />
-                                </Form.Item>
-                                <Form.Item noStyle shouldUpdate>
-                                    {() => {
-                                        const url = form.getFieldValue(['images', name]);
-                                        return url ? (
-                                            <img
-                                                src={url}
-                                                alt="preview"
-                                                className="w-16 h-12 object-cover rounded border border-slate-200"
-                                                onError={(e) => (e.currentTarget.style.display = 'none')}
-                                                onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                                            />
-                                        ) : null;
-                                    }}
-                                </Form.Item>
-                                <Button
-                                    type="text"
-                                    danger
-                                    icon={<DeleteOutlined />}
-                                    onClick={() => remove(name)}
-                                />
-                            </div>
-                        ))}
-                        <Button
-                            type="dashed"
-                            block
-                            icon={<PlusOutlined />}
-                            onClick={() => add('')}
-                        >
-                            Добавить изображение
-                        </Button>
-                    </>
-                )}
-            </Form.List>
+
+            <Form.Item name="images">
+                <MultiImageUploader
+                    hint="JPG, PNG, WEBP до 10 МБ. Можно выбрать сразу несколько файлов. Первое изображение станет главным в каталоге."
+                    maxCount={20}
+                />
+            </Form.Item>
         </>
     );
 

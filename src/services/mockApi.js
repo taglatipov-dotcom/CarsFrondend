@@ -24,6 +24,22 @@ async function httpPost(path, body) {
     return res.json();
 }
 
+
+// ============ ПЕРЕВОД ТИПОВ КУЗОВА ============
+// В БД и API хранятся английские коды — их и фильтруем, и храним в форме.
+// На экране показываем русские названия.
+export const BODY_TYPE_LABELS = {
+    SUV:       'Внедорожник',
+    Sedan:     'Седан',
+    MPV:       'Минивэн',
+    Coupe:     'Купе',
+    Hatchback: 'Хэтчбек',
+    Wagon:     'Универсал',
+};
+
+export const translateBodyType = (code) =>
+    BODY_TYPE_LABELS[code] || code || '—';
+
 // ============ СПРАВОЧНИКИ (пока статические) ============
 // TODO: заменить на GET /brands, GET /dictionaries/*
 const brandData = {
@@ -109,7 +125,6 @@ function adaptCar(raw) {
     return {
         id: raw.id,
         popularityRank: raw.popularity_rank ?? 9999,
-        vin: raw.vin || `ID-${String(raw.id).padStart(6, '0')}`,
         brand,
         model,
         name,
@@ -423,7 +438,6 @@ export const invalidateCarsCache = () => {
     _carsByIdCache.clear();
 };
 
-
 /* ============ ИНВАЛИДАЦИЯ КЭША БЛОГА ============ */
 // Вызывается из админки после create/update/delete статьи,
 // чтобы публичные страницы подтянули свежие данные.
@@ -438,13 +452,3 @@ export const invalidateBlogsCache = () => {
 export const invalidateReviewsCache = () => {
     _reviewsCache = null;
 };
-
-/* ============ REVIEWS MODERATION ============ */
-
-export const adminFetchPendingReviews = () => adminFetch('/reviews/pending');
-
-export const adminApproveReview = (id) =>
-    adminFetch(`/reviews/pending/${id}/approve`, { method: 'POST' });
-
-export const adminRejectReview = (id) =>
-    adminFetch(`/reviews/pending/${id}`, { method: 'DELETE' });

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button, Spin, Divider, Switch, Tooltip, Modal, Input, Pagination } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands } from '../services/mockApi';
+import {
+    fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands,
+    translateBodyType,
+} from '../services/mockApi';
 import {
     FilterOutlined,
     ClearOutlined,
@@ -33,8 +36,6 @@ export default function Catalog() {
     useEffect(() => {
         let ignore = false;
 
-        // Проверяем, будет ли запрос обслужен из кэша.
-        // Если да — не показываем спиннер, чтобы не было мерцания.
         const fromCache = canServeCarsFromCache({
             filters: filter,
             page: currentPage,
@@ -89,6 +90,17 @@ export default function Catalog() {
         { value: 'Дизельный', label: 'Дизельный' },
     ];
 
+    // Отображаемое название vs значение для фильтра
+    const bodyTypeOptions = [
+        { value: 'All',   label: 'Все' },
+        { value: 'SUV',   label: 'Внедорожник' },
+        { value: 'Sedan', label: 'Седан' },
+        { value: 'MPV',   label: 'Минивэн' },
+        { value: 'Coupe', label: 'Купе' },
+        { value: 'Hatchback', label: 'Хэтчбек' },
+        { value: 'Wagon', label: 'Универсал' },
+    ];
+
     const filteredBrandsByCountry = Object.entries(brandsByCountry).reduce((acc, [country, brands]) => {
         const matching = brands.filter(b =>
             b.toLowerCase().includes(brandSearch.toLowerCase()) ||
@@ -120,9 +132,7 @@ export default function Catalog() {
 
     return (
         <div className="min-h-screen py-10 w-full">
-            {/* Контейнер: 5% отступы на мобильных, 10% на десктопе */}
             <div className="w-full px-3 sm:px-[5%] lg:px-[10%]">
-                {/* Заголовок — как на странице "О нас" */}
                 <div className="text-center mb-12">
                     <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-2xl">
                         Каталог автомобилей
@@ -236,13 +246,13 @@ export default function Catalog() {
                                 <div>
                                     <GroupTitle>Кузов</GroupTitle>
                                     <div className="flex flex-col gap-1.5">
-                                        {['All', 'SUV', 'Sedan', 'MPV'].map(type => (
+                                        {bodyTypeOptions.map(item => (
                                             <FilterButton
-                                                key={type}
-                                                active={filter.bodyType === type}
-                                                onClick={() => updateFilter({ bodyType: type })}
+                                                key={item.value}
+                                                active={filter.bodyType === item.value}
+                                                onClick={() => updateFilter({ bodyType: item.value })}
                                             >
-                                                {type === 'All' ? 'Все' : type}
+                                                {item.label}
                                             </FilterButton>
                                         ))}
                                     </div>
