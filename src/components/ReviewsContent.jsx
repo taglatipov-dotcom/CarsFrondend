@@ -3,6 +3,7 @@ import { Card, Rate, Avatar, Button, Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { fetchReviews, getReviewsCache } from '../services/MockApi.js';
+import { toImageUrl } from '../services/urls.js';
 
 export default function ReviewsContent() {
     // Синхронно проверяем кэш — если данные уже есть, сразу рендерим их
@@ -52,7 +53,7 @@ export default function ReviewsContent() {
                                     <div className="flex items-center gap-4 mb-5">
                                         <Avatar
                                             size={64}
-                                            src={review.avatar}
+                                            src={toImageUrl(review.avatar)}
                                             icon={<UserOutlined />}
                                             className="border-2 border-slate-100 shadow-md flex-shrink-0"
                                         />

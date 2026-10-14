@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Spin } from 'antd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { toImageUrl } from '../services/urls.js';
 import {
     SafetyCertificateOutlined,
     GlobalOutlined,
@@ -199,7 +200,7 @@ export default function Home() {
                                 >
                                     <img
                                         alt={car.name}
-                                        src={car.images[0]}
+                                        src={toImageUrl(car.images[0])}
                                         style={{ objectPosition: 'center 60%' }}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />

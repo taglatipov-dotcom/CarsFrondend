@@ -3,6 +3,7 @@ import {
     Table, Button, Input, Popconfirm, message, Tag, Image, Space, Card, Spin,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { toImageUrl } from '../../services/urls.js';
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined,
 } from '@ant-design/icons';
@@ -70,7 +71,7 @@ export default function AdminCars() {
                 const url = (images && images[0]) || (record.photos && record.photos[0]);
                 return url ? (
                     <Image
-                        src={url}
+                        src={toImageUrl(url)}
                         width={56}
                         height={40}
                         style={{ objectFit: 'cover', borderRadius: 6 }}

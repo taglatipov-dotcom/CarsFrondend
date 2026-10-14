@@ -17,6 +17,7 @@ import {
     PhoneOutlined
 } from '@ant-design/icons';
 import { fetchCarById, translateBodyType } from '../services/MockApi.js';
+import { toImageUrl } from '../services/urls.js';
 import CostCalculatorModal from '../components/CostCalculatorModal';
 import LeadModal from '../components/LeadModal';
 
@@ -236,7 +237,7 @@ export default function CarDetails() {
                         <div className="relative rounded-2xl overflow-hidden shadow-md group min-h-[320px] lg:min-h-[500px]">
                             <img
                                 key={currentSlide}
-                                src={car.images[currentSlide]}
+                                src={toImageUrl(car.images[currentSlide])}
                                 alt={`${car.name} - фото ${currentSlide + 1}`}
                                 onClick={() => openPhotoModal(currentSlide)}
                                 className="absolute inset-0 w-full h-full object-cover cursor-zoom-in animate-fade-in"
@@ -385,7 +386,7 @@ export default function CarDetails() {
                         {car.images.map((img, index) => (
                             <div key={index}>
                                 <img
-                                    src={img}
+                                    src={toImageUrl(img)}
                                     alt={`${car.name} - фото ${index + 1}`}
                                     className="w-full max-h-[75vh] object-cover"
                                 />
@@ -418,7 +419,7 @@ export default function CarDetails() {
                     {car.images.map((img, index) => (
                         <img
                             key={index}
-                            src={img}
+                            src={toImageUrl(img)}
                             alt={`Миниатюра ${index + 1}`}
                             onClick={() => modalCarouselRef.current?.goTo(index)}
                             className={`w-16 h-12 md:w-20 md:h-14 object-cover rounded-lg cursor-pointer border-2 transition-all ${

@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { adminFetchBlogsList, adminDeleteBlog } from '../../services/AdminApi.js';
 import { invalidateBlogsCache } from '../../services/MockApi.js';
+import { toImageUrl } from '../../services/urls.js';
 
 export default function AdminBlogs() {
     const [blogs, setBlogs] = useState([]);
@@ -68,7 +69,7 @@ export default function AdminBlogs() {
             render: (url) =>
                 url ? (
                     <Image
-                        src={url}
+                        src={toImageUrl(url)}
                         width={72}
                         height={48}
                         style={{ objectFit: 'cover', borderRadius: 6 }}

@@ -2,19 +2,8 @@ import { useEffect, useState } from 'react';
 import { Card, Rate, Avatar, Spin, Button, Image } from 'antd';
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
 import { fetchReviews, getReviewsCache } from '../services/MockApi.js';
+import { toImageUrl } from '../services/urls.js';
 import ReviewSubmitModal from '../components/ReviewSubmitModal';
-
-const API_BASE_URL =
-    typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.hostname}:8000`
-        : 'http://localhost:8000';
-
-function toAbsolute(url) {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('/')) return API_BASE_URL + url;
-    return url;
-}
 
 export default function Reviews() {
     const cachedReviews = getReviewsCache();
@@ -99,7 +88,7 @@ export default function Reviews() {
                                     <div className="flex items-center gap-5 mb-6">
                                         <Avatar
                                             size={64}
-                                            src={review.avatar}
+                                            src={toImageUrl(review.avatar)}
                                             icon={<UserOutlined />}
                                             className="border-2 border-slate-100 shadow-md flex-shrink-0"
                                         />
@@ -128,7 +117,7 @@ export default function Reviews() {
                                                 {photos.slice(0, 6).map((url, idx) => (
                                                     <Image
                                                         key={idx}
-                                                        src={toAbsolute(url)}
+                                                        src={toImageUrl(url)}
                                                         height={72}
                                                         style={{
                                                             objectFit: 'cover',

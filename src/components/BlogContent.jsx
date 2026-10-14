@@ -3,6 +3,7 @@ import { Card, Tag, Avatar, Spin, Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { CalendarOutlined, UserOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { fetchBlogs, getBlogsCache } from '../services/MockApi.js';
+import { toImageUrl } from '../services/urls.js';
 
 export default function BlogContent() {
     // Синхронно проверяем кэш — если данные уже есть, сразу рендерим их
@@ -63,7 +64,7 @@ export default function BlogContent() {
                                             <div className="h-48 overflow-hidden">
                                                 <img
                                                     alt={blog.title}
-                                                    src={blog.image}
+                                                    src={toImageUrl(blog.image)}
                                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
                                             </div>

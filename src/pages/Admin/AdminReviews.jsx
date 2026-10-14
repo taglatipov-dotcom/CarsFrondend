@@ -16,6 +16,7 @@ import {
     adminRejectReview,
 } from '../../services/AdminApi.js';
 import { invalidateReviewsCache } from '../../services/MockApi.js';
+import { toImageUrl } from '../../services/urls.js';
 
 export default function AdminReviews() {
     const [reviews, setReviews] = useState([]);
@@ -127,7 +128,7 @@ export default function AdminReviews() {
             width: 80,
             render: (url) =>
                 url ? (
-                    <Avatar size={48} src={url} icon={<UserOutlined />} />
+                    <Avatar size={48} src={toImageUrl(url)} icon={<UserOutlined />} />
                 ) : (
                     <Avatar size={48} icon={<UserOutlined />} className="bg-slate-300" />
                 ),

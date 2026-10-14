@@ -7,28 +7,8 @@ import {
     PictureOutlined,
 } from '@ant-design/icons';
 import { uploadImage } from '../services/UploadApi.js';
+import { toImageUrl } from '../services/urls.js';
 
-const API_BASE_URL =
-    typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.hostname}:8000`
-        : 'http://localhost:8000';
-
-function toAbsolute(url) {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('/')) return API_BASE_URL + url;
-    return url;
-}
-
-/**
- * Множественная загрузка изображений.
- *
- * value    — массив URL (строк)
- * onChange — получает новый массив
- * maxCount — лимит на общее количество изображений
- * uploadFn — функция загрузки файла (по умолчанию — uploadImage из UploadApi).
- *            Для публичных форм передавайте uploadPublicImage.
- */
 export default function MultiImageUploader({
                                                value = [],
                                                onChange,
@@ -131,7 +111,7 @@ export default function MultiImageUploader({
                     {images.map((url, idx) => (
                         <div key={`${url}-${idx}`} className="relative group">
                             <Image
-                                src={toAbsolute(url)}
+                                src={toImageUrl(url)}
                                 width={140}
                                 height={100}
                                 style={{

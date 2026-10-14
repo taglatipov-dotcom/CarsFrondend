@@ -7,19 +7,7 @@ import {
     PictureOutlined,
 } from '@ant-design/icons';
 import { uploadImage } from '../services/UploadApi.js';
-
-const API_BASE_URL =
-    typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.hostname}:8000`
-        : 'http://localhost:8000';
-
-/** Если значение относительное (/uploads/...) — превращаем в абсолютный URL. */
-function toAbsolute(url) {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('/')) return API_BASE_URL + url;
-    return url;
-}
+import { toImageUrl } from '../services/urls.js';
 
 export default function ImageUploader({
                                           value = '',
@@ -53,7 +41,7 @@ export default function ImageUploader({
             return Upload.LIST_IGNORE;
         }
         handleFile(file);
-        return false; // отменяем встроенную загрузку antd
+        return false;
     };
 
     return (
@@ -61,7 +49,7 @@ export default function ImageUploader({
             {value ? (
                 <div className="relative">
                     <Image
-                        src={toAbsolute(value)}
+                        src={toImageUrl(value)}
                         width={140}
                         height={100}
                         style={{ objectFit: 'cover', borderRadius: 10, border: '1px solid #e2e8f0' }}

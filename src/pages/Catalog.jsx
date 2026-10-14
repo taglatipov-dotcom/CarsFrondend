@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Spin, Divider, Switch, Tooltip, Modal, Input, Pagination } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { toImageUrl } from '../services/urls.js';
 import {
     fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands,
     isBudgetCustomCar,
@@ -305,7 +306,7 @@ export default function Catalog() {
                                             >
                                                 <img
                                                     alt={car.name}
-                                                    src={car.images[0]}
+                                                    src={toImageUrl(car.images[0])}
                                                     style={{ objectPosition: 'center 60%' }}
                                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />

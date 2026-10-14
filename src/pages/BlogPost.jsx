@@ -9,6 +9,7 @@ import {
     HomeOutlined
 } from '@ant-design/icons';
 import { fetchBlogById } from '../services/MockApi.js';
+import { toImageUrl } from '../services/urls.js';
 
 export default function BlogPost() {
     const { id } = useParams();
@@ -63,7 +64,7 @@ export default function BlogPost() {
 
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 h-72 md:h-[500px]">
                     <img
-                        src={blog.image}
+                        src={toImageUrl(blog.image)}
                         alt={blog.title}
                         className="w-full h-full object-cover"
                     />
