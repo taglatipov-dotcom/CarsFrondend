@@ -13,7 +13,6 @@ const API_BASE_URL =
         ? `${window.location.protocol}//${window.location.hostname}:8000`
         : 'http://localhost:8000';
 
-/** Если значение относительное (/uploads/...) — превращаем в абсолютный URL. */
 function toAbsolute(url) {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -27,6 +26,8 @@ function toAbsolute(url) {
  * value    — массив URL (строк)
  * onChange — получает новый массив
  * maxCount — лимит на общее количество изображений
+ * uploadFn — функция загрузки файла (по умолчанию — uploadImage из UploadApi).
+ *            Для публичных форм передавайте uploadPublicImage.
  */
 export default function MultiImageUploader({
                                                value = [],
@@ -35,11 +36,13 @@ export default function MultiImageUploader({
                                                maxSizeMb = 10,
                                                maxCount = 20,
                                                hint,
+                                               uploadFn,
                                            }) {
     const inputRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState({ done: 0, total: 0 });
 
+    const doUpload = uploadFn || uploadImage;
     const images = Array.isArray(value) ? value : [];
 
     const validateFile = (file) => {
@@ -77,7 +80,7 @@ export default function MultiImageUploader({
         const uploaded = [];
         for (let i = 0; i < valid.length; i += 1) {
             try {
-                const url = await uploadImage(valid[i]);
+                const url = await doUpload(valid[i]);
                 uploaded.push(url);
             } catch (e) {
                 message.error(`${valid[i].name}: ${e.message}`);
@@ -100,7 +103,6 @@ export default function MultiImageUploader({
         if (files && files.length > 0) {
             await handleFiles(files);
         }
-        // reset — иначе повторный выбор тех же файлов не сработает
         if (inputRef.current) inputRef.current.value = '';
     };
 
@@ -115,7 +117,6 @@ export default function MultiImageUploader({
 
     return (
         <div className="flex flex-col gap-3">
-            {/* Скрытый input — обычная нативная загрузка с multiple */}
             <input
                 ref={inputRef}
                 type="file"
@@ -125,7 +126,6 @@ export default function MultiImageUploader({
                 style={{ display: 'none' }}
             />
 
-            {/* Превью-сетка */}
             {images.length > 0 ? (
                 <div className="flex flex-wrap gap-3">
                     {images.map((url, idx) => (
@@ -157,7 +157,6 @@ export default function MultiImageUploader({
                 </div>
             )}
 
-            {/* Прогресс */}
             {loading && progress.total > 0 && (
                 <div className="flex flex-col gap-1 max-w-[320px]">
                     <Progress
@@ -171,14 +170,13 @@ export default function MultiImageUploader({
                 </div>
             )}
 
-            {/* Кнопки */}
             <div className="flex flex-wrap items-center gap-3">
                 <Button
                     icon={loading ? <LoadingOutlined /> : <PlusOutlined />}
                     onClick={() => inputRef.current?.click()}
                     disabled={loading}
                 >
-                    {images.length > 0 ? 'Добавить ещё' : 'Загрузить'}
+                    {images.length > 0 ? 'Добавить ещё' : 'Загрузить фото'}
                 </Button>
 
                 {images.length > 0 && !loading && (

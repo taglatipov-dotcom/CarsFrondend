@@ -4,6 +4,8 @@ import {
     UserOutlined, CarOutlined, CheckCircleFilled,
 } from '@ant-design/icons';
 import { submitReview } from '../services/MockApi.js';
+import { uploadPublicImage } from '../services/UploadApi.js';
+import MultiImageUploader from './MultiImageUploader';
 
 const { TextArea } = Input;
 
@@ -15,7 +17,10 @@ export default function ReviewSubmitModal({ open, onClose }) {
     const handleSubmit = async (values) => {
         setLoading(true);
         try {
-            await submitReview(values);
+            await submitReview({
+                ...values,
+                photos: Array.isArray(values.photos) ? values.photos : [],
+            });
             setSuccess(true);
             form.resetFields();
             setTimeout(() => {
@@ -80,7 +85,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
                             layout="vertical"
                             onFinish={handleSubmit}
                             requiredMark={false}
-                            initialValues={{ rating: 5 }}
+                            initialValues={{ rating: 5, photos: [] }}
                         >
                             <Form.Item
                                 name="name"
@@ -136,6 +141,20 @@ export default function ReviewSubmitModal({ open, onClose }) {
                                     showCount
                                     placeholder="Расскажите о вашем опыте покупки..."
                                     className="!rounded-xl !text-base"
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="photos"
+                                label={<span className="font-semibold text-slate-700 text-base">Фото (необязательно)</span>}
+                                tooltip="Прикрепите фото автомобиля или документов — это поможет другим клиентам"
+                            >
+                                <MultiImageUploader
+                                    uploadFn={uploadPublicImage}
+                                    maxCount={5}
+                                    maxSizeMb={3}
+                                    accept="image/jpeg,image/png,image/webp"
+                                    hint="JPG, PNG, WEBP до 3 МБ. До 5 фотографий."
                                 />
                             </Form.Item>
 

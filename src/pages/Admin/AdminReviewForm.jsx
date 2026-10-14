@@ -12,6 +12,7 @@ import {
 } from '../../services/AdminApi.js';
 import { invalidateReviewsCache } from '../../services/MockApi.js';
 import ImageUploader from '../../components/ImageUploader';
+import MultiImageUploader from '../../components/MultiImageUploader';
 
 const { TextArea } = Input;
 
@@ -21,6 +22,7 @@ const EMPTY_VALUES = {
     rating: 5,
     text: '',
     car: '',
+    photos: [],
 };
 
 export default function AdminReviewForm() {
@@ -40,7 +42,11 @@ export default function AdminReviewForm() {
         setLoading(true);
         adminFetchReviewRaw(id)
             .then((data) => {
-                form.setFieldsValue({ ...EMPTY_VALUES, ...data });
+                form.setFieldsValue({
+                    ...EMPTY_VALUES,
+                    ...data,
+                    photos: Array.isArray(data.photos) ? data.photos : [],
+                });
             })
             .catch((e) => {
                 message.error('Не удалось загрузить отзыв: ' + e.message);
@@ -54,6 +60,13 @@ export default function AdminReviewForm() {
             const values = await form.validateFields();
             const payload = { ...values };
             delete payload.id;
+
+            // Фильтруем пустые фото
+            if (Array.isArray(payload.photos)) {
+                payload.photos = payload.photos.filter(
+                    (url) => typeof url === 'string' && url.trim() !== '',
+                );
+            }
 
             setSubmitting(true);
 
@@ -188,6 +201,24 @@ export default function AdminReviewForm() {
                                     maxLength={1000}
                                     showCount
                                     placeholder="Заказывал Zeekr 001. Ребята взяли на себя всю логистику и таможню..."
+                                />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                name="photos"
+                                label={
+                                    <span className="flex items-center gap-2">
+                                        <PictureOutlined /> Фотографии клиента
+                                    </span>
+                                }
+                                tooltip="До 10 фото. Первое фото — главное."
+                            >
+                                <MultiImageUploader
+                                    maxCount={10}
+                                    maxSizeMb={10}
+                                    hint="JPG, PNG, WEBP до 10 МБ. Можно выбрать сразу несколько."
                                 />
                             </Form.Item>
                         </Col>

@@ -1,8 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Card, Rate, Avatar, Spin, Button } from 'antd';
+import { Card, Rate, Avatar, Spin, Button, Image } from 'antd';
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
 import { fetchReviews, getReviewsCache } from '../services/MockApi.js';
 import ReviewSubmitModal from '../components/ReviewSubmitModal';
+
+const API_BASE_URL =
+    typeof window !== 'undefined'
+        ? `${window.location.protocol}//${window.location.hostname}:8000`
+        : 'http://localhost:8000';
+
+function toAbsolute(url) {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (url.startsWith('/')) return API_BASE_URL + url;
+    return url;
+}
 
 export default function Reviews() {
     const cachedReviews = getReviewsCache();
@@ -68,53 +80,79 @@ export default function Reviews() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {reviews.map((review) => (
-                            <Card
-                                key={review.id}
-                                className="rounded-3xl shadow-2xl border-none h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 !bg-white/95 backdrop-blur-xl"
-                                bodyStyle={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%',
-                                    padding: '32px',
-                                }}
-                            >
-                                <div className="flex items-center gap-5 mb-8">
-                                    <Avatar
-                                        size={64}
-                                        src={review.avatar}
-                                        icon={<UserOutlined />}
-                                        className="border-2 border-slate-100 shadow-md flex-shrink-0"
-                                    />
-                                    <div>
-                                        <h3 className="text-xl font-bold m-0 text-slate-800">
-                                            {review.name}
-                                        </h3>
-                                        <Rate
-                                            disabled
-                                            defaultValue={review.rating}
-                                            className="text-lg text-amber-400 mt-1"
+                        {reviews.map((review) => {
+                            const photos = Array.isArray(review.photos)
+                                ? review.photos.filter(Boolean)
+                                : [];
+
+                            return (
+                                <Card
+                                    key={review.id}
+                                    className="rounded-3xl shadow-2xl border-none h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 !bg-white/95 backdrop-blur-xl"
+                                    bodyStyle={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        padding: '32px',
+                                    }}
+                                >
+                                    <div className="flex items-center gap-5 mb-6">
+                                        <Avatar
+                                            size={64}
+                                            src={review.avatar}
+                                            icon={<UserOutlined />}
+                                            className="border-2 border-slate-100 shadow-md flex-shrink-0"
                                         />
+                                        <div>
+                                            <h3 className="text-xl font-bold m-0 text-slate-800">
+                                                {review.name}
+                                            </h3>
+                                            <Rate
+                                                disabled
+                                                defaultValue={review.rating}
+                                                className="text-lg text-amber-400 mt-1"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <p className="text-slate-600 italic flex-1 mb-8 text-lg md:text-xl leading-relaxed relative">
-                                    <span className="text-5xl text-slate-100 absolute -top-3 -left-2 z-0">
-                                        "
-                                    </span>
-                                    <span className="relative z-10">{review.text}</span>
-                                </p>
+                                    <p className="text-slate-600 italic flex-1 mb-6 text-lg md:text-xl leading-relaxed relative">
+                                        <span className="text-5xl text-slate-100 absolute -top-3 -left-2 z-0">
+                                            "
+                                        </span>
+                                        <span className="relative z-10">{review.text}</span>
+                                    </p>
 
-                                <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-2xl mt-auto border border-slate-100">
-                                    <span className="text-base text-slate-500 block mb-1 font-medium">
-                                        Купленный автомобиль:
-                                    </span>
-                                    <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 text-lg">
-                                        {review.car}
-                                    </span>
-                                </div>
-                            </Card>
-                        ))}
+                                    {photos.length > 0 && (
+                                        <Image.PreviewGroup>
+                                            <div className="grid grid-cols-3 gap-2 mb-5">
+                                                {photos.slice(0, 6).map((url, idx) => (
+                                                    <Image
+                                                        key={idx}
+                                                        src={toAbsolute(url)}
+                                                        height={72}
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                            borderRadius: 8,
+                                                            border: '1px solid #e2e8f0',
+                                                        }}
+                                                        fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2UyZThmMCIvPjwvc3ZnPg=="
+                                                    />
+                                                ))}
+                                            </div>
+                                        </Image.PreviewGroup>
+                                    )}
+
+                                    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-2xl mt-auto border border-slate-100">
+                                        <span className="text-base text-slate-500 block mb-1 font-medium">
+                                            Купленный автомобиль:
+                                        </span>
+                                        <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 text-lg">
+                                            {review.car}
+                                        </span>
+                                    </div>
+                                </Card>
+                            );
+                        })}
                     </div>
                 )}
             </div>
