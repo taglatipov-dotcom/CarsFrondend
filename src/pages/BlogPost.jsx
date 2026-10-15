@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { fetchBlogById } from '../services/MockApi.js';
 import { toImageUrl } from '../services/urls.js';
+import { normalizeArticleHtml } from '../utils/articleHtml.js';
 
 export default function BlogPost() {
     const { id } = useParams();
@@ -98,10 +99,10 @@ export default function BlogPost() {
                     </div>
                 </div>
 
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-12 shadow-2xl border border-white/50">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-12 shadow-2xl border border-white/50 min-w-0 overflow-hidden">
                     <article
                         className="article-content"
-                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                        dangerouslySetInnerHTML={{ __html: normalizeArticleHtml(blog.content) }}
                     />
                 </div>
 

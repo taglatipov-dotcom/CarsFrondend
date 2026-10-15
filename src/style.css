@@ -16,7 +16,16 @@
     color: #334155;
     font-size: 17px;
     line-height: 1.75;
+    /* длинные ссылки и слова переносим, а не выталкиваем за блок */
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
 }
+
+.article-content pre {
+    white-space: pre-wrap;
+}
+
 
 .article-content p {
     margin-bottom: 1.25rem;
@@ -91,6 +100,7 @@
 
 .article-content img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     border-radius: 1rem;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);

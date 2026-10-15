@@ -18,6 +18,7 @@ import { invalidateBlogsCache } from '../../services/MockApi.js';
 import ImageUploader from '../../components/ImageUploader';
 import { uploadImage } from '../../services/UploadApi.js';
 import { toImageUrl } from '../../services/urls.js';
+import { normalizeArticleHtml } from '../../utils/articleHtml.js';
 
 const { TextArea } = Input;
 
@@ -241,8 +242,9 @@ export default function AdminBlogForm() {
             const payload = { ...values };
             delete payload.id;
 
-            // Нормализация контента: убираем «пустой» Quill-параграф
-            const cleanedContent = (payload.content || '')
+            // Нормализация контента: убираем «пустой» Quill-параграф и неразрывные
+            // пробелы из скопированного текста (из-за них текст уезжал вправо)
+            const cleanedContent = normalizeArticleHtml(payload.content || '')
                 .replace(/<p><br><\/p>/g, '')
                 .trim();
             payload.content = cleanedContent;
