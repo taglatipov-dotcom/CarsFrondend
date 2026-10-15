@@ -37,8 +37,10 @@ src/
 ## API
 - Всегда относительный `/api/...`. В dev Vite проксирует на `localhost:8000` и срезает `/api`
   (`vite.config.ts`), в проде то же делает nginx.
-- Любой URL картинки выводить через `toImageUrl()` — он чинит старые `http://127.0.0.1:8000/uploads/...`
-  и относительные `/uploads/...`.
+- Любой URL картинки выводить через `toImageUrl()`: он приводит все варианты из базы
+  (`http://ilsatao.ru/uploads/...`, `http://localhost:8000/uploads/...`, `/uploads/...`) к `/uploads/<файл>`.
+  НЕ превращать в `/api/uploads/...`: в nginx regex-локация для `.jpg/.png` важнее `location /api/`
+  и отдаёт 404. `/uploads/` в nginx — `location ^~ /uploads/` → бэкенд; в dev — прокси в `vite.config.ts`.
 - Каталог грузит все машины одним `GET /cars` и фильтрует/пагинирует на клиенте (`fetchCars`).
   После изменений в админке вызывать `invalidateCarsCache()` (и аналоги для блога/отзывов).
 

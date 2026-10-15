@@ -13,6 +13,11 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''), // срезаем префикс, как nginx
             },
+            // картинки — напрямую, как `location ^~ /uploads/` в nginx
+            '/uploads': {
+                target: 'http://localhost:8000',
+                changeOrigin: true,
+            },
         },
     },
 })
