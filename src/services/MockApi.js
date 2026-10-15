@@ -264,12 +264,13 @@ export const fetchCars = async ({ filters = {}, page = 1, limit = 40 } = {}) => 
     if (engineType && engineType !== 'All') {
         result = result.filter((c) => c.engineType === engineType);
     }
-    if (price === 'under3') {
-        result = result.filter((c) => c.price < 3000000);
-    } else if (price === '3to5') {
-        result = result.filter((c) => c.price >= 3000000 && c.price <= 5000000);
-    } else if (price === 'over5') {
-        result = result.filter((c) => c.price > 5000000);
+    // Цены в базе — в юанях (china_price), поэтому и диапазоны в ¥
+    if (price === 'under150') {
+        result = result.filter((c) => c.price < 150000);
+    } else if (price === '150to300') {
+        result = result.filter((c) => c.price >= 150000 && c.price <= 300000);
+    } else if (price === 'over300') {
+        result = result.filter((c) => c.price > 300000);
     }
     if (budgetCustoms) {
         result = result.filter(isBudgetCustomCar);

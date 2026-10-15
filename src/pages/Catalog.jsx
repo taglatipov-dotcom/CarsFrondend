@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Spin, Divider, Switch, Tooltip, Modal, Input, Pagination } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { toImageUrl } from '../services/urls.js';
+import CarCard from '../components/CarCard.jsx';
 import {
     fetchCars, canServeCarsFromCache, popularBrands, brandsByCountry, allBrands,
-    isBudgetCustomCar,
 } from '../services/MockApi.js';
 import {
     FilterOutlined,
@@ -21,6 +19,7 @@ export default function Catalog() {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [loadError, setLoadError] = useState(false);
 
     const [filter, setFilter] = useState({
         brand: 'All',
@@ -32,7 +31,6 @@ export default function Catalog() {
 
     const [brandModalOpen, setBrandModalOpen] = useState(false);
     const [brandSearch, setBrandSearch] = useState('');
-    const navigate = useNavigate();
 
     useEffect(() => {
         let ignore = false;
@@ -49,10 +47,17 @@ export default function Catalog() {
         fetchCars({ filters: filter, page: currentPage, limit: PAGE_SIZE })
             .then((res) => {
                 if (ignore) return;
+                setLoadError(false);
                 setCars(res.cars);
                 setTotal(res.total);
                 if (res.page !== currentPage) setCurrentPage(res.page);
-                setLoading(false);
+            })
+            .catch(() => {
+                // Раньше при ошибке API спиннер крутился бесконечно
+                if (!ignore) setLoadError(true);
+            })
+            .finally(() => {
+                if (!ignore) setLoading(false);
             });
 
         return () => { ignore = true; };
@@ -263,9 +268,9 @@ export default function Catalog() {
                                     <div className="flex flex-col gap-1.5">
                                         {[
                                             { id: 'All', label: 'Любая' },
-                                            { id: 'under3', label: 'До 3 млн' },
-                                            { id: '3to5', label: '3 – 5 млн' },
-                                            { id: 'over5', label: 'От 5 млн' }
+                                            { id: 'under150', label: 'До 150 тыс. ¥' },
+                                            { id: '150to300', label: '150 – 300 тыс. ¥' },
+                                            { id: 'over300', label: 'От 300 тыс. ¥' }
                                         ].map(price => (
                                             <FilterButton
                                                 key={price.id}
@@ -294,47 +299,10 @@ export default function Catalog() {
 
                         {cars.length > 0 ? (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                                    {cars.map(car => {
-                                        const isBudget = isBudgetCustomCar(car);
-
-                                        return (
-                                            <div
-                                                key={car.id}
-                                                onClick={() => navigate(`/car/${car.id}`)}
-                                                className="group relative rounded-2xl overflow-hidden h-64 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 hover:-translate-y-1 flex flex-col"
-                                            >
-                                                <img
-                                                    alt={car.name}
-                                                    src={toImageUrl(car.images[0])}
-                                                    style={{ objectPosition: 'center 60%' }}
-                                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-
-                                                {isBudget && (
-                                                    <span className="absolute top-2 left-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 z-20">
-                                                        <FireOutlined /> Бюджет
-                                                    </span>
-                                                )}
-
-                                                <div className="flex-1 relative z-10"></div>
-
-                                                <div className="relative z-10 bg-white/75 backdrop-blur-md border-t border-white/50 p-3.5">
-                                                    <div className="flex items-baseline justify-between gap-2 mb-1">
-                                                        <h3 className="text-xl font-bold text-slate-900 line-clamp-1">
-                                                            {car.name}
-                                                        </h3>
-                                                        <span className="text-base text-slate-700 font-semibold shrink-0">
-                                                            {car.year} г.
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                                                        {car.price.toLocaleString('ru-RU')} ¥
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {cars.map(car => (
+                                        <CarCard key={car.id} car={car} size="lg" />
+                                    ))}
                                 </div>
 
                                 {total > PAGE_SIZE && (
@@ -353,6 +321,14 @@ export default function Catalog() {
                                     </div>
                                 )}
                             </>
+                        ) : !loading && loadError ? (
+                            <div className="text-center py-20 bg-white/95 backdrop-blur-xl rounded-3xl border border-white/50 flex flex-col justify-center items-center shadow-2xl">
+                                <h3 className="text-2xl font-bold text-slate-500 mb-2">Не удалось загрузить автомобили</h3>
+                                <p className="text-slate-400 mb-6 text-base">Проверьте соединение и попробуйте обновить страницу</p>
+                                <Button onClick={() => window.location.reload()} className="!bg-slate-900 !text-white rounded-xl h-10 px-6">
+                                    Обновить
+                                </Button>
+                            </div>
                         ) : !loading ? (
                             <div className="text-center py-20 bg-white/95 backdrop-blur-xl rounded-3xl border border-white/50 flex flex-col justify-center items-center shadow-2xl">
                                 <h3 className="text-2xl font-bold text-slate-400 mb-2">Ничего не найдено</h3>

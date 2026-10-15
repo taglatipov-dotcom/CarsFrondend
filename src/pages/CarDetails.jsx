@@ -234,13 +234,21 @@ export default function CarDetails() {
                 <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-10 shadow-2xl border border-white/50">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
 
-                        <div className="relative rounded-2xl overflow-hidden shadow-md group min-h-[320px] lg:min-h-[500px]">
+                        <div className="relative rounded-2xl overflow-hidden shadow-md group min-h-[320px] lg:min-h-[500px] bg-slate-900">
+                            {/* Размытый фон из того же фото: фото разных пропорций смотрятся одинаково аккуратно */}
+                            <img
+                                key={`bg-${currentSlide}`}
+                                src={toImageUrl(car.images[currentSlide])}
+                                alt=""
+                                aria-hidden="true"
+                                className="absolute inset-0 w-full h-full object-cover object-center scale-110 blur-2xl opacity-70"
+                            />
                             <img
                                 key={currentSlide}
                                 src={toImageUrl(car.images[currentSlide])}
                                 alt={`${car.name} - фото ${currentSlide + 1}`}
                                 onClick={() => openPhotoModal(currentSlide)}
-                                className="absolute inset-0 w-full h-full object-cover cursor-zoom-in animate-fade-in"
+                                className="absolute inset-0 w-full h-full object-contain object-center cursor-zoom-in animate-fade-in"
                             />
 
                             <button
@@ -388,7 +396,7 @@ export default function CarDetails() {
                                 <img
                                     src={toImageUrl(img)}
                                     alt={`${car.name} - фото ${index + 1}`}
-                                    className="w-full max-h-[75vh] object-cover"
+                                    className="w-full max-h-[75vh] object-contain"
                                 />
                             </div>
                         ))}

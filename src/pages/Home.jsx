@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Spin } from 'antd';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { toImageUrl } from '../services/urls.js';
+import { Link, useLocation } from 'react-router-dom';
+import CarCard from '../components/CarCard.jsx';
 import {
     SafetyCertificateOutlined,
     GlobalOutlined,
@@ -22,7 +22,6 @@ export default function Home() {
     const [popularCars, setPopularCars] = useState([]);
     const [carsLoading, setCarsLoading] = useState(true);
     const [carsError, setCarsError] = useState(false);
-    const navigate = useNavigate();
     const location = useLocation();
 
     /* ============ ЗАГРУЗКА ПОПУЛЯРНЫХ МАШИН С БЭКЕНДА ============ */
@@ -193,34 +192,7 @@ export default function Home() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {popularCars.map(car => (
-                                <div
-                                    key={car.id}
-                                    onClick={() => navigate(`/car/${car.id}`)}
-                                    className="group relative rounded-2xl overflow-hidden h-80 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 hover:-translate-y-1 flex flex-col"
-                                >
-                                    <img
-                                        alt={car.name}
-                                        src={toImageUrl(car.images[0])}
-                                        style={{ objectPosition: 'center 60%' }}
-                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
-
-                                    <div className="flex-1 relative z-10"></div>
-
-                                    <div className="relative z-10 bg-white/65 backdrop-blur-md border-t border-white/50 p-4">
-                                        <div className="flex items-baseline justify-between gap-2 mb-1.5">
-                                            <h3 className="text-lg font-bold text-slate-800 line-clamp-1">
-                                                {car.name}
-                                            </h3>
-                                            <span className="text-sm text-slate-700 font-medium shrink-0">
-                                                {car.year} г.
-                                            </span>
-                                        </div>
-                                        <div className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                                            {car.price.toLocaleString('ru-RU')} ¥
-                                        </div>
-                                    </div>
-                                </div>
+                                <CarCard key={car.id} car={car} size="md" />
                             ))}
                         </div>
                     )}
