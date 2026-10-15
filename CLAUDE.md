@@ -20,7 +20,10 @@ src/
     CarCard.jsx            ЕДИНАЯ карточка авто (каталог size="lg", главная size="md")
     Layout.jsx             шапка/подвал публичной части
     CostCalculatorModal.jsx  калькулятор таможни (итоги в ₽)
-    LeadModal.jsx, ReviewSubmitModal.jsx, *Content.jsx, ImageUploader, MultiImageUploader
+    ImageUploader / MultiImageUploader  загрузка картинок; обёрнуты в ImageDropZone
+    ImageDropZone.jsx      Ctrl+V из буфера, drag & drop, кнопка «Вставить из буфера»
+    LeadModal.jsx          форма заявки + PhoneInput (маска +7, phoneDigits/formatPhone)
+    ReviewSubmitModal.jsx, *Content.jsx
   pages/                   Home, Catalog, CarDetails, Blog, BlogPost, Reviews, About, Privacy
   pages/Admin/             админка: cars, blog, reviews (модерация), leads, login
   services/
@@ -28,6 +31,7 @@ src/
                            adaptCar (snake_case бэка → объект фронта) + кэш + фильтры каталога
     AdminApi.js, AuthApi.js, UploadApi.js
     urls.js                API_BASE_URL='/api', toImageUrl()
+  utils/clipboardImages.js извлечение картинок из буфера обмена / drop
 ```
 
 ## API
@@ -53,6 +57,15 @@ src/
 - В карточке авто нет поля VIN; объём двигателя показывается во вкладках «Обзор» и «Характеристики».
 - Стили — утилиты Tailwind; для переопределения Ant Design — `!`-классы или `style.css`.
 - Телефон на сайте: +7 987 498 17 37.
+- Марки авто — ЕДИНЫЙ справочник `brandData` в `MockApi.js` (марка → страна, модели). Из него
+  строятся и фильтр каталога, и список в админке (`CAR_DICTIONARIES.brands = allBrands`).
+  Новую марку добавлять только туда.
+- Картинки в админке: везде через `ImageUploader` / `MultiImageUploader` (умеют Ctrl+V и drag & drop).
+  `globalPaste` включать, только если загрузчик на странице один (сейчас — форма авто).
+  В редакторе статей (Quill) вставленные картинки загружаются на сервер через `uploader.handler` —
+  не возвращать дефолтное поведение Quill (base64 прямо в HTML статьи).
+- Телефон в форме заявки хранится как «+7 (987) 498-17-37»; при правке маски проверять: вставку
+  «89874981737» / «+7 987…», стирание Backspace через «)» и «-».
 
 ## Команды
 ```bash

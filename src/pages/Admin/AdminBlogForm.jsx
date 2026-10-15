@@ -16,6 +16,8 @@ import {
 } from '../../services/AdminApi.js';
 import { invalidateBlogsCache } from '../../services/MockApi.js';
 import ImageUploader from '../../components/ImageUploader';
+import { uploadImage } from '../../services/UploadApi.js';
+import { toImageUrl } from '../../services/urls.js';
 
 const { TextArea } = Input;
 
@@ -50,20 +52,69 @@ function slugify(str) {
         .slice(0, 80);
 }
 
+/* ============ КАРТИНКИ В ТЕКСТЕ СТАТЬИ ============
+ * По умолчанию Quill вшивает вставленную картинку прямо в HTML как base64 —
+ * статья раздувается на мегабайты. Здесь картинка (Ctrl+V, перетаскивание,
+ * кнопка на панели) загружается на сервер, а в текст вставляется ссылка.
+ */
+const QUILL_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
+function uploadImagesIntoQuill(range, files) {
+    // this — модуль uploader Quill 2
+    const quill = this.quill;
+    let index = range ? range.index : quill.getLength();
+    const hide = message.loading('Загрузка изображения…', 0);
+
+    (async () => {
+        for (const file of files) {
+            try {
+                const url = toImageUrl(await uploadImage(file));
+                quill.insertEmbed(index, 'image', url, 'user');
+                index += 1;
+            } catch (e) {
+                message.error(`Не удалось загрузить ${file.name}: ${e.message}`);
+            }
+        }
+        hide();
+        quill.setSelection(index, 0, 'user');
+    })();
+}
+
+function quillImageButton() {
+    // this — модуль toolbar
+    const quill = this.quill;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = QUILL_IMAGE_TYPES.join(',');
+    input.multiple = true;
+    input.onchange = () => {
+        const files = Array.from(input.files || []);
+        if (files.length) quill.uploader.upload(quill.getSelection(true), files);
+    };
+    input.click();
+}
+
 /* ============ МОДУЛИ И ФОРМАТЫ QUILL ============ */
 const QUILL_MODULES = {
-    toolbar: [
-        [{ header: [1, 2, 3, 4, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ indent: '-1' }, { indent: '+1' }],
-        [{ align: [] }],
-        ['blockquote', 'code-block'],
-        ['link', 'image'],
-        ['clean'],
-    ],
+    toolbar: {
+        container: [
+            [{ header: [1, 2, 3, 4, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ indent: '-1' }, { indent: '+1' }],
+            [{ align: [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image'],
+            ['clean'],
+        ],
+        handlers: { image: quillImageButton },
+    },
     clipboard: {
         matchVisual: false,
+    },
+    uploader: {
+        mimetypes: QUILL_IMAGE_TYPES,
+        handler: uploadImagesIntoQuill,
     },
 };
 
@@ -112,6 +163,7 @@ function RichTextEditor({ value = '', onChange }) {
                         placeholder="Начните печатать статью..."
                     />
                     <p className="text-xs text-slate-400 mt-2 mb-0">
+                        Картинки можно вставлять прямо в текст: Ctrl+V или перетаскиванием.
                         Подсказка: в визуальном режиме недоступны таблицы и класс
                         <code className="mx-1 px-1 bg-slate-100 rounded">lead</code>
                         — для них переключитесь в HTML.

@@ -7,9 +7,32 @@ import { sendLead } from '../services/MockApi.js';
 const { TextArea } = Input;
 
 /* ============ КАСТОМНОЕ ПОЛЕ ТЕЛЕФОНА С МАСКОЙ ============ */
+
+// 10 цифр номера без кода страны → «+7 (987) 498-17-37»
+function formatPhone(raw) {
+    let formatted = '+7';
+    if (raw.length > 0) formatted += ` (${raw.slice(0, 3)}`;
+    if (raw.length > 3) formatted += `) ${raw.slice(3, 6)}`;
+    if (raw.length > 6) formatted += `-${raw.slice(6, 8)}`;
+    if (raw.length > 8) formatted += `-${raw.slice(8, 10)}`;
+    return formatted;
+}
+
+// Любой ввод/вставка → 10 цифр номера без кода страны.
+//   «+7 (987) 498-17-37», «89874981737», «+7 +7 987…», «9874981737» → «9874981737»
+function phoneDigits(value) {
+    const str = String(value || '').trim();
+    let digits = str.replace(/\D/g, '');
+    // Наш префикс «+7» — служебный, это не цифра номера
+    if (str.startsWith('+7')) digits = digits.slice(1);
+    // Вставили номер целиком с кодом страны (8… или 7…)
+    if (digits.length > 10 && /^[78]/.test(digits)) digits = digits.slice(1);
+    return digits.slice(0, 10);
+}
+
 function PhoneInput({ value = '', onChange }) {
-    // Извлекаем только цифры номера (без ведущей 7)
-    const digits = (value || '').replace(/\D/g, '').replace(/^7/, '').slice(0, 10);
+    // Цифры номера (без +7) — для отображения
+    const digits = phoneDigits(value);
     const len = digits.length;
 
     // Какая цифра показывается в позиции i (или 0 в качестве placeholder)
@@ -17,24 +40,18 @@ function PhoneInput({ value = '', onChange }) {
     // Цвет цифры: введённая — чёрная, placeholder — серая
     const c = (i) => (i < len ? 'text-slate-900' : 'text-slate-400');
 
-    // Обработка ввода
     const handleChange = (e) => {
-        let raw = e.target.value.replace(/\D/g, '');
-        // Если номер начинается с 7 или 8 — убираем первую цифру (это код страны)
-        if (raw.startsWith('7') || raw.startsWith('8')) raw = raw.slice(1);
-        raw = raw.slice(0, 10);
+        const next = e.target.value;
+        let raw = phoneDigits(next);
 
-        // Собираем форматированную строку
-        let formatted = '+7';
-        if (raw.length > 0) formatted += ` (${raw.slice(0, 3)}`;
-        if (raw.length >= 3) formatted += ')';
-        if (raw.length > 3) formatted += ` ${raw.slice(3, 6)}`;
-        if (raw.length >= 6) formatted += '-';
-        if (raw.length > 6) formatted += raw.slice(6, 8);
-        if (raw.length >= 8) formatted += '-';
-        if (raw.length > 8) formatted += raw.slice(8, 10);
+        // Баг был здесь: стирание «)» или «-» не меняло цифры, маска тут же
+        // возвращала символ — и номер нельзя было стереть дальше.
+        // Если строка стала короче, а цифры те же — удаляем последнюю цифру.
+        if (next.length < (value || '').length && raw === digits) {
+            raw = raw.slice(0, -1);
+        }
 
-        onChange(formatted);
+        onChange(formatPhone(raw));
     };
 
     // Курсор всегда в конце — пользователь не сможет «застрять» посреди прозрачного текста
@@ -195,8 +212,7 @@ export default function LeadModal({
                                     { required: true, message: 'Введите номер телефона' },
                                     {
                                         validator: (_, value) => {
-                                            const digits = (value || '').replace(/\D/g, '').replace(/^7/, '');
-                                            if (digits.length === 10) return Promise.resolve();
+                                            if (phoneDigits(value).length === 10) return Promise.resolve();
                                             return Promise.reject(new Error('Введите номер полностью'));
                                         }
                                     }

@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { uploadImage } from '../services/UploadApi.js';
 import { toImageUrl } from '../services/urls.js';
+import ImageDropZone from './ImageDropZone.jsx';
 
 export default function MultiImageUploader({
                                                value = [],
@@ -17,6 +18,7 @@ export default function MultiImageUploader({
                                                maxCount = 20,
                                                hint,
                                                uploadFn,
+                                               globalPaste = false,
                                            }) {
     const inputRef = useRef(null);
     const [loading, setLoading] = useState(false);
@@ -106,7 +108,34 @@ export default function MultiImageUploader({
                 style={{ display: 'none' }}
             />
 
-            {images.length > 0 ? (
+            <ImageDropZone
+                onFiles={handleFiles}
+                disabled={loading}
+                globalPaste={globalPaste}
+                footer={
+                    <>
+                        <Button
+                            icon={loading ? <LoadingOutlined /> : <PlusOutlined />}
+                            onClick={() => inputRef.current?.click()}
+                            disabled={loading}
+                        >
+                            {images.length > 0 ? 'Добавить ещё' : 'Загрузить фото'}
+                        </Button>
+
+                        {images.length > 0 && !loading && (
+                            <Button onClick={handleClearAll} danger type="text">
+                                Удалить все ({images.length})
+                            </Button>
+                        )}
+
+                        {hint && (
+                            <span className="text-xs text-slate-400 leading-snug max-w-[260px]">
+                                {hint}
+                            </span>
+                        )}
+                    </>
+                }
+            >
                 <div className="flex flex-wrap gap-3">
                     {images.map((url, idx) => (
                         <div key={`${url}-${idx}`} className="relative group">
@@ -130,12 +159,12 @@ export default function MultiImageUploader({
                             />
                         </div>
                     ))}
+                    <div className="w-[140px] h-[100px] rounded-xl border border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-slate-400 gap-1">
+                        <PictureOutlined className="text-3xl" />
+                        <span className="text-[11px]">Ctrl+V сюда</span>
+                    </div>
                 </div>
-            ) : (
-                <div className="w-[140px] h-[100px] rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-slate-400">
-                    <PictureOutlined className="text-3xl" />
-                </div>
-            )}
+            </ImageDropZone>
 
             {loading && progress.total > 0 && (
                 <div className="flex flex-col gap-1 max-w-[320px]">
@@ -149,28 +178,6 @@ export default function MultiImageUploader({
                     </span>
                 </div>
             )}
-
-            <div className="flex flex-wrap items-center gap-3">
-                <Button
-                    icon={loading ? <LoadingOutlined /> : <PlusOutlined />}
-                    onClick={() => inputRef.current?.click()}
-                    disabled={loading}
-                >
-                    {images.length > 0 ? 'Добавить ещё' : 'Загрузить фото'}
-                </Button>
-
-                {images.length > 0 && !loading && (
-                    <Button onClick={handleClearAll} danger type="text">
-                        Удалить все ({images.length})
-                    </Button>
-                )}
-
-                {hint && (
-                    <span className="text-xs text-slate-400 leading-snug max-w-[260px]">
-                        {hint}
-                    </span>
-                )}
-            </div>
         </div>
     );
 }

@@ -501,6 +501,7 @@ export default function AdminCarForm() {
 
             <Form.Item name="images">
                 <MultiImageUploader
+                    globalPaste
                     hint="JPG, PNG, WEBP до 10 МБ. Можно выбрать сразу несколько файлов. Первое изображение станет главным в каталоге."
                     maxCount={20}
                 />

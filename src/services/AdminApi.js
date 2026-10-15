@@ -1,15 +1,11 @@
 // ============ ADMIN API ============
 import { adminFetch } from './AuthApi.js';
+import { allBrands } from './MockApi.js';
 
 /* ============ СПРАВОЧНИКИ ДЛЯ ФОРМЫ ============ */
 export const CAR_DICTIONARIES = {
-    brands: [
-        'Zeekr', 'Li Auto', 'Avatr', 'Voyah', 'Exeed', 'BYD', 'Nio', 'XPeng',
-        'Hongqi', 'Geely', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche',
-        'Volkswagen', 'Volvo', 'Land Rover', 'Toyota', 'Lexus', 'Honda',
-        'Nissan', 'Mazda', 'Subaru', 'Mitsubishi', 'Hyundai', 'Kia',
-        'Genesis', 'Tesla', 'Jeep',
-    ],
+    // Марки — из единого справочника в MockApi.js (там же и для каталога)
+    brands: allBrands,
     countries: ['Китай', 'Германия', 'Швеция', 'Великобритания', 'Япония', 'Корея', 'США'],
     bodyTypes: ['SUV', 'Sedan', 'MPV', 'Coupe', 'Hatchback', 'Wagon'],
     engineTypes: [

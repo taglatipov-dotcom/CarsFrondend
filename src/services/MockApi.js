@@ -66,6 +66,8 @@ export const isBudgetCustomCar = (car) => {
 };
 
 // ============ СПРАВОЧНИКИ (пока статические) ============
+// ЕДИНЫЙ список марок: из него берутся и фильтр каталога, и выпадающий список в админке.
+// Новую марку добавлять только сюда.
 // TODO: заменить на GET /brands, GET /dictionaries/*
 const brandData = {
     "Zeekr": { country: "Китай", models: ["001", "007", "X"] },
@@ -78,6 +80,8 @@ const brandData = {
     "XPeng": { country: "Китай", models: ["P7", "G9", "G6"] },
     "Hongqi": { country: "Китай", models: ["H9", "E-HS9"] },
     "Geely": { country: "Китай", models: ["Monjaro", "Coolray", "Atlas"] },
+    "Jetour": { country: "Китай", models: ["Dashing", "Traveller", "X70 Plus", "X90 Plus"] },
+    "Changan": { country: "Китай", models: ["UNI-K", "UNI-V", "CS75 Plus", "CS55 Plus"] },
     "BMW": { country: "Германия", models: ["i4", "iX", "X5"] },
     "Mercedes-Benz": { country: "Германия", models: ["EQS", "EQE", "GLE"] },
     "Audi": { country: "Германия", models: ["e-tron", "Q8", "A6"] },
