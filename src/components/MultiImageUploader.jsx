@@ -1,13 +1,16 @@
 import { useRef, useState } from 'react';
-import { Button, Image, message, Progress } from 'antd';
+import { Button, Image, message, Progress, Tooltip } from 'antd';
 import {
     PlusOutlined,
     DeleteOutlined,
     LoadingOutlined,
     PictureOutlined,
+    StarFilled,
+    StarOutlined,
+    HolderOutlined,
 } from '@ant-design/icons';
 import { uploadImage } from '../services/UploadApi.js';
-import { toImageUrl } from '../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../services/urls.js';
 import ImageDropZone from './ImageDropZone.jsx';
 
 export default function MultiImageUploader({
@@ -88,6 +91,18 @@ export default function MultiImageUploader({
         if (inputRef.current) inputRef.current.value = '';
     };
 
+    // ---------- Порядок фото (первое — главное в каталоге) ----------
+    const [dragIdx, setDragIdx] = useState(null);
+    const [overIdx, setOverIdx] = useState(null);
+
+    const moveImage = (from, to) => {
+        if (from === to || from == null || to == null) return;
+        const next = [...images];
+        const [item] = next.splice(from, 1);
+        next.splice(to, 0, item);
+        onChange(next);
+    };
+
     const handleRemove = (idx) => {
         onChange(images.filter((_, i) => i !== idx));
     };
@@ -138,9 +153,55 @@ export default function MultiImageUploader({
             >
                 <div className="flex flex-wrap gap-3">
                     {images.map((url, idx) => (
-                        <div key={`${url}-${idx}`} className="relative group">
+                        <div
+                            key={`${url}-${idx}`}
+                            draggable={!loading}
+                            onDragStart={(e) => {
+                                setDragIdx(idx);
+                                e.dataTransfer.effectAllowed = 'move';
+                                e.dataTransfer.setData('text/plain', String(idx));
+                                // метка «это перестановка фото», чтобы ImageDropZone не принял её за файл
+                                e.dataTransfer.setData('application/x-ilsatao-photo', String(idx));
+                            }}
+                            onDragOver={(e) => {
+                                if (dragIdx === null) return;
+                                e.preventDefault();
+                                if (overIdx !== idx) setOverIdx(idx);
+                            }}
+                            onDrop={(e) => {
+                                if (dragIdx === null) return;
+                                e.preventDefault();
+                                e.stopPropagation();
+                                moveImage(dragIdx, idx);
+                                setDragIdx(null);
+                                setOverIdx(null);
+                            }}
+                            onDragEnd={() => { setDragIdx(null); setOverIdx(null); }}
+                            className={`relative group cursor-grab active:cursor-grabbing rounded-[10px] transition-all ${
+                                dragIdx === idx ? 'opacity-40' : ''
+                            } ${overIdx === idx && dragIdx !== idx ? 'ring-2 ring-violet-500 ring-offset-2' : ''}`}
+                        >
+                            {idx === 0 ? (
+                                <span className="absolute bottom-1 left-1 z-10 bg-violet-600 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full shadow flex items-center gap-1 pointer-events-none">
+                                    <StarFilled /> Главное
+                                </span>
+                            ) : (
+                                <Tooltip title="Сделать главным (первым в каталоге)">
+                                    <Button
+                                        size="small"
+                                        icon={<StarOutlined />}
+                                        onClick={() => moveImage(idx, 0)}
+                                        className="!absolute !bottom-1 !left-1 !z-10 !shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                    />
+                                </Tooltip>
+                            )}
+                            <span className="absolute top-1 left-1 z-10 bg-black/50 text-white text-xs rounded px-1 pointer-events-none flex items-center gap-0.5">
+                                <HolderOutlined /> {idx + 1}
+                            </span>
                             <Image
-                                src={toImageUrl(url)}
+                                src={toThumbUrl(url)}
+                                preview={{ src: toImageUrl(url) }}
+                                draggable={false}
                                 width={140}
                                 height={100}
                                 style={{

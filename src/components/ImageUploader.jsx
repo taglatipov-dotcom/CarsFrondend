@@ -7,7 +7,7 @@ import {
     PictureOutlined,
 } from '@ant-design/icons';
 import { uploadImage } from '../services/UploadApi.js';
-import { toImageUrl } from '../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../services/urls.js';
 import ImageDropZone from './ImageDropZone.jsx';
 
 export default function ImageUploader({
@@ -82,7 +82,8 @@ export default function ImageUploader({
                 {value ? (
                     <div className="relative">
                         <Image
-                            src={toImageUrl(value)}
+                            src={toThumbUrl(value)}
+                            preview={{ src: toImageUrl(value) }}
                             width={140}
                             height={100}
                             style={{ objectFit: 'cover', borderRadius: 10, border: '1px solid #e2e8f0' }}

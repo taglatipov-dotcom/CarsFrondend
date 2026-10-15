@@ -3,7 +3,8 @@ import { Card, Tag, Avatar, Spin, Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { CalendarOutlined, UserOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { fetchBlogs, getBlogsCache } from '../services/MockApi.js';
-import { toImageUrl } from '../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../services/urls.js';
+import { blogPath } from '../utils/slug.js';
 
 export default function BlogContent() {
     // Синхронно проверяем кэш — если данные уже есть, сразу рендерим их
@@ -57,14 +58,14 @@ export default function BlogContent() {
                                     <Card
                                         key={blog.id}
                                         hoverable
-                                        onClick={() => navigate(`/blog/${blog.id}`)}
+                                        onClick={() => navigate(blogPath(blog))}
                                         className="group rounded-3xl overflow-hidden border-none shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 flex flex-col h-full !bg-white/95 backdrop-blur-xl cursor-pointer"
                                         bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '24px' }}
                                         cover={
                                             <div className="h-48 overflow-hidden">
                                                 <img
                                                     alt={blog.title}
-                                                    src={toImageUrl(blog.image)}
+                                                    src={toThumbUrl(blog.image)}
                                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
                                             </div>

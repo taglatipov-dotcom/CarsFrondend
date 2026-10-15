@@ -43,3 +43,17 @@ export function toImageUrl(url) {
 
     return url;
 }
+
+
+/**
+ * Миниатюра (до 800 px, WebP) для карточек и списков: /uploads/x.jpeg → /uploads/thumbs/x.webp.
+ * Бэкенд создаёт её при загрузке, а для старых фото — при первом запросе.
+ * Внешние картинки (unsplash и т.п.) возвращаются как есть.
+ */
+export function toThumbUrl(url) {
+    const full = toImageUrl(url);
+    if (!full.startsWith('/uploads/') || full.startsWith('/uploads/thumbs/')) return full;
+    const name = full.slice('/uploads/'.length);
+    if (name.includes('/') || name.toLowerCase().endsWith('.svg')) return full;
+    return `/uploads/thumbs/${name.replace(/\.[^.]+$/, '')}.webp`;
+}

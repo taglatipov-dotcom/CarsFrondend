@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-    Table, Button, Input, Popconfirm, message, Tag, Image, Space, Card, Spin,
+    Table, Button, Input, Popconfirm, message, Tag, Image, Space, Card, Spin, Tooltip,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { toImageUrl } from '../../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../../services/urls.js';
 import {
-    PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined,
+    PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined, CopyOutlined,
 } from '@ant-design/icons';
 import {
     adminFetchCarsList, adminDeleteCar,
@@ -71,7 +71,7 @@ export default function AdminCars() {
                 const url = (images && images[0]) || (record.photos && record.photos[0]);
                 return url ? (
                     <Image
-                        src={toImageUrl(url)}
+                        src={toThumbUrl(url)}
                         width={56}
                         height={40}
                         style={{ objectFit: 'cover', borderRadius: 6 }}
@@ -106,7 +106,7 @@ export default function AdminCars() {
         },
         {
             title: 'Действия',
-            width: 160,
+            width: 200,
             fixed: 'right',
             render: (_, record) => (
                 <Space>
@@ -117,6 +117,13 @@ export default function AdminCars() {
                     >
                         Изменить
                     </Button>
+                    <Tooltip title="Дублировать — открыть форму с данными этой машины">
+                        <Button
+                            size="small"
+                            icon={<CopyOutlined />}
+                            onClick={() => navigate(`/admin/cars/new?copy=${record.id}`)}
+                        />
+                    </Tooltip>
                     <Popconfirm
                         title="Удалить автомобиль?"
                         description={`#${record.id} ${record.brend || ''} ${record.model || ''}`}

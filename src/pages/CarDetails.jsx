@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { parseCarId, carSlug } from '../utils/slug.js';
+import { usePageMeta } from '../utils/pageMeta.js';
 import { Descriptions, Button, Carousel, Spin, Tabs, Tag, Modal } from 'antd';
 import {
     ArrowLeftOutlined,
@@ -17,12 +19,13 @@ import {
     PhoneOutlined
 } from '@ant-design/icons';
 import { fetchCarById, translateBodyType } from '../services/MockApi.js';
-import { toImageUrl } from '../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../services/urls.js';
 import CostCalculatorModal from '../components/CostCalculatorModal';
 import LeadModal from '../components/LeadModal';
 
 export default function CarDetails() {
-    const { id } = useParams();
+    const { slug } = useParams();
+    const id = parseCarId(slug);
     const navigate = useNavigate();
     const [car, setCar] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,11 +46,23 @@ export default function CarDetails() {
     const modalCarouselRef = useRef(null);
 
     useEffect(() => {
+        if (!id) { setCar(null); setLoading(false); return; }
         fetchCarById(id).then(data => {
             setCar(data);
             setLoading(false);
+            // Старая ссылка /car/7 или устаревшее название → понятный адрес
+            if (data && slug !== carSlug(data)) {
+                navigate(`/car/${carSlug(data)}`, { replace: true });
+            }
         });
     }, [id]);
+
+    const yearSfx = car && car.year && !String(car.name).includes(String(car.year)) ? `, ${car.year}` : '';
+    usePageMeta(car && {
+        title: `${car.name}${yearSfx} — купить из Китая`,
+        description: `${car.name}${yearSfx}: ${car.specs?.engine || ''}, ${car.specs?.power || ''}. `
+            + `Цена в Китае ${car.price ? car.price.toLocaleString('ru-RU') + ' ¥' : 'по запросу'}. Доставка и растаможка под ключ.`,
+    });
 
     useEffect(() => {
         if (photoModalOpen && modalCarouselRef.current) {
@@ -238,7 +253,7 @@ export default function CarDetails() {
                             {/* Размытый фон из того же фото: фото разных пропорций смотрятся одинаково аккуратно */}
                             <img
                                 key={`bg-${currentSlide}`}
-                                src={toImageUrl(car.images[currentSlide])}
+                                src={toThumbUrl(car.images[currentSlide])}
                                 alt=""
                                 aria-hidden="true"
                                 className="absolute inset-0 w-full h-full object-cover object-center scale-110 blur-2xl opacity-70"
@@ -427,7 +442,7 @@ export default function CarDetails() {
                     {car.images.map((img, index) => (
                         <img
                             key={index}
-                            src={toImageUrl(img)}
+                            src={toThumbUrl(img)}
                             alt={`Миниатюра ${index + 1}`}
                             onClick={() => modalCarouselRef.current?.goTo(index)}
                             className={`w-16 h-12 md:w-20 md:h-14 object-cover rounded-lg cursor-pointer border-2 transition-all ${

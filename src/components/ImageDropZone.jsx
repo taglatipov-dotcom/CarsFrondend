@@ -47,9 +47,16 @@ export default function ImageDropZone({ onFiles, disabled, globalPaste = false, 
         return () => document.removeEventListener('paste', listener);
     }, [globalPaste, disabled]);
 
+    // Перетаскивают файлы с компьютера (а не миниатюру внутри списка для смены порядка)
+    const isFileDrag = (e) => {
+        const types = Array.from(e.dataTransfer?.types || []);
+        return types.includes('Files') && !types.includes('application/x-ilsatao-photo');
+    };
+
     const handleDrop = (e) => {
-        e.preventDefault();
         setDragOver(false);
+        if (!isFileDrag(e)) return;
+        e.preventDefault();
         accept(extractImageFiles(e.dataTransfer));
     };
 
@@ -72,7 +79,7 @@ export default function ImageDropZone({ onFiles, disabled, globalPaste = false, 
                 onPaste={handlePaste}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragOver={(e) => { if (isFileDrag(e)) { e.preventDefault(); setDragOver(true); } }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
                 className={`rounded-xl p-2 -m-2 outline-none transition-colors ${

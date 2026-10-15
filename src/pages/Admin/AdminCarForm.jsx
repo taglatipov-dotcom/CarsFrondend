@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
     Card, Form, Input, InputNumber, Select, Button, Tabs,
     Checkbox, Space, message, Row, Col, Divider, Spin,
 } from 'antd';
 import {
-    SaveOutlined, ArrowLeftOutlined, PlusOutlined, DeleteOutlined,
+    SaveOutlined, ArrowLeftOutlined, PlusOutlined, DeleteOutlined, CopyOutlined,
 } from '@ant-design/icons';
 import {
     CAR_DICTIONARIES,
@@ -81,19 +81,23 @@ function SectionRow({ children }) {
 export default function AdminCarForm() {
     const { id } = useParams();
     const isEdit = Boolean(id);
+    // «Дублировать машину»: /admin/cars/new?copy=<id> — форма заполняется данными этой машины
+    const [searchParams] = useSearchParams();
+    const copyId = !isEdit ? searchParams.get('copy') : null;
     const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [loading, setLoading] = useState(isEdit);
+    const [loading, setLoading] = useState(isEdit || Boolean(copyId));
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        if (!isEdit) {
+        if (!isEdit && !copyId) {
+            form.resetFields();
             form.setFieldsValue(EMPTY_VALUES);
             return;
         }
 
         setLoading(true);
-        adminFetchCarRaw(id)
+        adminFetchCarRaw(isEdit ? id : copyId)
             .then((data) => {
                 const normalized = {
                     ...EMPTY_VALUES,
@@ -106,6 +110,12 @@ export default function AdminCarForm() {
                                 ? data.photos
                                 : [],
                 };
+                if (!isEdit) {
+                    // Копия: без id, с пометкой в названии — чтобы не перепутать с оригиналом
+                    delete normalized.id;
+                    if (normalized.car_name) normalized.car_name = `${normalized.car_name} (копия)`;
+                    message.info('Создаётся копия — измените нужные поля и сохраните');
+                }
                 form.setFieldsValue(normalized);
             })
             .catch((e) => {
@@ -113,13 +123,15 @@ export default function AdminCarForm() {
                 navigate('/admin/cars');
             })
             .finally(() => setLoading(false));
-    }, [id, isEdit, form, navigate]);
+    }, [id, isEdit, copyId, form, navigate]);
 
     const handleSubmit = async () => {
         try {
             const values = await form.validateFields();
 
-            const payload = { ...values };
+            // getFieldsValue(true) — ВСЕ значения формы, включая вкладки, которые не открывали.
+            // Иначе при создании (и при «Дублировать») данные неоткрытых вкладок терялись бы.
+            const payload = { ...form.getFieldsValue(true), ...values };
             delete payload.id;
 
             // Чистим пустые изображения (могли остаться после удаления в форме)
@@ -520,11 +532,19 @@ export default function AdminCarForm() {
                         Назад
                     </Button>
                     <h1 className="text-2xl font-bold text-slate-800 m-0">
-                        {isEdit ? `Редактирование авто #${id}` : 'Новое авто'}
+                        {isEdit ? `Редактирование авто #${id}` : copyId ? `Копия авто #${copyId}` : 'Новое авто'}
                     </h1>
                 </div>
 
                 <Space>
+                    {isEdit && (
+                        <Button
+                            icon={<CopyOutlined />}
+                            onClick={() => navigate(`/admin/cars/new?copy=${id}`)}
+                        >
+                            Дублировать
+                        </Button>
+                    )}
                     <Button onClick={() => navigate('/admin/cars')}>Отмена</Button>
                     <Button
                         type="primary"
@@ -548,12 +568,12 @@ export default function AdminCarForm() {
                         defaultActiveKey="main"
                         destroyInactiveTabPane={false}
                         items={[
-                            { key: 'main', label: 'Основное', children: tabMain },
-                            { key: 'engine', label: 'Двигатель и динамика', children: tabEngine },
-                            { key: 'dims', label: 'Габариты', children: tabDimensions },
-                            { key: 'interior', label: 'Салон', children: tabInterior },
-                            { key: 'safety', label: 'Безопасность', children: tabSafety },
-                            { key: 'media', label: 'Медиа', children: tabMedia },
+                            { key: 'main', label: 'Основное', children: tabMain, forceRender: true },
+                            { key: 'engine', label: 'Двигатель и динамика', children: tabEngine, forceRender: true },
+                            { key: 'dims', label: 'Габариты', children: tabDimensions, forceRender: true },
+                            { key: 'interior', label: 'Салон', children: tabInterior, forceRender: true },
+                            { key: 'safety', label: 'Безопасность', children: tabSafety, forceRender: true },
+                            { key: 'media', label: 'Медиа', children: tabMedia, forceRender: true },
                         ]}
                     />
                 </Card>

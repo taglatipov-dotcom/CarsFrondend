@@ -8,12 +8,14 @@ import {
     ClockCircleOutlined,
     HomeOutlined
 } from '@ant-design/icons';
-import { fetchBlogById } from '../services/MockApi.js';
+import { fetchBlogById, fetchBlogBySlug } from '../services/MockApi.js';
+import { blogPath } from '../utils/slug.js';
+import { usePageMeta } from '../utils/pageMeta.js';
 import { toImageUrl } from '../services/urls.js';
 import { normalizeArticleHtml } from '../utils/articleHtml.js';
 
 export default function BlogPost() {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -22,11 +24,16 @@ export default function BlogPost() {
         setLoading(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        fetchBlogById(id).then(data => {
+        // Старые ссылки /blog/7 → ищем по id и переходим на понятный адрес
+        const isOldId = /^\d+$/.test(slug || '');
+        (isOldId ? fetchBlogById(slug) : fetchBlogBySlug(slug)).then(data => {
             setBlog(data);
             setLoading(false);
+            if (data && isOldId && data.slug) navigate(blogPath(data), { replace: true });
         });
-    }, [id]);
+    }, [slug]);
+
+    usePageMeta(blog && { title: blog.title, description: blog.excerpt });
 
     if (loading) {
         return (

@@ -408,6 +408,18 @@ export const fetchBlogById = async (id) => {
     }
 };
 
+export const fetchBlogBySlug = async (slug) => {
+    try {
+        const blog = await httpGet(`/blog/slug/${encodeURIComponent(slug)}`);
+        if (!_blogByIdCache) _blogByIdCache = new Map();
+        _blogByIdCache.set(blog.id, blog);
+        return blog;
+    } catch (e) {
+        console.error(`[api] Не удалось загрузить статью «${slug}»:`, e);
+        return null;
+    }
+};
+
 /* ============ REVIEWS ============ */
 export const fetchReviews = async () => {
     if (_reviewsCache) return _reviewsCache;

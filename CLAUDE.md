@@ -32,6 +32,9 @@ src/
     AdminApi.js, AuthApi.js, UploadApi.js
     urls.js                API_BASE_URL='/api', toImageUrl()
   utils/clipboardImages.js извлечение картинок из буфера обмена / drop
+  utils/slug.js            адреса: carPath(car) → /car/zeekr-001-2026-7, blogPath(blog) → /blog/<slug>
+  utils/pageMeta.js        usePageMeta({title, description}) для страниц с данными
+  utils/articleHtml.js     чистка HTML статьи (&nbsp;, адреса картинок)
 ```
 
 ## API
@@ -41,6 +44,11 @@ src/
   (`http://ilsatao.ru/uploads/...`, `http://localhost:8000/uploads/...`, `/uploads/...`) к `/uploads/<файл>`.
   НЕ превращать в `/api/uploads/...`: в nginx regex-локация для `.jpg/.png` важнее `location /api/`
   и отдаёт 404. `/uploads/` в nginx — `location ^~ /uploads/` → бэкенд; в dev — прокси в `vite.config.ts`.
+- Миниатюры: в карточках и списках — `toThumbUrl(url)` (→ `/uploads/thumbs/<имя>.webp`, бэкенд создаёт
+  сам), на странице машины в большом слайдере и в просмотре — `toImageUrl(url)` (оригинал).
+- Ссылки на машины и статьи — только через `carPath()` / `blogPath()`. `slugify` в `utils/slug.js`
+  повторён на бэкенде (`src/seo.py`) — менять синхронно. Старые `/car/7`, `/blog/7` перенаправляются.
+- `sitemap.xml` генерирует бэкенд из базы (`/seo/sitemap.xml`); в `public/` его нет и не нужно.
 - Каталог грузит все машины одним `GET /cars` и фильтрует/пагинирует на клиенте (`fetchCars`).
   После изменений в админке вызывать `invalidateCarsCache()` (и аналоги для блога/отзывов).
 
@@ -62,6 +70,10 @@ src/
 - Марки авто — ЕДИНЫЙ справочник `brandData` в `MockApi.js` (марка → страна, модели). Из него
   строятся и фильтр каталога, и список в админке (`CAR_DICTIONARIES.brands = allBrands`).
   Новую марку добавлять только туда.
+- Форма авто: у вкладок `forceRender`, при сохранении — `form.getFieldsValue(true)`; иначе поля
+  неоткрытых вкладок не попадают в запрос. «Дублировать» = `/admin/cars/new?copy=<id>`.
+- Порядок фото: перетаскивание в `MultiImageUploader` (первое — главное). Внутреннее перетаскивание
+  помечено `application/x-ilsatao-photo`, чтобы `ImageDropZone` не принимал его за файл.
 - Картинки в админке: везде через `ImageUploader` / `MultiImageUploader` (умеют Ctrl+V и drag & drop).
   `globalPaste` включать, только если загрузчик на странице один (сейчас — форма авто).
   В редакторе статей (Quill) вставленные картинки загружаются на сервер через `uploader.handler` —
@@ -86,7 +98,8 @@ sudo systemctl reload nginx
 ```
 nginx: `try_files $uri $uri/ /index.html` (SPA). Файлы для поисковиков (robots.txt, sitemap.xml)
 класть только в `public/` — из корня проекта Vite их не публикует.
-При добавлении новых публичных страниц — дописать их в `public/sitemap.xml` и в `STATIC_TITLES` в `App.jsx`.
+При добавлении новых публичных страниц — дописать их в sitemap бэкенда (`src/seo_router.py`)
+и в `STATIC_TITLES` в `App.jsx`.
 
 ## Прочее
 - Windows-репозиторий с `core.autocrlf=true`: при работе с git из Linux использовать

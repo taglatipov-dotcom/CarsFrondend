@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FireOutlined } from '@ant-design/icons';
-import { toImageUrl } from '../services/urls.js';
+import { toImageUrl, toThumbUrl } from '../services/urls.js';
 import { isBudgetCustomCar } from '../services/MockApi.js';
+import { carPath } from '../utils/slug.js';
 
 const FALLBACK_IMAGE =
     'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=80&w=1200';
@@ -18,17 +19,27 @@ const FALLBACK_IMAGE =
  * size: 'lg' — широкая карточка (каталог, 2 в ряд), 'md' — главная (3 в ряд).
  */
 export default function CarCard({ car, size = 'md', showBudget = true }) {
-    const src = toImageUrl(car.images?.[0]) || FALLBACK_IMAGE;
+    // Миниатюра (лёгкая WebP); если её нет — оригинал; если и его нет — заглушка
+    const full = toImageUrl(car.images?.[0]) || FALLBACK_IMAGE;
+    const src = toThumbUrl(car.images?.[0]) || FALLBACK_IMAGE;
     const isBudget = showBudget && isBudgetCustomCar(car);
     const isLarge = size === 'lg';
 
     const handleError = (e) => {
-        if (e.currentTarget.src !== FALLBACK_IMAGE) e.currentTarget.src = FALLBACK_IMAGE;
+        const img = e.currentTarget;
+        const step = img.dataset.fallback || '';
+        if (!step && full !== src) {
+            img.dataset.fallback = 'full';
+            img.src = full;
+        } else if (step !== 'stub') {
+            img.dataset.fallback = 'stub';
+            img.src = FALLBACK_IMAGE;
+        }
     };
 
     return (
         <Link
-            to={`/car/${car.id}`}
+            to={carPath(car)}
             className={`group relative block rounded-2xl overflow-hidden bg-slate-900 shadow-xl hover:shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 hover:-translate-y-1 ${
                 isLarge ? 'aspect-[16/10]' : 'aspect-[4/3]'
             }`}

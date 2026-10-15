@@ -106,9 +106,9 @@ function App() {
                     <Route path="about" element={<About />} />
                     <Route path="catalog" element={<Catalog />} />
                     <Route path="blog" element={<Blog />} />
-                    <Route path="blog/:id" element={<BlogPost />} />
+                    <Route path="blog/:slug" element={<BlogPost />} />
                     <Route path="reviews" element={<Reviews />} />
-                    <Route path="car/:id" element={<CarDetails />} />
+                    <Route path="car/:slug" element={<CarDetails />} />
                     <Route path="privacy" element={<Privacy />} />
                 </Route>
 
