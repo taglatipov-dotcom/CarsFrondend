@@ -28,12 +28,9 @@ export default function ReviewsContent() {
             </div>
 
             <div className="py-16 px-4 text-center">
-                <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
+                <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-2xl">
                     Отзывы наших клиентов
                 </h2>
-                <p className="text-slate-100 max-w-3xl mx-auto text-xl md:text-2xl font-light drop-shadow-lg">
-                    Более 1500 автомобилей доставлено без единого скрытого платежа
-                </p>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 pb-16">

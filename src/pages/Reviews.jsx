@@ -41,9 +41,6 @@ export default function Reviews() {
                     <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
                         Отзывы наших клиентов
                     </h1>
-                    <p className="text-slate-100 text-xl md:text-2xl max-w-3xl mx-auto font-light drop-shadow-lg">
-                        Более 1500 автомобилей доставлено без единого скрытого платежа
-                    </p>
 
                     <div className="mt-8">
                         <Button
