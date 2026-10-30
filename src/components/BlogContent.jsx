@@ -26,14 +26,14 @@ export default function BlogContent() {
     return (
         <div className="relative">
             <div className="max-w-7xl mx-auto px-4">
-                <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="h-px bg-paper/15"></div>
             </div>
 
-            <div className="py-16 px-4 text-center">
-                <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
+            <div className="pt-14 md:pt-20 pb-8 px-4 max-w-7xl mx-auto">
+                <h2 className="text-2xl md:text-4xl mb-4 text-paper">
                     Блог и новости
                 </h2>
-                <p className="text-slate-100 max-w-3xl mx-auto text-xl md:text-2xl font-light drop-shadow-lg">
+                <p className="text-paper/70 max-w-3xl text-lg md:text-xl m-0">
                     Полезные статьи о покупке, растаможке и эксплуатации авто из Китая
                 </p>
             </div>
@@ -48,9 +48,9 @@ export default function BlogContent() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {blogs.slice(0, 6).map((blog, idx) => {
                                 const gradients = [
-                                    'from-cyan-500 to-blue-500',
-                                    'from-violet-500 to-fuchsia-500',
-                                    'from-amber-500 to-orange-500'
+                                    'bg-brass',
+                                    'bg-brass',
+                                    'bg-brass'
                                 ];
                                 const currentGradient = gradients[idx % gradients.length];
 
@@ -59,7 +59,7 @@ export default function BlogContent() {
                                         key={blog.id}
                                         hoverable
                                         onClick={() => navigate(blogPath(blog))}
-                                        className="group rounded-3xl overflow-hidden border-none shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 flex flex-col h-full !bg-white/95 backdrop-blur-xl cursor-pointer"
+                                        className="group rounded-xl overflow-hidden border-none transition-all duration-300 flex flex-col h-full !bg-paper cursor-pointer"
                                         bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '24px' }}
                                         cover={
                                             <div className="h-48 overflow-hidden">
@@ -72,25 +72,25 @@ export default function BlogContent() {
                                         }
                                     >
                                         <div className="flex justify-between items-center mb-4">
-                                            <Tag className={`rounded-full px-3.5 py-1 border-none text-white font-semibold bg-gradient-to-r ${currentGradient} text-base`}>
+                                            <Tag className={`rounded-full px-3.5 py-1 border-none text-ink font-medium ${currentGradient} text-base`}>
                                                 {blog.tag}
                                             </Tag>
-                                            <span className="text-slate-500 text-base flex items-center gap-1 font-medium">
+                                            <span className="text-ink/55 text-base flex items-center gap-1 font-medium">
                                                 <CalendarOutlined /> {blog.date}
                                             </span>
                                         </div>
-                                        <h3 className="text-xl md:text-2xl font-bold mb-3 line-clamp-2 text-slate-800 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-fuchsia-600 transition-all">
+                                        <h3 className="text-xl md:text-2xl font-bold mb-3 line-clamp-2 text-ink group-hover:text-brass-lo transition-all">
                                             {blog.title}
                                         </h3>
-                                        <p className="text-slate-600 line-clamp-2 mb-6 flex-1 text-lg md:text-xl leading-relaxed">
+                                        <p className="text-ink/80 line-clamp-2 mb-6 flex-1 text-lg md:text-xl leading-relaxed">
                                             {blog.excerpt}
                                         </p>
-                                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
+                                        <div className="flex items-center justify-between pt-4 border-t border-ink/10 mt-auto">
                                             <div className="flex items-center gap-2.5">
-                                                <Avatar size={40} icon={<UserOutlined />} className={`bg-gradient-to-r ${currentGradient} text-white`} />
-                                                <span className="text-base font-bold text-slate-700">{blog.author}</span>
+                                                <Avatar size={40} icon={<UserOutlined />} className="!bg-ink !text-paper" />
+                                                <span className="text-base font-bold text-ink/80">{blog.author}</span>
                                             </div>
-                                            <ArrowRightOutlined className="text-slate-300 text-lg group-hover:text-violet-600 group-hover:translate-x-1 transition-all" />
+                                            <ArrowRightOutlined className="text-paper/80 text-lg group-hover:text-brass-lo group-hover:translate-x-1 transition-all" />
                                         </div>
                                     </Card>
                                 );
@@ -104,7 +104,7 @@ export default function BlogContent() {
                                     size="large"
                                     block
                                     icon={<ArrowRightOutlined className="text-2xl" />}
-                                    className="!h-20 !text-xl md:!text-2xl !font-extrabold !rounded-3xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-2xl shadow-fuchsia-500/50 transition-all hover:scale-[1.01]"
+                                    className="!h-20 !text-xl md:!text-2xl !font-extrabold !rounded-xl btn-brass transition-all"
                                 >
                                     Перейти в блог
                                 </Button>

@@ -92,9 +92,9 @@ export default function CarDetails() {
 
     if (!car) {
         return (
-            <div className="flex flex-col justify-center items-center min-h-[70vh] text-white">
+            <div className="flex flex-col justify-center items-center min-h-[70vh] text-paper">
                 <h2 className="text-3xl font-bold mb-4">Автомобиль не найден</h2>
-                <Button type="primary" onClick={() => navigate('/catalog')} className="!bg-slate-900 hover:!bg-slate-800">
+                <Button type="primary" onClick={() => navigate('/catalog')} className="!bg-ink hover:!bg-ink/90">
                     Вернуться в каталог
                 </Button>
             </div>
@@ -108,7 +108,7 @@ export default function CarDetails() {
 
     const overviewTab = (
         <div className="py-4">
-            <p className="text-slate-600 leading-relaxed text-lg mb-8">{car.description}</p>
+            <p className="text-ink/80 leading-relaxed text-lg mb-8">{car.description}</p>
             <Descriptions
                 column={{ xs: 1, sm: 2 }}
                 bordered
@@ -133,7 +133,7 @@ export default function CarDetails() {
     const specsTab = (
         <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <Descriptions
-                title={<span className="text-2xl font-bold text-slate-800">Силовая установка</span>}
+                title={<span className="text-2xl font-bold text-ink">Силовая установка</span>}
                 column={1}
                 bordered
                 size="middle"
@@ -151,7 +151,7 @@ export default function CarDetails() {
             </Descriptions>
 
             <Descriptions
-                title={<span className="text-2xl font-bold text-slate-800">Батарея и запас хода</span>}
+                title={<span className="text-2xl font-bold text-ink">Батарея и запас хода</span>}
                 column={1}
                 bordered
                 size="middle"
@@ -166,7 +166,7 @@ export default function CarDetails() {
             </Descriptions>
 
             <Descriptions
-                title={<span className="text-2xl font-bold text-slate-800">Габариты и масса</span>}
+                title={<span className="text-2xl font-bold text-ink">Габариты и масса</span>}
                 column={1}
                 bordered
                 size="middle"
@@ -184,7 +184,7 @@ export default function CarDetails() {
             </Descriptions>
 
             <Descriptions
-                title={<span className="text-2xl font-bold text-slate-800">Интерьер</span>}
+                title={<span className="text-2xl font-bold text-ink">Интерьер</span>}
                 column={1}
                 bordered
                 size="middle"
@@ -204,9 +204,9 @@ export default function CarDetails() {
         <div className="py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {car.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <CheckCircleOutlined className="text-emerald-500 text-xl" />
-                        <span className="text-slate-700 font-medium text-lg">{feature}</span>
+                    <div key={idx} className="flex items-center gap-3 p-3 bg-ink/5 rounded-xl border border-ink/10">
+                        <CheckCircleOutlined className="text-moss text-xl" />
+                        <span className="text-ink/80 font-medium text-lg">{feature}</span>
                     </div>
                 ))}
             </div>
@@ -217,9 +217,9 @@ export default function CarDetails() {
         <div className="py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {car.safety.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-3 bg-violet-50 rounded-xl border border-violet-100">
-                        <SafetyCertificateOutlined className="text-violet-500 text-xl" />
-                        <span className="text-slate-700 font-medium text-lg">{item}</span>
+                    <div key={idx} className="flex items-center gap-3 p-3 bg-brass/10 rounded-xl border border-brass">
+                        <SafetyCertificateOutlined className="text-brass-lo text-xl" />
+                        <span className="text-ink/80 font-medium text-lg">{item}</span>
                     </div>
                 ))}
             </div>
@@ -241,15 +241,15 @@ export default function CarDetails() {
                     type="text"
                     icon={<ArrowLeftOutlined />}
                     onClick={() => navigate(-1)}
-                    className="mb-8 !text-slate-200 hover:!text-cyan-400 !font-semibold !text-lg flex items-center gap-2 transition-colors p-0 drop-shadow"
+                    className="mb-8 !text-paper/80 hover:!text-brass-lo !font-semibold !text-lg flex items-center gap-2 transition-colors p-0"
                 >
                     Вернуться в каталог
                 </Button>
 
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-10 shadow-2xl border border-white/50">
+                <div className="bg-paper rounded-xl p-6 md:p-10 border border-ink/10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
 
-                        <div className="relative rounded-2xl overflow-hidden shadow-md group min-h-[320px] lg:min-h-[500px] bg-slate-900">
+                        <div className="relative rounded-lg overflow-hidden group min-h-[320px] lg:min-h-[500px] bg-ink">
                             {/* Размытый фон из того же фото: фото разных пропорций смотрятся одинаково аккуратно */}
                             <img
                                 key={`bg-${currentSlide}`}
@@ -269,7 +269,7 @@ export default function CarDetails() {
                             <button
                                 onClick={(e) => { e.stopPropagation(); goPrev(); }}
                                 aria-label="Предыдущее фото"
-                                className="absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/70 transition-all z-10 opacity-0 group-hover:opacity-100"
+                                className="absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md text-paper flex items-center justify-center hover:bg-black/70 transition-all z-10 opacity-0 group-hover:opacity-100"
                             >
                                 <LeftOutlined className="text-lg" />
                             </button>
@@ -277,23 +277,23 @@ export default function CarDetails() {
                             <button
                                 onClick={(e) => { e.stopPropagation(); goNext(); }}
                                 aria-label="Следующее фото"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center hover:bg-black/70 transition-all z-10 opacity-0 group-hover:opacity-100"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md text-paper flex items-center justify-center hover:bg-black/70 transition-all z-10 opacity-0 group-hover:opacity-100"
                             >
                                 <RightOutlined className="text-lg" />
                             </button>
 
-                            <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-md text-white text-base font-semibold px-3 py-1.5 rounded-full z-10 flex items-center gap-1.5 pointer-events-none">
+                            <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-md text-paper text-base font-semibold px-3 py-1.5 rounded-full z-10 flex items-center gap-1.5 pointer-events-none">
                                 <ZoomInOutlined /> {currentSlide + 1} / {car.images.length}
                             </div>
 
                             <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                                 {car.condition === 'new' ? (
-                                    <span className="bg-emerald-500 text-white text-base font-bold px-3.5 py-1.5 rounded-full shadow-lg">НОВЫЙ</span>
+                                    <span className="bg-moss text-paper text-base font-bold px-3.5 py-1.5 rounded-full">Новый</span>
                                 ) : (
-                                    <span className="bg-amber-500 text-white text-base font-bold px-3.5 py-1.5 rounded-full shadow-lg">С ПРОБЕГОМ</span>
+                                    <span className="bg-brass text-ink text-base font-semibold px-3.5 py-1.5 rounded-full">С пробегом</span>
                                 )}
                                 {car.oldPrice && (
-                                    <span className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-base font-bold px-3.5 py-1.5 rounded-full shadow-lg">
+                                    <span className="bg-brass text-ink text-base font-bold px-3.5 py-1.5 rounded-full">
                                         СКИДКА {(car.oldPrice - car.price).toLocaleString('ru-RU')} ¥
                                     </span>
                                 )}
@@ -302,15 +302,15 @@ export default function CarDetails() {
 
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2 mb-3">
-                                <Tag color="blue" className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold">{car.brand}</Tag>
-                                <Tag color="purple" className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold">
+                                <Tag className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold !bg-ink !text-paper !border-none">{car.brand}</Tag>
+                                <Tag className="!rounded-full !px-3.5 !py-1 !text-lg !font-semibold !bg-brass/15 !text-brass-lo !border-brass/40">
                                     {translateBodyType(car.bodyType)}
                                 </Tag>
                             </div>
 
-                            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-800">{car.name}</h1>
+                            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-ink">{car.name}</h1>
 
-                            <div className="flex flex-wrap items-center gap-4 text-slate-600 text-lg mb-6">
+                            <div className="flex flex-wrap items-center gap-4 text-ink/80 text-lg mb-6">
                                 <span className="flex items-center gap-1.5"><EnvironmentOutlined /> {car.location}</span>
                                 <span className="flex items-center gap-1.5"><CarOutlined /> {car.year} год</span>
                                 <span className="flex items-center gap-1.5"><ThunderboltOutlined /> {car.specs.power}</span>
@@ -318,34 +318,34 @@ export default function CarDetails() {
 
                             <div className="mb-6">
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
+                                    <span className="text-5xl font-extrabold text-brass-lo">
                                         {car.price.toLocaleString('ru-RU')} ¥
                                     </span>
                                     {car.oldPrice && (
-                                        <span className="text-2xl text-slate-400 line-through">
+                                        <span className="text-2xl text-ink/55 line-through">
                                             {car.oldPrice.toLocaleString('ru-RU')} ¥
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-base text-slate-500 mt-2">Цена в Китае, без учёта таможенных и логистических затрат</p>
+                                <p className="text-base text-ink/55 mt-2">Цена в Китае, без учёта таможенных и логистических затрат</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 mb-6">
-                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                    <div className="text-base text-slate-500 font-semibold uppercase tracking-wider mb-1">Запас хода</div>
-                                    <div className="text-xl font-bold text-slate-800">{car.specs.range}</div>
+                                <div className="bg-ink/5 rounded-lg p-4 border border-ink/10">
+                                    <div className="text-base text-ink/55 font-semibold mb-1">Запас хода</div>
+                                    <div className="text-xl font-bold text-ink">{car.specs.range}</div>
                                 </div>
-                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                    <div className="text-base text-slate-500 font-semibold uppercase tracking-wider mb-1">Разгон 0-100</div>
-                                    <div className="text-xl font-bold text-slate-800">{car.specs.acceleration}</div>
+                                <div className="bg-ink/5 rounded-lg p-4 border border-ink/10">
+                                    <div className="text-base text-ink/55 font-semibold mb-1">Разгон 0-100</div>
+                                    <div className="text-xl font-bold text-ink">{car.specs.acceleration}</div>
                                 </div>
-                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                    <div className="text-base text-slate-500 font-semibold uppercase tracking-wider mb-1">Батарея</div>
-                                    <div className="text-xl font-bold text-slate-800">{car.specs.battery}</div>
+                                <div className="bg-ink/5 rounded-lg p-4 border border-ink/10">
+                                    <div className="text-base text-ink/55 font-semibold mb-1">Батарея</div>
+                                    <div className="text-xl font-bold text-ink">{car.specs.battery}</div>
                                 </div>
-                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                    <div className="text-base text-slate-500 font-semibold uppercase tracking-wider mb-1">Привод</div>
-                                    <div className="text-xl font-bold text-slate-800">{car.specs.drive}</div>
+                                <div className="bg-ink/5 rounded-lg p-4 border border-ink/10">
+                                    <div className="text-base text-ink/55 font-semibold mb-1">Привод</div>
+                                    <div className="text-xl font-bold text-ink">{car.specs.drive}</div>
                                 </div>
                             </div>
 
@@ -354,7 +354,7 @@ export default function CarDetails() {
                                     type="primary"
                                     size="large"
                                     icon={<CalculatorOutlined />}
-                                    className="w-full h-14 !text-xl font-bold rounded-2xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 shadow-lg shadow-fuchsia-500/30 transition-all hover:scale-[1.02]"
+                                    className="w-full h-14 !text-xl font-bold rounded-lg btn-brass transition-all "
                                     onClick={() => setIsModalOpen(true)}
                                 >
                                     Рассчитать стоимость под ключ
@@ -362,7 +362,7 @@ export default function CarDetails() {
                                 <Button
                                     size="large"
                                     icon={<PhoneOutlined />}
-                                    className="w-full h-12 !text-xl font-semibold rounded-2xl !bg-transparent !text-slate-700 !border !border-slate-200 hover:!bg-slate-50 hover:!border-violet-300 hover:!text-violet-600 transition-all"
+                                    className="w-full h-12 !text-xl font-semibold rounded-lg !bg-transparent !text-ink/80 !border !border-ink/10 hover:!bg-ink/5 hover:!border-brass hover:!text-brass-lo transition-all"
                                     onClick={() => setLeadModalOpen(true)}
                                 >
                                     Оставить заявку
@@ -371,7 +371,7 @@ export default function CarDetails() {
                         </div>
                     </div>
 
-                    <div className="mt-8 pt-8 border-t border-slate-100">
+                    <div className="mt-8 pt-8 border-t border-ink/10">
                         <Tabs defaultActiveKey="1" items={tabItems} size="large" className="car-details-tabs" />
                     </div>
                 </div>
@@ -384,7 +384,7 @@ export default function CarDetails() {
                 width="90vw"
                 style={{ maxWidth: 1200, top: 20 }}
                 centered
-                closeIcon={<CloseOutlined className="text-white text-2xl hover:text-cyan-400 transition-colors" />}
+                closeIcon={<CloseOutlined className="text-paper text-2xl hover:text-brass-lo transition-colors" />}
                 styles={{
                     content: {
                         padding: 0,
@@ -399,7 +399,7 @@ export default function CarDetails() {
                     },
                 }}
             >
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative rounded-lg overflow-hidden">
                     <Carousel
                         ref={modalCarouselRef}
                         dots={false}
@@ -420,7 +420,7 @@ export default function CarDetails() {
                     <button
                         onClick={() => modalCarouselRef.current?.prev()}
                         aria-label="Предыдущее фото"
-                        className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white flex items-center justify-center hover:from-violet-500 hover:to-fuchsia-500 hover:scale-110 transition-all z-20 shadow-2xl shadow-fuchsia-500/50 border-2 border-white/30"
+                        className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-brass text-ink flex items-center justify-center hover:bg-brass-hi transition-all z-20 border-2 border-paper/15"
                     >
                         <LeftOutlined className="text-xl md:text-2xl font-bold" />
                     </button>
@@ -428,12 +428,12 @@ export default function CarDetails() {
                     <button
                         onClick={() => modalCarouselRef.current?.next()}
                         aria-label="Следующее фото"
-                        className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white flex items-center justify-center hover:from-violet-500 hover:to-fuchsia-500 hover:scale-110 transition-all z-20 shadow-2xl shadow-fuchsia-500/50 border-2 border-white/30"
+                        className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-brass text-ink flex items-center justify-center hover:bg-brass-hi transition-all z-20 border-2 border-paper/15"
                     >
                         <RightOutlined className="text-xl md:text-2xl font-bold" />
                     </button>
 
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md text-white text-base font-semibold px-3.5 py-1.5 rounded-full z-20">
+                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md text-paper text-base font-semibold px-3.5 py-1.5 rounded-full z-20">
                         {photoIndex + 1} / {car.images.length}
                     </div>
                 </div>

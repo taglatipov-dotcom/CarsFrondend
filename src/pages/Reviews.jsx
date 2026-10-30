@@ -38,7 +38,7 @@ export default function Reviews() {
         <div className="min-h-screen py-20 px-4">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-10">
-                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 text-paper">
                         Отзывы наших клиентов
                     </h1>
 
@@ -48,7 +48,7 @@ export default function Reviews() {
                             size="large"
                             icon={<EditOutlined />}
                             onClick={() => setSubmitOpen(true)}
-                            className="!h-14 !px-8 !text-lg !font-bold !rounded-2xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-xl shadow-fuchsia-500/40 transition-all hover:-translate-y-1"
+                            className="!h-14 !px-8 !text-lg !font-semibold !rounded-lg btn-brass transition-all"
                         >
                             Оставить отзыв
                         </Button>
@@ -56,11 +56,11 @@ export default function Reviews() {
                 </div>
 
                 {reviews.length === 0 ? (
-                    <div className="text-center py-20 bg-white/95 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl">
-                        <h3 className="text-2xl font-bold text-slate-500 mb-2">
+                    <div className="text-center py-20 bg-paper rounded-xl border border-ink/10">
+                        <h3 className="text-2xl font-bold text-ink/55 mb-2">
                             Пока нет отзывов
                         </h3>
-                        <p className="text-slate-400 text-base">
+                        <p className="text-ink/55 text-base">
                             Станьте первым, кто поделится опытом
                         </p>
                     </div>
@@ -74,7 +74,7 @@ export default function Reviews() {
                             return (
                                 <Card
                                     key={review.id}
-                                    className="rounded-3xl shadow-2xl border-none h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 !bg-white/95 backdrop-blur-xl"
+                                    className="rounded-xl border-none h-full flex flex-col transition-transform duration-300 !bg-paper"
                                     bodyStyle={{
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -87,22 +87,22 @@ export default function Reviews() {
                                             size={64}
                                             src={toImageUrl(review.avatar)}
                                             icon={<UserOutlined />}
-                                            className="border-2 border-slate-100 shadow-md flex-shrink-0"
+                                            className="border-2 border-ink/10 flex-shrink-0"
                                         />
                                         <div>
-                                            <h3 className="text-xl font-bold m-0 text-slate-800">
+                                            <h3 className="text-xl font-bold m-0 text-ink">
                                                 {review.name}
                                             </h3>
                                             <Rate
                                                 disabled
                                                 defaultValue={review.rating}
-                                                className="text-lg text-amber-400 mt-1"
+                                                className="text-lg text-brass-lo mt-1"
                                             />
                                         </div>
                                     </div>
 
-                                    <p className="text-slate-600 italic flex-1 mb-6 text-lg md:text-xl leading-relaxed relative">
-                                        <span className="text-5xl text-slate-100 absolute -top-3 -left-2 z-0">
+                                    <p className="text-ink/80 italic flex-1 mb-6 text-lg md:text-xl leading-relaxed relative">
+                                        <span className="text-5xl text-paper/80 absolute -top-3 -left-2 z-0">
                                             "
                                         </span>
                                         <span className="relative z-10">{review.text}</span>
@@ -128,11 +128,11 @@ export default function Reviews() {
                                         </Image.PreviewGroup>
                                     )}
 
-                                    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-2xl mt-auto border border-slate-100">
-                                        <span className="text-base text-slate-500 block mb-1 font-medium">
+                                    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-lg mt-auto border border-ink/10">
+                                        <span className="text-base text-ink/55 block mb-1 font-medium">
                                             Купленный автомобиль:
                                         </span>
-                                        <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 text-lg">
+                                        <span className="font-extrabold text-brass-lo text-lg">
                                             {review.car}
                                         </span>
                                     </div>

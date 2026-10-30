@@ -15,6 +15,9 @@ import {
     LEAD_STATUSES,
     getLeadStatusMeta,
 } from '../../services/AdminApi.js';
+import { CLIENT_TYPES } from '../../components/LeadModal.jsx';
+
+const clientTypeLabel = (code) => CLIENT_TYPES.find((c) => c.value === code)?.label || code || '';
 
 const { TextArea } = Input;
 
@@ -72,7 +75,9 @@ export default function AdminLeads() {
                     String(l.id).includes(q) ||
                     (l.phone || '').toLowerCase().includes(q) ||
                     (l.preferences || '').toLowerCase().includes(q) ||
-                    (l.contact_method || '').toLowerCase().includes(q),
+                    (l.contact_method || '').toLowerCase().includes(q) ||
+                    (l.company || '').toLowerCase().includes(q) ||
+                    (l.inn || '').includes(q),
             );
         }
         return result;
@@ -118,6 +123,28 @@ export default function AdminLeads() {
             dataIndex: 'phone',
             width: 190,
             render: (v) => <span className="font-semibold">{v || '—'}</span>,
+        },
+        {
+            title: 'Клиент',
+            dataIndex: 'company',
+            width: 200,
+            render: (v, r) => (
+                <div className="leading-tight">
+                    <div className="font-medium">{v || clientTypeLabel(r.client_type) || '—'}</div>
+                    {(r.inn || (v && r.client_type)) && (
+                        <div className="text-slate-400 text-xs mt-0.5">
+                            {[v && clientTypeLabel(r.client_type), r.inn && `ИНН ${r.inn}`].filter(Boolean).join(', ')}
+                        </div>
+                    )}
+                </div>
+            ),
+        },
+        {
+            title: 'Кол-во',
+            dataIndex: 'quantity',
+            width: 80,
+            sorter: (a, b) => (a.quantity || 0) - (b.quantity || 0),
+            render: (v) => v || <span className="text-slate-400">—</span>,
         },
         {
             title: 'Способ связи',
@@ -319,6 +346,18 @@ function LeadDetailsModal({ lead, onClose, onUpdate }) {
                 </Descriptions.Item>
                 <Descriptions.Item label="Способ связи">
                     {lead.contact_method || '—'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Клиент">
+                    {clientTypeLabel(lead.client_type) || '—'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Компания">
+                    {lead.company || '—'}
+                </Descriptions.Item>
+                <Descriptions.Item label="ИНН">
+                    {lead.inn || '—'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Количество машин">
+                    {lead.quantity || '—'}
                 </Descriptions.Item>
                 <Descriptions.Item label="Бюджет">
                     {lead.budget || '—'}

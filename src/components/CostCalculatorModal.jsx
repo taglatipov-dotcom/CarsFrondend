@@ -1,22 +1,29 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Modal, Statistic, Divider, Button, Spin, Alert } from 'antd';
-import {
-    CarOutlined,
-    SafetyCertificateOutlined,
-    DollarOutlined,
-    PhoneOutlined,
-    DeleteOutlined,
-    PercentageOutlined,
-    CarFilled,
-} from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { Modal, Button, Spin, Alert } from 'antd';
+import { PhoneOutlined } from '@ant-design/icons';
 import LeadModal from './LeadModal';
+import CostBreakdown, { computeCost, formatRub } from './CostBreakdown.jsx';
 import { fetchCarCost, normalizeCostBreakdown } from '../services/MockApi.js';
 
-/* Ставка нашей комиссии от суммы всех расходов (цена авто + таможня + логистика) */
-const COMMISSION_RATE = 0.03;
-
-/* Фиксированные логистические расходы */
-const LOGISTICS_COST = 345000;
+/** Ссылка на отдельный калькулятор с данными этой машины (там можно выбрать юрлицо). */
+function calculatorLink(raw) {
+    if (!raw) return '/calculator';
+    const p = new URLSearchParams();
+    if (raw.china_price) p.set('price', raw.china_price);
+    if (raw.year) p.set('year', raw.year);
+    if (raw.engine_type) p.set('engine', raw.engine_type);
+    if (raw.engine_volume) p.set('volume', raw.engine_volume);
+    const ice = raw.engine_type === 'Бензиновый' || raw.engine_type === 'Дизельный';
+    if (ice && (raw.horsepower || raw.engine_power)) {
+        p.set('power', raw.horsepower || raw.engine_power);
+        p.set('unit', '1');
+    } else if (raw.engine_power) {
+        p.set('power', raw.engine_power);
+        p.set('unit', '2');
+    }
+    return `/calculator?${p.toString()}`;
+}
 
 export default function CostCalculatorModal({ car, visible, onClose }) {
     const [leadModalOpen, setLeadModalOpen] = useState(false);
@@ -61,141 +68,28 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
         };
     }, [visible, car?.id]);
 
-    /* ============ СУММА БЕЗ КОМИССИИ И ИТОГ ============ */
-    const sumWithoutCommission = useMemo(() => {
-        if (!costData) return 0;
-        return (
-            (costData.price  || 0) +
-            (costData.sbor   || 0) +
-            (costData.tax    || 0) +
-            (costData.excise || 0) +
-            (costData.nds    || 0) +
-            (costData.util   || 0) +
-            LOGISTICS_COST
-        );
-    }, [costData]);
-
-    const commission = useMemo(
-        () => Math.round(sumWithoutCommission * COMMISSION_RATE),
-        [sumWithoutCommission],
-    );
-
-    const finalTotal = sumWithoutCommission + commission;
-
-    /* ============ ПОДГОТОВКА ДАННЫХ ДЛЯ ДИАГРАММЫ ============ */
-    const chartData = useMemo(() => {
-        if (!costData) return [];
-        return [
-            {
-                key: 'price',
-                name: 'Цена автомобиля',
-                value: Math.round(costData.price || 0),
-                color: '#1e293b',
-                Icon: CarOutlined,
-            },
-            {
-                key: 'sbor',
-                name: 'Таможенный сбор',
-                value: Math.round(costData.sbor || 0),
-                color: '#22c55e',
-                Icon: SafetyCertificateOutlined,
-            },
-            {
-                key: 'tax',
-                name: 'Таможенная пошлина',
-                value: Math.round(costData.tax || 0),
-                color: '#a855f7',
-                Icon: SafetyCertificateOutlined,
-            },
-            {
-                key: 'excise',
-                name: 'Акциз',
-                value: Math.round(costData.excise || 0),
-                color: '#ef4444',
-                Icon: PercentageOutlined,
-            },
-            {
-                key: 'nds',
-                name: 'НДС',
-                value: Math.round(costData.nds || 0),
-                color: '#06b6d4',
-                Icon: PercentageOutlined,
-            },
-            {
-                key: 'util',
-                name: 'Утилизационный сбор',
-                value: Math.round(costData.util || 0),
-                color: '#eab308',
-                Icon: DeleteOutlined,
-            },
-            {
-                key: 'logistics',
-                name: 'Логистические расходы',
-                value: LOGISTICS_COST,
-                color: '#10b981',
-                Icon: CarFilled,
-            },
-            {
-                key: 'commission',
-                name: 'Наша комиссия (3%)',
-                value: commission,
-                color: '#f97316',
-                Icon: DollarOutlined,
-            },
-        ].filter((item) => item.value > 0);
-    }, [costData, commission]);
-
-    const total = finalTotal;
-
-    /* ============ SVG-ДОНАТ ============ */
-    const radius = 70;
-    const strokeWidth = 28;
-    const circumference = 2 * Math.PI * radius;
-
-    let runningOffset = 0;
-    const segments = chartData.map((item) => {
-        const percent = total > 0 ? item.value / total : 0;
-        const segmentLength = percent * circumference;
-        const offset = runningOffset;
-        runningOffset += segmentLength;
-        return {
-            ...item,
-            segmentLength,
-            offset,
-            percent: (percent * 100).toFixed(1),
-        };
-    });
+    const { rows, total } = useMemo(() => computeCost(costData), [costData]);
 
     if (!car) return null;
 
     return (
         <>
             <Modal
-                title={<span className="text-xl font-bold text-slate-800">Детальный расчет стоимости</span>}
+                title={<span className="text-xl font-semibold text-ink">Расчёт стоимости под ключ</span>}
                 open={visible}
                 onCancel={onClose}
                 footer={null}
                 width={820}
                 centered
-                className="rounded-2xl overflow-hidden"
-                bodyStyle={{ padding: '20px 28px' }}
+                styles={{ body: { padding: '8px 4px' } }}
             >
-                {/* Верхний блок с итогом */}
-                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl px-6 py-5 text-center mb-5 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/20 rounded-full blur-2xl -mr-8 -mt-8"></div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-fuchsia-500/20 rounded-full blur-2xl -ml-8 -mb-8"></div>
-                    <Statistic
-                        title={
-                            <span className="text-slate-300 text-base md:text-lg font-medium uppercase tracking-wider">
-                                Полная стоимость
-                            </span>
-                        }
-                        value={total}
-                        precision={0}
-                        valueStyle={{ color: 'white', fontSize: '34px', fontWeight: '800', lineHeight: 1.1 }}
-                        suffix={<span className="text-2xl text-slate-400 ml-1">₽</span>}
-                    />
-                    <div className="mt-2 text-slate-300 text-lg md:text-xl">{car.name}</div>
+                {/* Итог */}
+                <div className="bg-ink rounded-lg px-6 py-5 mb-5 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+                    <div>
+                        <div className="text-paper/60 text-base">Полная стоимость для физлица</div>
+                        <div className="text-paper text-3xl md:text-4xl font-semibold mt-1">{formatRub(total)}</div>
+                    </div>
+                    <div className="text-paper/70 text-lg">{car.name}</div>
                 </div>
 
                 {error && (
@@ -208,119 +102,40 @@ export default function CostCalculatorModal({ car, visible, onClose }) {
                     />
                 )}
 
-                <Divider className="!my-4" />
-
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
                         <Spin size="large" />
-                        <span className="text-slate-500 text-base">Расчёт стоимости...</span>
+                        <span className="text-ink/55 text-base">Считаем стоимость…</span>
                     </div>
-                ) : segments.length === 0 ? (
-                    <div className="text-center py-16 text-slate-400 text-base">
-                        Нет данных для отображения
+                ) : rows.length === 0 ? (
+                    <div className="text-center py-16 text-ink/55 text-base">
+                        Для этой машины не хватает данных для расчёта — менеджер посчитает вручную.
                     </div>
                 ) : (
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                        <div className="relative w-48 h-48 flex-shrink-0">
-                            <svg viewBox="0 0 200 200" className="w-full h-full">
-                                <g transform="rotate(-90 100 100)">
-                                    <circle
-                                        cx="100"
-                                        cy="100"
-                                        r={radius}
-                                        fill="transparent"
-                                        stroke="#f1f5f9"
-                                        strokeWidth={strokeWidth}
-                                    />
-                                    {segments.map((item, index) => (
-                                        <circle
-                                            key={index}
-                                            cx="100"
-                                            cy="100"
-                                            r={radius}
-                                            fill="transparent"
-                                            stroke={item.color}
-                                            strokeWidth={strokeWidth}
-                                            strokeDasharray={`${item.segmentLength} ${circumference - item.segmentLength}`}
-                                            strokeDashoffset={-item.offset}
-                                            className="transition-all duration-700 ease-out cursor-pointer hover:opacity-80"
-                                        />
-                                    ))}
-                                </g>
-                            </svg>
-
-                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-base text-slate-400 font-medium uppercase tracking-wider">
-                                    Итого
-                                </span>
-                                <span className="text-2xl font-extrabold text-slate-800">100%</span>
-                            </div>
-                        </div>
-
-                        <div className="flex-1 w-full">
-                            <div className="flex flex-col gap-1.5">
-                                {segments.map((item) => {
-                                    const { Icon } = item;
-                                    return (
-                                        <div
-                                            key={item.key}
-                                            className="flex items-center justify-between px-3 py-2 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-colors gap-3"
-                                        >
-                                            <div className="flex items-center gap-2.5 whitespace-nowrap">
-                                                <div
-                                                    className="w-3.5 h-3.5 rounded-full flex-shrink-0"
-                                                    style={{
-                                                        backgroundColor: item.color,
-                                                        boxShadow:
-                                                            item.color === '#94a3b8'
-                                                                ? 'inset 0 0 0 1px #64748b'
-                                                                : 'none',
-                                                    }}
-                                                ></div>
-
-                                                <Icon style={{ color: item.color, fontSize: '20px' }} />
-
-                                                <span className="font-semibold text-slate-700 text-lg md:text-xl">
-                                                    {item.name}
-                                                </span>
-                                            </div>
-
-                                            <div className="text-right flex items-center gap-2.5 flex-shrink-0">
-                                                <span className="font-bold text-slate-800 text-lg md:text-xl whitespace-nowrap">
-                                                    {item.value.toLocaleString('ru-RU')} ₽
-                                                </span>
-                                                <span className="text-base font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full whitespace-nowrap min-w-[64px] text-center">
-                                                    {item.percent}%
-                                                </span>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
+                    <CostBreakdown rows={rows} />
                 )}
 
-                {/* Кнопка «Оставить заявку» */}
-                <div className="mt-5">
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Button
-                        type="primary"
                         size="large"
                         block
                         icon={<PhoneOutlined />}
                         onClick={() => setLeadModalOpen(true)}
                         disabled={loading}
-                        className="!h-14 !text-lg md:!text-xl !font-bold !rounded-xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-lg shadow-fuchsia-500/30 transition-all hover:scale-[1.01] disabled:!bg-slate-300 disabled:!shadow-none disabled:!scale-100"
+                        className="btn-brass !h-12 !text-base !font-semibold !rounded-md"
                     >
                         Оставить заявку
                     </Button>
+                    <Link to={calculatorLink(car._raw)} onClick={onClose}>
+                        <Button size="large" block className="!h-12 !text-base !rounded-md">
+                            Посчитать на юрлицо
+                        </Button>
+                    </Link>
                 </div>
 
-                <div className="mt-4 px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                    <p className="text-slate-500 text-base m-0 leading-snug">
-                        * Расчет является предварительным. Точная стоимость зависит от курса валют и текущих таможенных пошлин.
-                    </p>
-                </div>
+                <p className="text-ink/55 text-sm mt-4 mb-0 text-center leading-snug">
+                    Расчёт предварительный: итог зависит от курса валют и действующих таможенных ставок.
+                </p>
             </Modal>
 
             <LeadModal

@@ -9,6 +9,7 @@ import BlogPost from './pages/BlogPost';
 import Reviews from './pages/Reviews';
 import CarDetails from './pages/CarDetails';
 import Privacy from './pages/Privacy';
+import Calculator from './pages/Calculator';
 
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminCars from './pages/Admin/AdminCars';
@@ -24,8 +25,9 @@ import { isAuthenticated } from './services/AuthApi.js';
 
 const STATIC_TITLES = {
     '/':              'Главная',
-    '/about':         'О нас',
+    '/about':         'О компании',
     '/catalog':       'Каталог автомобилей',
+    '/calculator':    'Калькулятор растаможки',
     '/blog':          'Блог и новости',
     '/reviews':       'Отзывы клиентов',
     '/privacy':       'Политика конфиденциальности',
@@ -105,6 +107,7 @@ function App() {
                     <Route index element={<Home />} />
                     <Route path="about" element={<About />} />
                     <Route path="catalog" element={<Catalog />} />
+                    <Route path="calculator" element={<Calculator />} />
                     <Route path="blog" element={<Blog />} />
                     <Route path="blog/:slug" element={<BlogPost />} />
                     <Route path="reviews" element={<Reviews />} />

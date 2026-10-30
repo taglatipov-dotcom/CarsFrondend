@@ -120,8 +120,8 @@ export default function Catalog() {
             <Button
                 onClick={onClick}
                 className={`w-full !text-left !justify-start !h-auto min-h-[42px] !px-3.5 !py-2.5 !rounded-lg !font-medium !text-base !leading-tight !whitespace-normal transition-all ${active
-                    ? '!bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !text-white !border-none shadow-sm shadow-fuchsia-500/20'
-                    : '!bg-transparent !text-slate-700 !border-transparent hover:!bg-slate-100 hover:!text-violet-600'
+                    ? '!bg-ink !text-paper !border-none'
+                    : '!bg-transparent !text-ink/80 !border-transparent hover:!bg-ink/5 hover:!text-ink'
                 }`}
             >
                 {children}
@@ -130,7 +130,7 @@ export default function Catalog() {
     );
 
     const GroupTitle = ({ children }) => (
-        <span className="text-base font-bold text-slate-500 uppercase tracking-wider mb-2.5 block">
+        <span className="text-base font-bold text-ink/55 mb-2.5 block">
             {children}
         </span>
     );
@@ -139,13 +139,13 @@ export default function Catalog() {
         <div className="min-h-screen py-10 w-full">
             <div className="w-full px-3 sm:px-[5%] lg:px-[10%]">
                 <div className="text-center mb-12">
-                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-2xl">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-paper mb-6">
                         Каталог автомобилей
                     </h1>
-                    <p className="text-slate-100 text-xl md:text-2xl max-w-3xl mx-auto font-light drop-shadow-lg">
+                    <p className="text-paper/80 text-xl md:text-2xl max-w-3xl mx-auto font-light">
                         {loading && total === 0
                             ? 'Загрузка...'
-                            : <>Найдено моделей: <span className="font-bold text-cyan-400">{total}</span></>
+                            : <>Найдено моделей: <span className="font-bold text-brass-lo">{total}</span></>
                         }
                     </p>
                 </div>
@@ -153,37 +153,37 @@ export default function Catalog() {
                 <div className="flex flex-col lg:flex-row gap-8">
 
                     <div className="w-full lg:w-80 xl:w-96 flex-shrink-0">
-                        <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/50 sticky top-24">
+                        <div className="bg-paper rounded-xl p-6 border border-ink/10 sticky top-24">
 
                             <div className="flex justify-between items-center mb-5">
-                                <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2 m-0">
-                                    <FilterOutlined className="text-violet-500" /> Фильтры
+                                <h3 className="text-xl font-bold text-ink flex items-center gap-2 m-0">
+                                    <FilterOutlined className="text-brass-lo" /> Фильтры
                                 </h3>
                                 <Button
                                     type="text"
                                     size="small"
                                     icon={<ClearOutlined />}
                                     onClick={resetFilters}
-                                    className="text-slate-500 hover:text-fuchsia-500 text-base"
+                                    className="text-ink/55 hover:text-brass-lo text-base"
                                 >
                                     Сбросить
                                 </Button>
                             </div>
 
-                            <div className="mb-5 p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200">
+                            <div className="mb-5 p-4 rounded-lg bg-brass/10 border border-brass/40">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-base font-bold text-amber-700 flex items-center gap-1.5">
+                                    <span className="text-base font-bold text-brass-lo flex items-center gap-1.5">
                                         <FireOutlined /> Бюджетная таможня
                                     </span>
                                     <Switch
                                         size="small"
                                         checked={filter.budgetCustoms}
                                         onChange={(checked) => updateFilter({ budgetCustoms: checked })}
-                                        className={filter.budgetCustoms ? '!bg-amber-500' : ''}
+                                        className={filter.budgetCustoms ? '!bg-brass' : ''}
                                     />
                                 </div>
                                 <Tooltip title="Авто возрастом 3–5 лет, бензиновый или дизельный двигатель, объём до 1.5 л, мощность до 160 л.с.">
-                                    <p className="text-sm text-amber-800 leading-snug m-0 cursor-help">
+                                    <p className="text-sm text-brass-lo leading-snug m-0 cursor-help">
                                         Возраст 3–5 лет · Бензин/Дизель · ≤ 1.5 л · ≤ 160 л.с.
                                     </p>
                                 </Tooltip>
@@ -241,7 +241,7 @@ export default function Catalog() {
 
                                         <Button
                                             onClick={() => setBrandModalOpen(true)}
-                                            className="w-full !h-auto min-h-[42px] !px-3.5 !py-2.5 !rounded-lg !text-base !font-bold !text-violet-600 !bg-violet-50 !border !border-dashed !border-violet-300 hover:!bg-violet-100 hover:!border-violet-500 hover:!text-violet-700 transition-all !flex !items-center !justify-center !gap-1.5"
+                                            className="w-full !h-auto min-h-[42px] !px-3.5 !py-2.5 !rounded-lg !text-base !font-bold !text-brass-lo !bg-brass/10 !border !border-dashed !border-brass hover:!bg-brass/10 hover:!border-brass hover:!text-brass-lo transition-all !flex !items-center !justify-center !gap-1.5"
                                         >
                                             <GlobalOutlined /> Все марки ({allBrands.length})
                                         </Button>
@@ -289,10 +289,10 @@ export default function Catalog() {
                     <div className="flex-1 relative min-h-[60vh]">
 
                         {loading && (
-                            <div className="absolute inset-0 bg-white/70 backdrop-blur-md z-40 flex items-center justify-center rounded-3xl">
+                            <div className="absolute inset-0 bg-paper z-40 flex items-center justify-center rounded-xl">
                                 <div className="flex flex-col items-center gap-3">
                                     <Spin size="large" />
-                                    <span className="text-slate-600 font-medium text-base">Загрузка автомобилей...</span>
+                                    <span className="text-ink/80 font-medium text-base">Загрузка автомобилей...</span>
                                 </div>
                             </div>
                         )}
@@ -322,18 +322,18 @@ export default function Catalog() {
                                 )}
                             </>
                         ) : !loading && loadError ? (
-                            <div className="text-center py-20 bg-white/95 backdrop-blur-xl rounded-3xl border border-white/50 flex flex-col justify-center items-center shadow-2xl">
-                                <h3 className="text-2xl font-bold text-slate-500 mb-2">Не удалось загрузить автомобили</h3>
-                                <p className="text-slate-400 mb-6 text-base">Проверьте соединение и попробуйте обновить страницу</p>
-                                <Button onClick={() => window.location.reload()} className="!bg-slate-900 !text-white rounded-xl h-10 px-6">
+                            <div className="text-center py-20 bg-paper rounded-xl border border-ink/10 flex flex-col justify-center items-center">
+                                <h3 className="text-2xl font-bold text-ink/55 mb-2">Не удалось загрузить автомобили</h3>
+                                <p className="text-ink/55 mb-6 text-base">Проверьте соединение и попробуйте обновить страницу</p>
+                                <Button onClick={() => window.location.reload()} className="!bg-ink !text-ink rounded-xl h-10 px-6">
                                     Обновить
                                 </Button>
                             </div>
                         ) : !loading ? (
-                            <div className="text-center py-20 bg-white/95 backdrop-blur-xl rounded-3xl border border-white/50 flex flex-col justify-center items-center shadow-2xl">
-                                <h3 className="text-2xl font-bold text-slate-400 mb-2">Ничего не найдено</h3>
-                                <p className="text-slate-400 mb-6 text-base">Попробуйте изменить параметры фильтрации</p>
-                                <Button onClick={resetFilters} className="!bg-slate-900 !text-white rounded-xl h-10 px-6">
+                            <div className="text-center py-20 bg-paper rounded-xl border border-ink/10 flex flex-col justify-center items-center">
+                                <h3 className="text-2xl font-bold text-ink/55 mb-2">Ничего не найдено</h3>
+                                <p className="text-ink/55 mb-6 text-base">Попробуйте изменить параметры фильтрации</p>
+                                <Button onClick={resetFilters} className="!bg-ink !text-ink rounded-xl h-10 px-6">
                                     Сбросить фильтры
                                 </Button>
                             </div>
@@ -344,21 +344,21 @@ export default function Catalog() {
 
             <Modal
                 title={
-                    <span className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <GlobalOutlined className="text-violet-500" /> Все марки автомобилей
+                    <span className="text-xl font-bold text-ink flex items-center gap-2">
+                        <GlobalOutlined className="text-brass-lo" /> Все марки автомобилей
                     </span>
                 }
                 open={brandModalOpen}
                 onCancel={() => { setBrandModalOpen(false); setBrandSearch(''); }}
                 footer={null}
                 width={720}
-                className="rounded-3xl overflow-hidden"
+                className="rounded-xl overflow-hidden"
                 bodyStyle={{ padding: '20px 24px', maxHeight: '70vh', overflowY: 'auto' }}
             >
                 <Input
                     size="large"
                     placeholder="Поиск марки или страны..."
-                    prefix={<SearchOutlined className="text-slate-400" />}
+                    prefix={<SearchOutlined className="text-ink/55" />}
                     value={brandSearch}
                     onChange={(e) => setBrandSearch(e.target.value)}
                     allowClear
@@ -367,27 +367,27 @@ export default function Catalog() {
 
                 <Button
                     onClick={() => selectBrand('All')}
-                    className={`!w-full !h-11 !rounded-xl !font-semibold !text-base !mb-5 transition-all ${
+                    className={`!w-full !h-11 !rounded-lg !font-semibold !text-base !mb-5 transition-all ${
                         filter.brand === 'All'
-                            ? '!bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !text-white !border-none shadow-md shadow-fuchsia-500/20'
-                            : '!bg-slate-50 !text-slate-700 !border !border-slate-200 hover:!bg-slate-100'
+                            ? '!bg-ink !text-paper !border-none'
+                            : '!bg-ink/5 !text-ink/80 !border !border-ink/15 hover:!bg-ink/10'
                     }`}
                 >
                     Все марки
                 </Button>
 
                 {Object.keys(filteredBrandsByCountry).length === 0 ? (
-                    <div className="text-center py-10 text-slate-400">
+                    <div className="text-center py-10 text-ink/55">
                         <SearchOutlined className="text-3xl mb-2" />
                         <p className="text-base">Марки не найдены</p>
                     </div>
                 ) : (
                     Object.entries(filteredBrandsByCountry).map(([country, brands]) => (
                         <div key={country} className="mb-5">
-                            <div className="text-base font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-violet-500"></span>
+                            <div className="text-base font-bold text-ink/55 mb-2 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-brass"></span>
                                 {country}
-                                <span className="text-slate-400 font-normal">({brands.length})</span>
+                                <span className="text-ink/55 font-normal">({brands.length})</span>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                 {brands.map(brand => {
@@ -396,10 +396,10 @@ export default function Catalog() {
                                         <Button
                                             key={brand}
                                             onClick={() => selectBrand(brand)}
-                                            className={`!h-11 !rounded-xl !font-medium !text-base transition-all ${
+                                            className={`!h-11 !rounded-lg !font-medium !text-base transition-all ${
                                                 isActive
-                                                    ? '!bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !text-white !border-none shadow-md shadow-fuchsia-500/20'
-                                                    : '!bg-white !text-slate-700 !border !border-slate-200 hover:!bg-violet-50 hover:!border-violet-300 hover:!text-violet-600'
+                                                    ? '!bg-ink !text-paper !border-none'
+                                                    : '!bg-white !text-ink/80 !border !border-ink/15 hover:!border-brass-lo hover:!text-ink'
                                             }`}
                                         >
                                             {brand}

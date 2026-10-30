@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Statistic, Button } from 'antd';
+import { Button } from 'antd';
 import { ArrowRightOutlined, CalculatorOutlined } from '@ant-design/icons';
-import LeadModal from './LeadModal';
 
 const sections = [
     {
@@ -34,38 +32,36 @@ const sections = [
 ];
 
 export default function AboutContent() {
-    const [leadOpen, setLeadOpen] = useState(false);
-
     return (
         <div className="relative">
             <div className="max-w-7xl mx-auto px-4">
-                <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="h-px bg-paper/15"></div>
             </div>
 
-            <div className="py-16 px-4 text-center">
-                <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
+            <div className="pt-14 md:pt-20 pb-8 px-4 max-w-7xl mx-auto">
+                <h2 className="text-2xl md:text-4xl mb-4 text-paper">
                     О компании ILSATAO
                 </h2>
-                <p className="text-slate-100 max-w-3xl mx-auto text-xl md:text-2xl font-light drop-shadow-lg">
-                    Автомобили из Китая. Покупка, которую не нужно организовывать самостоятельно.
+                <p className="text-paper/70 max-w-3xl text-lg md:text-xl m-0">
+                    Поставки автомобилей из Китая для бизнеса — без поиска посредников и самостоятельной логистики.
                 </p>
             </div>
 
             <div className="max-w-7xl mx-auto py-8 px-4">
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50 mb-8">
+                <div className="bg-paper rounded-xl p-8 md:p-12 border border-ink/10 mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <p className="text-slate-900 font-bold leading-relaxed mb-6 text-xl md:text-2xl">
-                                ILSATAO занимается подбором, выкупом и доставкой автомобилей с китайского рынка в Россию.
+                            <p className="text-ink font-bold leading-relaxed mb-6 text-xl md:text-2xl">
+                                ILSATAO подбирает, выкупает и доставляет автомобили с китайского рынка в Россию для компаний, дилеров и автосалонов.
                             </p>
-                            <p className="text-slate-700 leading-relaxed mb-6 text-lg md:text-xl">
+                            <p className="text-ink/80 leading-relaxed mb-6 text-lg md:text-xl">
                                 Мы работаем не только с китайскими марками. В Китае представлен большой выбор европейских, японских и корейских автомобилей — зачастую в комплектациях, которые сложно найти на российском рынке.
                             </p>
-                            <p className="text-slate-700 leading-relaxed text-lg md:text-xl">
-                                Наша команда работает в России и Китае. Мы ищем подходящие предложения, связываемся с продавцами, организуем проверку автомобиля и его доставку. Клиенту остаётся выбрать подходящий вариант, согласовать условия и принять решение о покупке.
+                            <p className="text-ink/80 leading-relaxed text-lg md:text-xl">
+                                Наша команда работает в России и Китае. Мы ищем предложения, связываемся с продавцами, организуем проверку, доставку и растаможку. Клиенту остаётся согласовать варианты и условия — остальное мы ведём по договору.
                             </p>
                         </div>
-                        <div className="rounded-3xl overflow-hidden shadow-2xl relative">
+                        <div className="rounded-xl overflow-hidden relative">
                             <img
                                 src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&q=80&w=1000"
                                 alt="Офис компании"
@@ -79,15 +75,15 @@ export default function AboutContent() {
                     {sections.map((s) => (
                         <div
                             key={s.title}
-                            className={`bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50 ${s.wide ? 'md:col-span-2' : ''}`}
+                            className={`bg-paper rounded-xl p-8 md:p-12 border border-ink/10 ${s.wide ? 'md:col-span-2' : ''}`}
                         >
-                            <h3 className="text-2xl md:text-3xl font-extrabold mb-6 text-slate-900 leading-tight">
+                            <h3 className="text-2xl md:text-3xl font-semibold mb-6 text-ink leading-tight">
                                 {s.title}
                             </h3>
                             {s.paragraphs.map((p, i) => (
                                 <p
                                     key={i}
-                                    className={`text-slate-700 leading-relaxed text-lg md:text-xl ${i < s.paragraphs.length - 1 ? 'mb-4' : ''}`}
+                                    className={`text-ink/80 leading-relaxed text-lg md:text-xl ${i < s.paragraphs.length - 1 ? 'mb-4' : ''}`}
                                 >
                                     {p}
                                 </p>
@@ -96,28 +92,26 @@ export default function AboutContent() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-16 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pb-16 max-w-4xl">
                     {[
-                        { title: 'Довольных клиентов', value: 98, suffix: '%', color: 'from-violet-500 to-fuchsia-500' },
-                        { title: 'Городов доставки', value: 85, suffix: '', color: 'from-fuchsia-500 to-pink-500' }
+                        { title: 'Довольных клиентов', value: 98, suffix: '%', color: 'bg-brass' },
+                        { title: 'Городов доставки', value: 85, suffix: '', color: 'bg-brass' }
                     ].map((stat, i) => (
-                        <div key={i} className={`bg-gradient-to-br ${stat.color} p-8 rounded-3xl text-white shadow-2xl`}>
-                            <Statistic
-                                title={<span className="text-white/95 font-medium text-lg md:text-xl">{stat.title}</span>}
-                                value={stat.value}
-                                suffix={stat.suffix}
-                                valueStyle={{ color: 'white', fontWeight: '800', fontSize: '3rem' }}
-                            />
+                        <div key={i} className="border-t border-brass/50 pt-5">
+                            <div className="text-brass text-5xl font-medium" style={{ fontFamily: 'var(--font-display)' }}>
+                                {stat.value}{stat.suffix}
+                            </div>
+                            <div className="text-paper/70 text-lg mt-2">{stat.title}</div>
                         </div>
                     ))}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-16">
-                    <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50 flex flex-col">
-                        <h3 className="text-2xl md:text-3xl font-extrabold mb-4 text-slate-900 leading-tight">
+                    <div className="bg-paper rounded-xl p-8 md:p-12 border border-ink/10 flex flex-col">
+                        <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-ink leading-tight">
                             Посмотрите, как мы работаем
                         </h3>
-                        <p className="text-slate-700 leading-relaxed text-lg md:text-xl mb-8 flex-1">
+                        <p className="text-ink/80 leading-relaxed text-lg md:text-xl mb-8 flex-1">
                             В нашем каталоге представлены автомобили с китайского рынка — от доступных седанов до премиальных моделей.
                         </p>
                         <Link to="/catalog" className="block">
@@ -126,41 +120,33 @@ export default function AboutContent() {
                                 size="large"
                                 block
                                 icon={<ArrowRightOutlined />}
-                                className="!h-14 !text-lg !font-bold !rounded-2xl !bg-gradient-to-r !from-blue-500 !to-indigo-500 !border-none hover:!from-blue-400 hover:!to-indigo-400 !text-white shadow-xl shadow-indigo-500/40 transition-all hover:-translate-y-1"
+                                className="!h-14 !text-lg !font-semibold !rounded-lg btn-brass transition-all"
                             >
                                 Перейти в каталог
                             </Button>
                         </Link>
                     </div>
 
-                    <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50 flex flex-col">
-                        <h3 className="text-2xl md:text-3xl font-extrabold mb-4 text-slate-900 leading-tight">
-                            Начнём с вашего автомобиля?
+                    <div className="bg-paper rounded-xl p-8 md:p-12 border border-ink/10 flex flex-col">
+                        <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-ink leading-tight">
+                            Сколько будет стоить под ключ?
                         </h3>
-                        <p className="text-slate-700 leading-relaxed text-lg md:text-xl mb-8 flex-1">
-                            Расскажите, какую машину хотите приобрести и на какой бюджет рассчитываете. Мы посмотрим доступные предложения и подготовим предварительный расчёт стоимости с доставкой в Россию.
+                        <p className="text-ink/80 leading-relaxed text-lg md:text-xl mb-8 flex-1">
+                            Введите цену, год и двигатель — калькулятор покажет пошлину, НДС, утильсбор и итог под ключ. Для юрлица и физлица.
                         </p>
-                        <Button
-                            type="primary"
-                            size="large"
-                            block
-                            icon={<CalculatorOutlined />}
-                            onClick={() => setLeadOpen(true)}
-                            className="!h-14 !text-lg !font-bold !rounded-2xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-xl shadow-fuchsia-500/40 transition-all hover:-translate-y-1"
-                        >
-                            Рассчитать стоимость
-                        </Button>
+                        <Link to="/calculator" state={{ resetScroll: true }} className="block">
+                            <Button
+                                size="large"
+                                block
+                                icon={<CalculatorOutlined />}
+                                className="!h-14 !text-lg !font-semibold !rounded-lg btn-brass"
+                            >
+                                Открыть калькулятор
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
-
-            <LeadModal
-                open={leadOpen}
-                onClose={() => setLeadOpen(false)}
-                title="Рассчитать стоимость"
-                subtitle="Расскажите, какой автомобиль ищете и на какой бюджет рассчитываете"
-                successText="Мы свяжемся с вами и подготовим предварительный расчёт"
-            />
         </div>
     );
 }

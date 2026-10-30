@@ -45,9 +45,9 @@ export default function BlogPost() {
 
     if (!blog) {
         return (
-            <div className="flex flex-col justify-center items-center min-h-[70vh] text-white">
+            <div className="flex flex-col justify-center items-center min-h-[70vh] text-paper">
                 <h2 className="text-3xl font-bold mb-4">Статья не найдена</h2>
-                <Button type="primary" onClick={() => navigate('/blog')} className="!bg-slate-900 hover:!bg-slate-800">
+                <Button type="primary" onClick={() => navigate('/blog')} className="!bg-ink hover:!bg-ink/90">
                     Вернуться в блог
                 </Button>
             </div>
@@ -59,18 +59,18 @@ export default function BlogPost() {
             <div className="w-full md:w-3/4 mx-auto">
 
                 <div className="flex items-center gap-2 mb-8 text-base flex-wrap">
-                    <Link to="/" className="!text-slate-300 hover:!text-cyan-400 transition-colors flex items-center gap-1.5">
+                    <Link to="/" className="!text-paper/80 hover:!text-brass-lo transition-colors flex items-center gap-1.5">
                         <HomeOutlined /> Главная
                     </Link>
-                    <span className="text-slate-500">/</span>
-                    <Link to="/blog" className="!text-slate-300 hover:!text-cyan-400 transition-colors">
+                    <span className="text-ink/55">/</span>
+                    <Link to="/blog" className="!text-paper/80 hover:!text-brass-lo transition-colors">
                         Блог
                     </Link>
-                    <span className="text-slate-500">/</span>
-                    <span className="text-slate-400 truncate max-w-[400px]">{blog.title}</span>
+                    <span className="text-ink/55">/</span>
+                    <span className="text-ink/55 truncate max-w-[400px]">{blog.title}</span>
                 </div>
 
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 h-72 md:h-[500px]">
+                <div className="relative rounded-xl overflow-hidden mb-10 h-72 md:h-[500px]">
                     <img
                         src={toImageUrl(blog.image)}
                         alt={blog.title}
@@ -79,21 +79,21 @@ export default function BlogPost() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
                     <div className="absolute top-6 left-6">
-                        <Tag className="!rounded-full !px-4 !py-1.5 !border-none !text-white !font-semibold !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !text-base !m-0">
+                        <Tag className="!rounded-full !px-4 !py-1.5 !border-none !text-ink !font-semibold !bg-brass !text-base !m-0">
                             {blog.tag}
                         </Tag>
                     </div>
                 </div>
 
                 <div className="mb-10">
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-6 text-white drop-shadow-2xl leading-tight">
+                    <h1 className="text-3xl md:text-5xl font-extrabold mb-6 text-paper leading-tight">
                         {blog.title}
                     </h1>
 
-                    <div className="flex flex-wrap items-center gap-5 text-slate-300 text-base">
+                    <div className="flex flex-wrap items-center gap-5 text-paper/80 text-base">
                         <div className="flex items-center gap-2">
-                            <Avatar size={40} icon={<UserOutlined />} className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white" />
-                            <span className="font-semibold text-white">{blog.author}</span>
+                            <Avatar size={40} icon={<UserOutlined />} className="bg-brass text-ink" />
+                            <span className="font-semibold text-paper">{blog.author}</span>
                         </div>
                         <span className="flex items-center gap-1.5">
                             <CalendarOutlined /> {blog.date}
@@ -106,7 +106,7 @@ export default function BlogPost() {
                     </div>
                 </div>
 
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-12 shadow-2xl border border-white/50 min-w-0 overflow-hidden">
+                <div className="bg-paper rounded-xl p-6 md:p-12 border border-ink/10 min-w-0 overflow-hidden">
                     <article
                         className="article-content"
                         dangerouslySetInnerHTML={{ __html: normalizeArticleHtml(blog.content) }}
@@ -118,7 +118,7 @@ export default function BlogPost() {
                         size="large"
                         icon={<ArrowLeftOutlined />}
                         onClick={() => navigate('/blog')}
-                        className="!h-12 !px-8 !rounded-2xl !bg-white/10 !text-white !border-white/30 hover:!bg-white/20 hover:!text-white backdrop-blur-md !font-semibold !text-base"
+                        className="!h-12 !px-8 !rounded-lg !bg-paper/10 !text-paper !border-paper/15 hover:!bg-paper/20 hover:!text-paper !font-semibold !text-base"
                     >
                         Все статьи
                     </Button>

@@ -24,11 +24,11 @@ export default function ReviewsContent() {
     return (
         <div className="relative">
             <div className="max-w-7xl mx-auto px-4">
-                <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="h-px bg-paper/15"></div>
             </div>
 
-            <div className="py-16 px-4 text-center">
-                <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-2xl">
+            <div className="pt-14 md:pt-20 pb-8 px-4 max-w-7xl mx-auto">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-paper">
                     Отзывы наших клиентов
                 </h2>
             </div>
@@ -44,7 +44,7 @@ export default function ReviewsContent() {
                             {reviews.slice(0, 6).map((review) => (
                                 <Card
                                     key={review.id}
-                                    className="rounded-3xl shadow-2xl border-none h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 !bg-white/95 backdrop-blur-xl"
+                                    className="rounded-xl border-none h-full flex flex-col transition-transform duration-300 !bg-paper"
                                     bodyStyle={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '28px' }}
                                 >
                                     <div className="flex items-center gap-4 mb-5">
@@ -52,22 +52,22 @@ export default function ReviewsContent() {
                                             size={64}
                                             src={toThumbUrl(review.avatar)}
                                             icon={<UserOutlined />}
-                                            className="border-2 border-slate-100 shadow-md flex-shrink-0"
+                                            className="border-2 border-ink/10 flex-shrink-0"
                                         />
                                         <div>
-                                            <h3 className="text-xl font-bold m-0 text-slate-800">{review.name}</h3>
-                                            <Rate disabled defaultValue={review.rating} className="text-lg text-amber-400 mt-1" />
+                                            <h3 className="text-xl font-bold m-0 text-ink">{review.name}</h3>
+                                            <Rate disabled defaultValue={review.rating} className="text-lg text-brass-lo mt-1" />
                                         </div>
                                     </div>
 
-                                    <p className="text-slate-600 italic flex-1 mb-5 text-lg md:text-xl leading-relaxed relative">
-                                        <span className="text-5xl text-slate-100 absolute -top-3 -left-2 z-0">"</span>
+                                    <p className="text-ink/80 italic flex-1 mb-5 text-lg md:text-xl leading-relaxed relative">
+                                        <span className="text-5xl text-paper/80 absolute -top-3 -left-2 z-0">"</span>
                                         <span className="relative z-10 line-clamp-5">{review.text}</span>
                                     </p>
 
-                                    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-2xl mt-auto border border-slate-100">
-                                        <span className="text-base text-slate-500 block mb-1 font-medium">Купленный автомобиль:</span>
-                                        <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 text-lg">
+                                    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-lg mt-auto border border-ink/10">
+                                        <span className="text-base text-ink/55 block mb-1 font-medium">Купленный автомобиль:</span>
+                                        <span className="font-extrabold text-brass-lo text-lg">
                                             {review.car}
                                         </span>
                                     </div>
@@ -82,7 +82,7 @@ export default function ReviewsContent() {
                                     size="large"
                                     block
                                     icon={<ArrowRightOutlined className="text-2xl" />}
-                                    className="!h-20 !text-xl md:!text-2xl !font-extrabold !rounded-3xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-2xl shadow-fuchsia-500/50 transition-all hover:scale-[1.01]"
+                                    className="!h-20 !text-xl md:!text-2xl !font-extrabold !rounded-xl btn-brass transition-all"
                                 >
                                     Перейти к отзывам
                                 </Button>

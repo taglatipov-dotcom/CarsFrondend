@@ -352,6 +352,33 @@ export const fetchCarCost = async (rawCar) => {
     return res.json();
 };
 
+/**
+ * Отдельный калькулятор: данные вводит пользователь.
+ * owner: 1 — физлицо для себя, 2 — юрлицо, 3 — физлицо для перепродажи.
+ */
+export const fetchCustomsCalc = async ({ price, curr, owner, engineType, engineVolume, power, powerUnit, year }) => {
+    const res = await fetch(`${API_BASE_URL}/cars/calculator`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+            price,
+            curr,
+            owner,
+            engine_type: engineType,
+            engine_volume: engineVolume || null,
+            power,
+            power_unit: powerUnit,
+            year: year || null,
+        }),
+    });
+    if (!res.ok) {
+        let detail = '';
+        try { detail = (await res.json())?.detail; } catch { /* тело не JSON */ }
+        throw new Error(typeof detail === 'string' && detail ? detail : `Ошибка расчёта (${res.status})`);
+    }
+    return res.json();
+};
+
 export const normalizeCostBreakdown = (raw, fallback = {}) => {
     const num = (v) => {
         const n = Number(v);
@@ -368,8 +395,12 @@ export const normalizeCostBreakdown = (raw, fallback = {}) => {
     const apiTotal  = num(raw?.total)  || (sbor + tax + excise + nds + util);
     const apiTotal2 = num(raw?.total2) || (price + apiTotal);
 
+    // calcus.ru не всегда присылает цену машины в рублях отдельно:
+    // total2 = цена + платежи, поэтому восстанавливаем её из разницы
+    const priceRub = price || Math.max(0, apiTotal2 - apiTotal);
+
     return {
-        price,
+        price: priceRub,
         sbor,
         tax,
         excise,
@@ -440,6 +471,10 @@ export const sendLead = async (data) => {
         contact_method: data.contactMethod || null,
         preferences: data.preferences || null,
         budget: data.budget ? String(data.budget) : null,
+        client_type: data.clientType || null,
+        company: data.company?.trim() || null,
+        inn: data.inn?.trim() || null,
+        quantity: data.quantity ? Number(data.quantity) : null,
         consent: !!data.consent,
         newsletter: !!data.newsletter,
         source: data.source || 'site',

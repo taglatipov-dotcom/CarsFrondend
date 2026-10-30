@@ -35,10 +35,10 @@ export default function Blog() {
     return (
         <div className="max-w-7xl mx-auto py-20 px-4">
             <div className="text-center mb-16">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white drop-shadow-2xl">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 text-paper">
                     Блог и новости
                 </h1>
-                <p className="text-slate-100 text-xl md:text-2xl max-w-3xl mx-auto font-light drop-shadow-lg">
+                <p className="text-paper/80 text-xl md:text-2xl max-w-3xl mx-auto font-light">
                     Полезные статьи о покупке, растаможке и эксплуатации авто из Китая
                 </p>
             </div>
@@ -46,9 +46,9 @@ export default function Blog() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {blogs.map((blog, idx) => {
                     const gradients = [
-                        'from-cyan-500 to-blue-500',
-                        'from-violet-500 to-fuchsia-500',
-                        'from-amber-500 to-orange-500'
+                        'bg-brass',
+                        'bg-brass',
+                        'bg-brass'
                     ];
                     const currentGradient = gradients[idx % gradients.length];
 
@@ -57,7 +57,7 @@ export default function Blog() {
                             key={blog.id}
                             hoverable
                             onClick={() => navigate(blogPath(blog))}
-                            className="group rounded-3xl overflow-hidden border-none shadow-2xl hover:shadow-blue-900/50 transition-all duration-300 flex flex-col h-full !bg-white/95 backdrop-blur-xl cursor-pointer"
+                            className="group rounded-xl overflow-hidden border-none transition-all duration-300 flex flex-col h-full !bg-paper cursor-pointer"
                             bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '24px' }}
                             cover={
                                 <div className="h-56 overflow-hidden">
@@ -70,25 +70,25 @@ export default function Blog() {
                             }
                         >
                             <div className="flex justify-between items-center mb-5">
-                                <Tag className={`rounded-full px-3.5 py-1 border-none text-white font-semibold bg-gradient-to-r ${currentGradient} text-base`}>
+                                <Tag className={`rounded-full px-3.5 py-1 border-none text-ink font-medium ${currentGradient} text-base`}>
                                     {blog.tag}
                                 </Tag>
-                                <span className="text-slate-500 text-base flex items-center gap-1 font-medium">
+                                <span className="text-ink/55 text-base flex items-center gap-1 font-medium">
                                     <CalendarOutlined /> {blog.date}
                                 </span>
                             </div>
-                            <h3 className="text-xl md:text-2xl font-bold mb-4 line-clamp-2 text-slate-800 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-fuchsia-600 transition-all">
+                            <h3 className="text-xl md:text-2xl font-bold mb-4 line-clamp-2 text-ink group-hover:text-brass-lo transition-all">
                                 {blog.title}
                             </h3>
-                            <p className="text-slate-600 line-clamp-3 mb-8 flex-1 text-lg md:text-xl leading-relaxed">
+                            <p className="text-ink/80 line-clamp-3 mb-8 flex-1 text-lg md:text-xl leading-relaxed">
                                 {blog.excerpt}
                             </p>
-                            <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-auto">
+                            <div className="flex items-center justify-between pt-6 border-t border-ink/10 mt-auto">
                                 <div className="flex items-center gap-3">
-                                    <Avatar size={44} icon={<UserOutlined />} className={`bg-gradient-to-r ${currentGradient} text-white`} />
-                                    <span className="text-base font-bold text-slate-700">{blog.author}</span>
+                                    <Avatar size={44} icon={<UserOutlined />} className="!bg-ink !text-paper" />
+                                    <span className="text-base font-bold text-ink/80">{blog.author}</span>
                                 </div>
-                                <ArrowRightOutlined className="text-slate-300 text-lg group-hover:text-violet-600 group-hover:translate-x-1 transition-all" />
+                                <ArrowRightOutlined className="text-paper/80 text-lg group-hover:text-brass-lo group-hover:translate-x-1 transition-all" />
                             </div>
                         </Card>
                     );

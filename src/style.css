@@ -1,5 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@400;500;600&display=swap');
 @import "tailwindcss";
+
+/* ============ ПАЛИТРА «ХВОЯ И ЛАТУНЬ» ============
+   pine — фоны сайта (тёмно-зелёный), paper — светлые «документы» и текст на тёмном,
+   ink — текст на светлом, brass — единственный акцент, moss — «успех».
+   Градиенты, цветные тени и стекло не используем. */
+@theme {
+    --color-pine-950: #0F1A17;
+    --color-pine-900: #16241F;
+    --color-pine-800: #1D2F28;
+    --color-pine-700: #2A3D35;
+    --color-pine-600: #3B5248;
+    --color-paper: #ECE8DF;
+    --color-ink: #14211C;
+    --color-brass: #C8A15A;
+    --color-brass-hi: #D7B676;
+    --color-brass-lo: #8A6A2F;
+    --color-moss: #5F8F6E;
+
+    --font-sans: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Unbounded', 'Onest', system-ui, sans-serif;
+}
+
+html { background: var(--color-pine-950); }
+body {
+    background: var(--color-pine-950);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Заголовки — Unbounded среднего веса (вне слоёв, поэтому главнее font-extrabold) */
+h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+}
+
+::selection { background: var(--color-brass); color: var(--color-ink); }
+
+:focus-visible { outline: 2px solid var(--color-brass); outline-offset: 2px; }
+
+/* Кнопки-акценты (на них ant-design любит переопределять цвет текста) */
+.btn-brass.ant-btn,
+.btn-brass.ant-btn:not(:disabled):hover {
+    background: var(--color-brass) !important;
+    color: var(--color-ink) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.btn-brass.ant-btn:not(:disabled):hover { background: var(--color-brass-hi) !important; }
+.btn-ghost.ant-btn {
+    background: transparent !important;
+    color: var(--color-paper) !important;
+    border: 1px solid rgb(236 232 223 / 0.3) !important;
+    box-shadow: none !important;
+}
+.btn-ghost.ant-btn:not(:disabled):hover { border-color: var(--color-brass) !important; color: var(--color-brass) !important; }
 
 
 @keyframes fadeIn {
@@ -13,7 +71,7 @@
 
 /* ============ СТИЛИ ДЛЯ HTML-КОНТЕНТА СТАТЬИ (с API) ============ */
 .article-content {
-    color: #334155;
+    color: #26332D;
     font-size: 17px;
     line-height: 1.75;
     /* длинные ссылки и слова переносим, а не выталкиваем за блок */
@@ -34,18 +92,18 @@
 .article-content p.lead {
     font-size: 1.25rem;
     line-height: 1.65;
-    color: #1e293b;
+    color: #14211C;
     font-weight: 400;
     margin-bottom: 2rem;
     padding-left: 1rem;
     border-left: 4px solid transparent;
-    border-image: linear-gradient(to bottom, #8b5cf6, #d946ef) 1;
+    border-color: #C8A15A;
 }
 
 .article-content h2 {
     font-size: 1.75rem;
     font-weight: 800;
-    color: #0f172a;
+    color: #14211C;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
     line-height: 1.3;
@@ -54,7 +112,7 @@
 .article-content h3 {
     font-size: 1.35rem;
     font-weight: 700;
-    color: #1e293b;
+    color: #14211C;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
     line-height: 1.4;
@@ -66,7 +124,7 @@
 }
 
 .article-content strong {
-    color: #0f172a;
+    color: #14211C;
     font-weight: 700;
 }
 
@@ -83,47 +141,47 @@
 .article-content ol { list-style-type: decimal; }
 
 .article-content li::marker {
-    color: #8b5cf6;
+    color: #8A6A2F;
     font-weight: 700;
 }
 
 .article-content a {
-    color: #8b5cf6;
+    color: #8A6A2F;
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.2s;
 }
 
 .article-content a:hover {
-    color: #d946ef;
+    color: #C8A15A;
 }
 
 .article-content img {
     width: 100%;
     max-width: 100%;
     height: auto;
-    border-radius: 1rem;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    border-radius: 0.5rem;
+    
     margin: 2rem 0;
 }
 
 .article-content iframe {
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 1rem;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    border-radius: 0.5rem;
+    
     margin: 2rem 0;
     border: none;
 }
 
 .article-content blockquote {
-    background: linear-gradient(135deg, #f5f3ff 0%, #fdf4ff 100%);
-    border-left: 4px solid #8b5cf6;
+    background: rgb(200 161 90 / 0.12);
+    border-left: 4px solid #8A6A2F;
     border-radius: 0 1rem 1rem 0;
     padding: 1.25rem 1.5rem;
     margin: 2rem 0;
     font-style: italic;
-    color: #4c1d95;
+    color: #14211C;
 }
 
 .article-content blockquote p {
@@ -134,14 +192,14 @@
     width: 100%;
     border-collapse: collapse;
     margin: 2rem 0;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    
 }
 
 .article-content thead {
-    background: linear-gradient(to right, #8b5cf6, #d946ef);
-    color: white;
+    background: #14211C;
+    color: #ECE8DF;
 }
 
 .article-content th,
@@ -202,15 +260,15 @@
 /* ============ ФИОЛЕТОВЫЕ ГРАНИЦЫ ТАБЛИЦ В CAR DETAILS ============ */
 
 .car-details-tabs .ant-descriptions-view {
-    border: 1px solid #a855f7 !important;
+    border: 1px solid rgb(20 33 28 / 0.15) !important;
     border-radius: 12px !important;
     overflow: hidden !important;
 }
 
 .car-details-tabs .ant-descriptions-row > th,
 .car-details-tabs .ant-descriptions-row > td {
-    border-bottom: 1px solid #a855f7 !important;
-    border-right: 1px solid #a855f7 !important;
+    border-bottom: 1px solid rgb(20 33 28 / 0.15) !important;
+    border-right: 1px solid rgb(20 33 28 / 0.15) !important;
 }
 
 .car-details-tabs .ant-descriptions-row > th:last-child,
@@ -232,7 +290,7 @@
 }
 
 .catalog-pagination .ant-pagination-total-text {
-    color: #ffffff !important;
+    color: #ECE8DF !important;
     font-size: 20px !important;
     font-weight: 500 !important;
     margin-right: 20px !important;
@@ -245,7 +303,7 @@
     line-height: 50px !important;
     border-radius: 12px !important;
     border: none !important;
-    background-color: #ffffff !important;
+    background-color: #ECE8DF !important;
     font-size: 20px !important;
     font-weight: 600 !important;
     transition: all 0.2s ease !important;
@@ -263,25 +321,24 @@
 }
 
 .catalog-pagination .ant-pagination-item:hover a {
-    color: #7c3aed !important;
+    color: #8A6A2F !important;
 }
 
 .catalog-pagination .ant-pagination-item-active {
-    background: linear-gradient(to right, #7c3aed, #d946ef) !important;
+    background: #C8A15A !important;
     border: none !important;
-    box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
 }
 
 .catalog-pagination .ant-pagination-item-active a {
-    color: #ffffff !important;
+    color: #14211C !important;
 }
 
 .catalog-pagination .ant-pagination-item-active:hover {
-    background: linear-gradient(to right, #8b5cf6, #e879f9) !important;
+    background: #D7B676 !important;
 }
 
 .catalog-pagination .ant-pagination-item-active:hover a {
-    color: #ffffff !important;
+    color: #14211C !important;
 }
 
 .catalog-pagination .ant-pagination-prev,
@@ -308,7 +365,7 @@
 
 .catalog-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
 .catalog-pagination .ant-pagination-next:hover .ant-pagination-item-link {
-    color: #67e8f9 !important;
+    color: #D7B676 !important;
 }
 
 .catalog-pagination .ant-pagination-prev .anticon,
@@ -345,7 +402,7 @@
 .rich-editor .ql-editor {
     min-height: 420px;
     line-height: 1.7;
-    color: #1e293b;
+    color: #14211C;
 }
 
 .rich-editor .ql-editor h1,
@@ -353,15 +410,15 @@
 .rich-editor .ql-editor h3,
 .rich-editor .ql-editor h4 {
     font-weight: 700;
-    color: #0f172a;
+    color: #14211C;
 }
 
 .rich-editor .ql-editor blockquote {
-    border-left: 4px solid #8b5cf6;
-    background: #f5f3ff;
+    border-left: 4px solid #8A6A2F;
+    background: rgb(200 161 90 / 0.12);
     border-radius: 0 8px 8px 0;
     padding: 8px 16px;
-    color: #4c1d95;
+    color: #14211C;
     font-style: italic;
     margin: 1rem 0;
 }
@@ -373,7 +430,7 @@
 }
 
 .rich-editor .ql-editor a {
-    color: #8b5cf6;
+    color: #8A6A2F;
     text-decoration: underline;
 }
 
@@ -396,10 +453,55 @@
 
 .rich-editor .ql-snow .ql-picker-label:hover,
 .rich-editor .ql-snow button:hover {
-    color: #7c3aed;
+    color: #8A6A2F;
 }
 
 .rich-editor .ql-snow .ql-picker-label:hover .ql-stroke,
 .rich-editor .ql-snow button:hover .ql-stroke {
-    stroke: #7c3aed;
+    stroke: #8A6A2F;
 }
+/* ============ ГЛАВНАЯ: ВИДЕО-МАРШРУТ (RouteHero) ============ */
+.video-hero {
+    height: calc(100svh - 80px);   /* 80px — шапка */
+    min-height: 640px;
+    max-height: 980px;
+}
+/* затемнение под текст: слева и снизу сильнее, справа видео остаётся ярким */
+.video-hero-scrim {
+    background:
+        linear-gradient(90deg, rgb(15 26 23 / 0.72) 0%, rgb(15 26 23 / 0.35) 45%, rgb(15 26 23 / 0) 75%),
+        linear-gradient(0deg, rgb(15 26 23 / 0.75) 0%, rgb(15 26 23 / 0) 45%),
+        linear-gradient(180deg, rgb(15 26 23 / 0.55) 0%, rgb(15 26 23 / 0) 30%);
+}
+.video-hero-shadow { text-shadow: 0 1px 18px rgb(0 0 0 / 0.45); }
+.video-hero-media { transition: opacity .2s ease; }
+.video-hero-media.is-dip { opacity: 0; }
+.video-plate {
+    background: rgb(15 26 23 / 0.38);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    backdrop-filter: blur(10px) saturate(1.1);
+}
+.route-panel { animation: routePanel .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes routePanel {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+@media (max-width: 640px) {
+    .video-hero { min-height: 720px; }
+    .video-hero-scrim {
+        background:
+            linear-gradient(0deg, rgb(15 26 23 / 0.85) 0%, rgb(15 26 23 / 0.2) 60%),
+            linear-gradient(180deg, rgb(15 26 23 / 0.6) 0%, rgb(15 26 23 / 0) 35%);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .route-panel { animation: none; }
+    .video-hero video { transition: none !important; }
+}
+
+/* ============ КАЛЬКУЛЯТОР ============ */
+.calc-form .ant-form-item-label > label { color: var(--color-ink); font-weight: 500; font-size: 15px; }
+.calc-owner.ant-segmented { background: rgb(20 33 28 / 0.08); padding: 3px; }
+.calc-owner .ant-segmented-item-label { white-space: nowrap; font-size: 14px; padding: 0 6px; }
+.calc-owner .ant-segmented-item-selected { background: var(--color-ink); color: var(--color-paper); }
+.calc-owner .ant-segmented-thumb { background: var(--color-ink); }

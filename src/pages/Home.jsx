@@ -2,13 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, Spin } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import CarCard from '../components/CarCard.jsx';
-import {
-    SafetyCertificateOutlined,
-    GlobalOutlined,
-    DollarOutlined,
-    CarOutlined,
-    ArrowRightOutlined
-} from '@ant-design/icons';
+import { BankOutlined, ShopOutlined, SwapOutlined } from '@ant-design/icons';
+import RouteHero from '../components/RouteHero.jsx';
 import { fetchCars } from '../services/MockApi.js';
 import LeadModal from '../components/LeadModal';
 import AboutContent from '../components/AboutContent';
@@ -16,6 +11,24 @@ import BlogContent from '../components/BlogContent';
 import ReviewsContent from '../components/ReviewsContent';
 
 const SCROLL_KEY = 'homeScrollPosition';
+
+const AUDIENCES = [
+    {
+        icon: <BankOutlined />,
+        title: 'Компаниям для автопарка',
+        desc: 'Машины на баланс компании: договор с юрлицом, расчёт с НДС и закрывающие документы для бухгалтерии.',
+    },
+    {
+        icon: <SwapOutlined />,
+        title: 'Дилерам и перекупщикам',
+        desc: 'Подбираем ходовые модели под ваш рынок, выкупаем партиями и считаем полную стоимость до покупки.',
+    },
+    {
+        icon: <ShopOutlined />,
+        title: 'Автосалонам и площадкам',
+        desc: 'Поставки под заказ для продажи в вашем салоне: комплектации, которых нет на российском рынке.',
+    },
+];
 
 export default function Home() {
     const [leadModalOpen, setLeadModalOpen] = useState(false);
@@ -82,82 +95,46 @@ export default function Home() {
     return (
         <div className="flex flex-col">
 
-            {/* ============ HERO ============ */}
-            <section className="relative flex items-center justify-center overflow-hidden">
-                <div className="relative z-10 text-center px-4 max-w-5xl mx-auto w-full pt-10 pb-14 md:pt-14 md:pb-20">
-                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-2xl">
-                        Автомобили из Китая{' '} <br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400">
-                            под ключ
-                        </span>
-                    </h1>
-                    <p className="text-slate-100 text-xl md:text-2xl max-w-3xl mx-auto font-light drop-shadow-lg mb-10">
-                        Привозим автомобили из Китая с полным таможенным оформлением. Прозрачный расчет, гарантия и доставка до вашего города.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-3xl mx-auto">
-                        <Link to="/catalog" state={{ resetScroll: true }} className="w-full sm:flex-1">
-                            <Button
-                                type="primary"
-                                size="large"
-                                block
-                                className="!h-16 !text-lg md:!text-xl !font-bold !rounded-2xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 shadow-xl shadow-fuchsia-500/40 transition-all hover:-translate-y-1 w-full"
-                            >
-                                Перейти в каталог
-                            </Button>
-                        </Link>
-                        <Button
-                            size="large"
-                            block
-                            onClick={() => setLeadModalOpen(true)}
-                            className="!h-16 !text-lg md:!text-xl !font-bold !rounded-2xl !bg-white/10 !text-white !border !border-white/30 hover:!bg-white/20 hover:!text-white backdrop-blur-md transition-all hover:-translate-y-1 w-full sm:flex-1"
-                        >
-                            Получить консультацию
-                        </Button>
-                    </div>
-                </div>
-            </section>
+            <RouteHero onLead={() => setLeadModalOpen(true)} />
 
-            {/* ============ ПРЕИМУЩЕСТВА ============ */}
-            <section className="py-12 px-4 max-w-7xl mx-auto w-full">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {[
-                        { icon: <DollarOutlined />, title: "Честная цена", desc: "Прозрачный расчет всех расходов без скрытых комиссий.", color: "from-cyan-400 to-blue-500", shadow: "shadow-cyan-500/30" },
-                        { icon: <GlobalOutlined />, title: "Прямые поставки", desc: "Работаем напрямую с аукционами и дилерами Китая.", color: "from-blue-500 to-indigo-500", shadow: "shadow-blue-500/30" },
-                        { icon: <SafetyCertificateOutlined />, title: "Полная гарантия", desc: "Юридическая чистота и помощь с постановкой на учет.", color: "from-violet-500 to-fuchsia-500", shadow: "shadow-violet-500/30" },
-                        { icon: <CarOutlined />, title: "Любая комплектация", desc: "Подберем авто под ваш бюджет и пожелания.", color: "from-fuchsia-500 to-pink-500", shadow: "shadow-fuchsia-500/30" }
-                    ].map((item, idx) => (
-                        <div key={idx} className="bg-white/90 backdrop-blur-xl p-7 rounded-3xl shadow-2xl border border-white/50 hover:-translate-y-2 transition-transform duration-300">
-                            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center text-3xl mb-5 shadow-lg ${item.shadow}`}>
-                                {item.icon}
-                            </div>
-                            <h3 className="text-2xl font-bold mb-3 text-slate-800">{item.title}</h3>
-                            <p className="text-slate-600 leading-relaxed text-lg">{item.desc}</p>
+            {/* ============ КОМУ ПОСТАВЛЯЕМ ============ */}
+            <section className="px-4 py-14 md:py-20 max-w-7xl mx-auto w-full">
+                <h2 className="text-2xl md:text-4xl text-paper mb-10 md:mb-12 max-w-3xl">
+                    Кому поставляем
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 border-t border-paper/15">
+                    {AUDIENCES.map((item, idx) => (
+                        <div
+                            key={item.title}
+                            className={`pt-6 pb-8 md:pr-8 ${idx > 0 ? 'md:pl-8 md:border-l border-paper/15 border-t md:border-t-0' : ''}`}
+                        >
+                            <div className="text-brass text-3xl mb-4">{item.icon}</div>
+                            <h3 className="text-xl md:text-2xl font-semibold text-paper mb-3">{item.title}</h3>
+                            <p className="text-paper/70 leading-relaxed text-lg m-0">{item.desc}</p>
                         </div>
                     ))}
                 </div>
             </section>
 
             {/* ============ ПОПУЛЯРНЫЕ АВТО ============ */}
-            <section className="pb-14 px-4">
+            <section className="pb-16 md:pb-20 px-4">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex justify-between items-end mb-8 gap-4 flex-wrap">
                         <div>
-                            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-2xl">
+                            <h2 className="text-2xl md:text-4xl text-paper m-0">
                                 Популярные модели
                             </h2>
-                            <p className="text-slate-100 text-xl md:text-2xl font-light drop-shadow-lg mt-4">
-                                Самые востребованные автомобили из Китая
+                            <p className="text-paper/70 text-lg md:text-xl mt-3 mb-0">
+                                Цены в юанях — за автомобиль в Китае, до доставки и таможни
                             </p>
                         </div>
 
                         <Link
                             to="/catalog"
                             state={{ resetScroll: true }}
-                            className="inline-block p-[2px] rounded-3xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:scale-105 transition-transform duration-300 shadow-lg shadow-fuchsia-500/30"
+                            className="text-brass hover:text-brass-hi text-lg font-medium underline underline-offset-4 decoration-brass/40 whitespace-nowrap"
                         >
-                            <span className="flex items-center justify-center px-6 py-3 md:px-8 md:py-3.5 rounded-[22px] bg-blue-950/80 backdrop-blur-md text-white font-extrabold text-xl md:text-2xl whitespace-nowrap">
-                                Смотреть все →
-                            </span>
+                            Весь каталог
                         </Link>
                     </div>
 
@@ -166,26 +143,26 @@ export default function Home() {
                             <Spin size="large" />
                         </div>
                     ) : carsError ? (
-                        <div className="text-center py-16 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl">
-                            <h3 className="text-2xl font-bold text-slate-500 mb-2">
+                        <div className="text-center py-16 bg-pine-900 rounded-xl border border-paper/10">
+                            <h3 className="text-2xl font-semibold text-paper mb-2">
                                 Не удалось загрузить автомобили
                             </h3>
-                            <p className="text-slate-400 mb-6 text-base">
+                            <p className="text-paper/60 mb-6 text-base">
                                 Проверьте соединение и попробуйте обновить страницу
                             </p>
                             <Button
                                 onClick={() => window.location.reload()}
-                                className="!bg-slate-900 !text-white rounded-xl h-10 px-6"
+                                className="btn-brass !rounded-md !h-10 !px-6"
                             >
                                 Обновить
                             </Button>
                         </div>
                     ) : popularCars.length === 0 ? (
-                        <div className="text-center py-16 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl">
-                            <h3 className="text-2xl font-bold text-slate-500 mb-2">
+                        <div className="text-center py-16 bg-pine-900 rounded-xl border border-paper/10">
+                            <h3 className="text-2xl font-semibold text-paper mb-2">
                                 Автомобили скоро появятся
                             </h3>
-                            <p className="text-slate-400 text-base">
+                            <p className="text-paper/60 text-base">
                                 Загляните в каталог чуть позже
                             </p>
                         </div>
@@ -197,15 +174,9 @@ export default function Home() {
                         </div>
                     )}
 
-                    <div className="mt-12">
-                        <Link to="/catalog" state={{ resetScroll: true }} className="block">
-                            <Button
-                                type="primary"
-                                size="large"
-                                block
-                                icon={<ArrowRightOutlined className="text-2xl" />}
-                                className="!h-20 !text-xl md:!text-2xl !font-extrabold !rounded-3xl !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 !text-white shadow-2xl shadow-fuchsia-500/50 transition-all hover:scale-[1.01]"
-                            >
+                    <div className="mt-10">
+                        <Link to="/catalog" state={{ resetScroll: true }}>
+                            <Button size="large" className="btn-ghost !h-12 !px-8 !rounded-md">
                                 Перейти в каталог
                             </Button>
                         </Link>
@@ -220,8 +191,8 @@ export default function Home() {
             <LeadModal
                 open={leadModalOpen}
                 onClose={() => setLeadModalOpen(false)}
-                title="Получить консультацию"
-                subtitle="Эксперт по автоподбору ответит на ваши вопросы"
+                title="Обсудить поставку"
+                subtitle="Расскажите, какие машины и в каком количестве нужны — менеджер перезвонит"
                 successText="Эксперт свяжется с вами в течение 15 минут"
             />
         </div>

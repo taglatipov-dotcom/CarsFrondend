@@ -50,7 +50,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
             centered
             className="review-submit-modal"
             closeIcon={
-                <span className="!text-slate-500 hover:!text-slate-800 transition-colors text-xl">
+                <span className="!text-ink/55 hover:!text-ink transition-colors text-xl">
                     ✕
                 </span>
             }
@@ -62,19 +62,19 @@ export default function ReviewSubmitModal({ open, onClose }) {
         >
             {success ? (
                 <div className="p-10 text-center">
-                    <CheckCircleFilled className="text-7xl text-emerald-500 mb-5" />
-                    <h3 className="text-2xl font-bold text-slate-800 mb-2">
+                    <CheckCircleFilled className="text-7xl text-moss mb-5" />
+                    <h3 className="text-2xl font-bold text-ink mb-2">
                         Спасибо за отзыв!
                     </h3>
-                    <p className="text-slate-500 m-0 text-base">
+                    <p className="text-ink/55 m-0 text-base">
                         Он появится на сайте после проверки модератором
                     </p>
                 </div>
             ) : (
                 <>
-                    <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 px-8 py-6 pr-16">
-                        <h3 className="text-xl font-bold text-white m-0">Оставить отзыв</h3>
-                        <p className="text-white/90 text-base mt-1 mb-0">
+                    <div className="bg-ink px-8 py-6 pr-16">
+                        <h3 className="text-xl font-bold text-paper m-0">Оставить отзыв</h3>
+                        <p className="text-paper/90 text-base mt-1 mb-0">
                             Поделитесь опытом — мы будем благодарны
                         </p>
                     </div>
@@ -89,7 +89,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
                         >
                             <Form.Item
                                 name="name"
-                                label={<span className="font-semibold text-slate-700 text-base">Ваше имя *</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Ваше имя *</span>}
                                 rules={[
                                     { required: true, message: 'Введите имя' },
                                     { min: 2, message: 'Минимум 2 символа' },
@@ -97,7 +97,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
                             >
                                 <Input
                                     size="large"
-                                    prefix={<UserOutlined className="text-slate-400" />}
+                                    prefix={<UserOutlined className="text-ink/55" />}
                                     placeholder="Александр"
                                     className="!rounded-xl"
                                 />
@@ -105,7 +105,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
 
                             <Form.Item
                                 name="car"
-                                label={<span className="font-semibold text-slate-700 text-base">Какой автомобиль купили? *</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Какой автомобиль купили? *</span>}
                                 rules={[
                                     { required: true, message: 'Укажите автомобиль' },
                                     { min: 2, message: 'Минимум 2 символа' },
@@ -113,7 +113,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
                             >
                                 <Input
                                     size="large"
-                                    prefix={<CarOutlined className="text-slate-400" />}
+                                    prefix={<CarOutlined className="text-ink/55" />}
                                     placeholder="Zeekr 001"
                                     className="!rounded-xl"
                                 />
@@ -121,15 +121,15 @@ export default function ReviewSubmitModal({ open, onClose }) {
 
                             <Form.Item
                                 name="rating"
-                                label={<span className="font-semibold text-slate-700 text-base">Оценка *</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Оценка *</span>}
                                 rules={[{ required: true, message: 'Поставьте оценку' }]}
                             >
-                                <Rate className="text-3xl text-amber-400" />
+                                <Rate className="text-3xl text-brass-lo" />
                             </Form.Item>
 
                             <Form.Item
                                 name="text"
-                                label={<span className="font-semibold text-slate-700 text-base">Отзыв *</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Отзыв *</span>}
                                 rules={[
                                     { required: true, message: 'Напишите отзыв' },
                                     { min: 10, message: 'Минимум 10 символов' },
@@ -146,7 +146,7 @@ export default function ReviewSubmitModal({ open, onClose }) {
 
                             <Form.Item
                                 name="photos"
-                                label={<span className="font-semibold text-slate-700 text-base">Фото (необязательно)</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Фото (необязательно)</span>}
                                 tooltip="Прикрепите фото автомобиля или документов — это поможет другим клиентам"
                             >
                                 <MultiImageUploader
@@ -165,13 +165,13 @@ export default function ReviewSubmitModal({ open, onClose }) {
                                     size="large"
                                     loading={loading}
                                     block
-                                    className="!h-12 !rounded-xl !font-semibold !text-base !bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 shadow-lg shadow-fuchsia-500/30"
+                                    className="!h-12 !rounded-xl !font-semibold !text-base btn-brass"
                                 >
                                     Отправить на модерацию
                                 </Button>
                             </Form.Item>
 
-                            <p className="text-xs text-slate-400 text-center mt-3 mb-0">
+                            <p className="text-xs text-ink/55 text-center mt-3 mb-0">
                                 Отзыв появится на сайте после проверки модератором
                             </p>
                         </Form>

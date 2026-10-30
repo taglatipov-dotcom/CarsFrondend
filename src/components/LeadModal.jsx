@@ -1,10 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { Modal, Form, Input, Checkbox, Button, Select, message } from 'antd';
+import { Modal, Form, Input, InputNumber, Checkbox, Button, Select, Segmented, message } from 'antd';
 import { PhoneOutlined, CheckCircleFilled, MessageOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { sendLead } from '../services/MockApi.js';
 
 const { TextArea } = Input;
+
+/* Кто оставляет заявку — хранится английским кодом (client_type), подпись русская */
+export const CLIENT_TYPES = [
+    { value: 'company', label: 'Компания' },
+    { value: 'dealer', label: 'Дилер' },
+    { value: 'showroom', label: 'Автосалон' },
+    { value: 'person', label: 'Частное лицо' },
+];
 
 /* ============ КАСТОМНОЕ ПОЛЕ ТЕЛЕФОНА С МАСКОЙ ============ */
 
@@ -38,7 +46,7 @@ function PhoneInput({ value = '', onChange }) {
     // Какая цифра показывается в позиции i (или 0 в качестве placeholder)
     const d = (i) => (i < len ? digits[i] : '0');
     // Цвет цифры: введённая — чёрная, placeholder — серая
-    const c = (i) => (i < len ? 'text-slate-900' : 'text-slate-400');
+    const c = (i) => (i < len ? 'text-ink' : 'text-ink/55');
 
     const handleChange = (e) => {
         const next = e.target.value;
@@ -62,26 +70,26 @@ function PhoneInput({ value = '', onChange }) {
     };
 
     return (
-        <div className="relative w-full h-11 rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-100 transition-all">
+        <div className="relative w-full h-11 rounded-md border border-ink/20 bg-white overflow-hidden focus-within:border-brass-lo focus-within:ring-2 focus-within:ring-brass/30 transition-all">
             {/* Иконка телефона */}
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-base">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-ink/55 text-base">
                 <PhoneOutlined />
             </div>
 
             {/* Слой отображения с цветными цифрами */}
             <div className="absolute inset-0 flex items-center pl-10 pr-3 pointer-events-none text-base leading-none whitespace-pre">
-                <span className="text-slate-900">+7 (</span>
+                <span className="text-ink">+7 (</span>
                 <span className={c(0)}>{d(0)}</span>
                 <span className={c(1)}>{d(1)}</span>
                 <span className={c(2)}>{d(2)}</span>
-                <span className="text-slate-900">) </span>
+                <span className="text-ink">) </span>
                 <span className={c(3)}>{d(3)}</span>
                 <span className={c(4)}>{d(4)}</span>
                 <span className={c(5)}>{d(5)}</span>
-                <span className="text-slate-900">-</span>
+                <span className="text-ink">-</span>
                 <span className={c(6)}>{d(6)}</span>
                 <span className={c(7)}>{d(7)}</span>
-                <span className="text-slate-900">-</span>
+                <span className="text-ink">-</span>
                 <span className={c(8)}>{d(8)}</span>
                 <span className={c(9)}>{d(9)}</span>
             </div>
@@ -94,7 +102,7 @@ function PhoneInput({ value = '', onChange }) {
                 onFocus={moveCursorToEnd}
                 onClick={moveCursorToEnd}
                 className="absolute inset-0 w-full h-full bg-transparent outline-none border-none text-transparent pl-10 pr-3 text-base"
-                style={{ caretColor: '#0f172a' }}
+                style={{ caretColor: '#14211C' }}
                 autoComplete="off"
             />
         </div>
@@ -114,6 +122,7 @@ export default function LeadModal({
     const [success, setSuccess] = useState(false);
 
     const consentValue = Form.useWatch('consent', form);
+    const isPerson = Form.useWatch('clientType', form) === 'person';
     const isSubmitDisabled = !consentValue;
 
     useEffect(() => {
@@ -129,6 +138,10 @@ export default function LeadModal({
                 contactMethod: '',
                 preferences: '',
                 budget: undefined,
+                clientType: 'company',
+                company: '',
+                inn: '',
+                quantity: undefined,
                 ...defaultValues,
                 phone: defaultPhone,
             });
@@ -168,7 +181,7 @@ export default function LeadModal({
             centered
             className="lead-modal"
             closeIcon={
-                <span className="!text-slate-500 hover:!text-slate-800 transition-colors text-xl">
+                <span className="!text-paper/60 hover:!text-paper transition-colors text-xl">
                     ✕
                 </span>
             }
@@ -184,17 +197,17 @@ export default function LeadModal({
         >
             {success ? (
                 <div className="p-10 text-center">
-                    <CheckCircleFilled className="text-7xl text-emerald-500 mb-5" />
-                    <h3 className="text-2xl font-bold text-slate-800 mb-2">
+                    <CheckCircleFilled className="text-7xl text-moss mb-5" />
+                    <h3 className="text-2xl font-bold text-ink mb-2">
                         Заявка отправлена!
                     </h3>
-                    <p className="text-slate-500 m-0 text-base">{successText}</p>
+                    <p className="text-ink/55 m-0 text-base">{successText}</p>
                 </div>
             ) : (
                 <>
-                    <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 px-8 py-6 pr-16">
-                        <h3 className="text-xl font-bold text-white m-0">{title}</h3>
-                        <p className="text-white/90 text-base mt-1 mb-0">{subtitle}</p>
+                    <div className="bg-ink px-8 py-6 pr-16">
+                        <h3 className="text-xl font-bold text-paper m-0">{title}</h3>
+                        <p className="text-paper/90 text-base mt-1 mb-0">{subtitle}</p>
                     </div>
 
                     <div className="p-6 md:p-8">
@@ -205,9 +218,13 @@ export default function LeadModal({
                             requiredMark={false}
                             initialValues={{ consent: false, newsletter: false }}
                         >
+                            <Form.Item name="clientType" className="!mb-5">
+                                <Segmented block options={CLIENT_TYPES} className="calc-owner" />
+                            </Form.Item>
+
                             <Form.Item
                                 name="phone"
-                                label={<span className="font-semibold text-slate-700 text-base">Телефон *</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Телефон *</span>}
                                 rules={[
                                     { required: true, message: 'Введите номер телефона' },
                                     {
@@ -221,50 +238,77 @@ export default function LeadModal({
                                 <PhoneInput />
                             </Form.Item>
 
+                            {!isPerson && (
+                                <div className="grid grid-cols-1 sm:grid-cols-[1fr_11rem] gap-x-3">
+                                    <Form.Item
+                                        name="company"
+                                        label={<span className="font-semibold text-ink/80 text-base">Компания</span>}
+                                    >
+                                        <Input size="large" placeholder="ООО «Название»" maxLength={160} className="!rounded-md !text-base" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="inn"
+                                        label={<span className="font-semibold text-ink/80 text-base">ИНН</span>}
+                                        rules={[{ pattern: /^(\d{10}|\d{12})$/, message: '10 или 12 цифр' }]}
+                                        normalize={(v) => (v || '').replace(/\D/g, '').slice(0, 12)}
+                                    >
+                                        <Input size="large" inputMode="numeric" placeholder="10 или 12 цифр" className="!rounded-md !text-base" />
+                                    </Form.Item>
+                                </div>
+                            )}
+
                             <Form.Item
                                 name="contactMethod"
-                                label={<span className="font-semibold text-slate-700 text-base">Предпочтительный способ связи</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Предпочтительный способ связи</span>}
                             >
                                 <Input
                                     size="large"
-                                    prefix={<MessageOutlined className="text-slate-400" />}
+                                    prefix={<MessageOutlined className="text-ink/55" />}
                                     placeholder="Например: Max, ВК, звонок..."
-                                    className="!rounded-xl !text-base"
+                                    className="!rounded-md !text-base"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 name="preferences"
-                                label={<span className="font-semibold text-slate-700 text-base">Предпочтения по автомобилю</span>}
+                                label={<span className="font-semibold text-ink/80 text-base">Какие машины нужны</span>}
                             >
                                 <TextArea
                                     rows={3}
-                                    placeholder="Например: Zeekr 001, 2024 г., полный привод, цвет — белый..."
-                                    className="!rounded-xl !text-base"
+                                    placeholder="Например: Geely Monjaro, 2025 г., полный привод, белый — 5 шт."
+                                    className="!rounded-md !text-base"
                                     maxLength={500}
                                     showCount
                                 />
                             </Form.Item>
 
-                            <Form.Item
-                                name="budget"
-                                label={<span className="font-semibold text-slate-700 text-base">Бюджет (необязательно)</span>}
-                            >
-                                <Select
-                                    size="large"
-                                    placeholder="Выберите диапазон"
-                                    className="!rounded-xl w-full [&_.ant-select-selector]:!text-base [&_.ant-select-selector]:!rounded-xl"
-                                    allowClear
-                                    options={[
-                                        { value: '1.5-2', label: '1.5 – 2 млн ₽' },
-                                        { value: '2-3', label: '2 – 3 млн ₽' },
-                                        { value: '3-4', label: '3 – 4 млн ₽' },
-                                        { value: '4+', label: '4 млн ₽ и более' },
-                                    ]}
-                                />
-                            </Form.Item>
+                            <div className="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-x-3">
+                                <Form.Item
+                                    name="quantity"
+                                    label={<span className="font-semibold text-ink/80 text-base">Сколько машин</span>}
+                                >
+                                    <InputNumber size="large" min={1} max={10000} placeholder="1" className="!w-full !rounded-md" />
+                                </Form.Item>
+                                <Form.Item
+                                    name="budget"
+                                    label={<span className="font-semibold text-ink/80 text-base">Бюджет (необязательно)</span>}
+                                >
+                                    <Select
+                                        size="large"
+                                        placeholder="Выберите диапазон"
+                                        className="w-full [&_.ant-select-selector]:!text-base"
+                                        allowClear
+                                        options={[
+                                            { value: 'до 3 млн', label: 'до 3 млн ₽' },
+                                            { value: '3-10 млн', label: '3 – 10 млн ₽' },
+                                            { value: '10-30 млн', label: '10 – 30 млн ₽' },
+                                            { value: '30+ млн', label: 'более 30 млн ₽' },
+                                        ]}
+                                    />
+                                </Form.Item>
+                            </div>
 
-                            <div className="flex flex-col gap-3 mb-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div className="flex flex-col gap-3 mb-5 p-4 rounded-lg bg-ink/5 border border-ink/10">
 
                                 <Form.Item
                                     name="consent"
@@ -280,12 +324,12 @@ export default function LeadModal({
                                     ]}
                                 >
                                     <Checkbox className="!items-start [&>span:last-child]:!pl-2">
-                                        <span className="text-base text-slate-700 leading-snug">
+                                        <span className="text-base text-ink/80 leading-snug">
                                             Я даю{' '}
                                             <Link
                                                 to="/privacy"
                                                 target="_blank"
-                                                className="!text-violet-600 hover:!text-fuchsia-600 font-semibold underline"
+                                                className="!text-brass-lo hover:!text-brass-lo font-semibold underline"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 согласие на обработку персональных данных
@@ -301,7 +345,7 @@ export default function LeadModal({
                                     className="!mb-0"
                                 >
                                     <Checkbox className="!items-start [&>span:last-child]:!pl-2">
-                                        <span className="text-base text-slate-700 leading-snug">
+                                        <span className="text-base text-ink/80 leading-snug">
                                             Я согласен получать информационные рассылки о новых поступлениях и акциях
                                         </span>
                                     </Checkbox>
@@ -316,10 +360,10 @@ export default function LeadModal({
                                     loading={loading}
                                     disabled={isSubmitDisabled}
                                     block
-                                    className={`!h-12 !rounded-xl !font-semibold !text-base transition-all ${
+                                    className={`!h-12 !rounded-md !font-semibold !text-base transition-all ${
                                         isSubmitDisabled
-                                            ? '!bg-slate-200 !text-slate-400 !border-none !shadow-none cursor-not-allowed'
-                                            : '!bg-gradient-to-r !from-violet-600 !to-fuchsia-600 !border-none hover:!from-violet-500 hover:!to-fuchsia-500 shadow-lg shadow-fuchsia-500/30'
+                                            ? '!bg-ink/10 !text-ink/40 !border-none !shadow-none cursor-not-allowed'
+                                            : 'btn-brass'
                                     }`}
                                 >
                                     Отправить заявку
@@ -327,7 +371,7 @@ export default function LeadModal({
                             </Form.Item>
 
                             {isSubmitDisabled && (
-                                <p className="text-sm text-slate-500 text-center mt-3 mb-0">
+                                <p className="text-sm text-ink/55 text-center mt-3 mb-0">
                                     Для отправки заявки отметьте согласие на обработку данных
                                 </p>
                             )}
