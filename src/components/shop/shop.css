@@ -1,0 +1,99 @@
+/* Общие стили витрины, /box и /bags. Подключается из pages/Hub.jsx, Box.jsx, Bags.jsx.
+   Классы с префиксом fx- — эффекты из плейбука (контурный текст, глитч, рисование линий, появление). */
+
+.font-mono-x { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+.font-serif-x { font-family: 'Cormorant Garamond', 'Times New Roman', serif; }
+.font-display-x { font-family: 'Unbounded', 'Onest', sans-serif; }
+
+/* Сброс глобальных h1/h2 сайта авто внутри новых страниц (там Unbounded по умолчанию) */
+.shop-root h1, .shop-root h2, .shop-root h3 { letter-spacing: -0.02em; }
+
+/* Мелкий моноширинный текст-метка */
+.micro { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* Огромное контурное слово на фоне */
+.fx-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px currentColor;
+    -webkit-text-stroke-color: var(--outline, rgba(255, 255, 255, 0.14));
+    line-height: 0.82;
+    user-select: none;
+}
+
+/* Контур → заливка: текст заливается слева направо при .is-in */
+.fx-fill {
+    background: linear-gradient(90deg, var(--fill, #fff) 50%, transparent 50%) 100% 0 / 200% 100% no-repeat;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--fill, #fff);
+    transition: background-position 1.2s cubic-bezier(.7, 0, .2, 1);
+}
+.is-in .fx-fill, .fx-fill.is-in { background-position: 0 0; }
+
+/* Появление при прокрутке */
+.fx-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1); }
+.fx-reveal.is-in { opacity: 1; transform: none; }
+
+/* Глитч: RGB-сдвиг при наведении на .fx-glitch-host */
+.fx-glitch { position: relative; display: inline-block; }
+.fx-glitch::before, .fx-glitch::after {
+    content: attr(data-text); position: absolute; inset: 0; opacity: 0; pointer-events: none;
+}
+.fx-glitch::before { color: #ff2d55; mix-blend-mode: screen; }
+.fx-glitch::after { color: #00e5ff; mix-blend-mode: screen; }
+.fx-glitch-host:hover .fx-glitch::before { animation: glitchA .45s steps(2) 1; opacity: .8; }
+.fx-glitch-host:hover .fx-glitch::after { animation: glitchB .45s steps(2) 1; opacity: .8; }
+@keyframes glitchA {
+    0% { transform: translate(0); clip-path: inset(0 0 60% 0); }
+    25% { transform: translate(-4px, 1px); clip-path: inset(20% 0 40% 0); }
+    50% { transform: translate(3px, -1px); clip-path: inset(60% 0 5% 0); }
+    100% { transform: translate(0); clip-path: inset(0 0 100% 0); opacity: 0; }
+}
+@keyframes glitchB {
+    0% { transform: translate(0); clip-path: inset(50% 0 0 0); }
+    25% { transform: translate(4px, -1px); clip-path: inset(10% 0 70% 0); }
+    50% { transform: translate(-3px, 1px); clip-path: inset(40% 0 30% 0); }
+    100% { transform: translate(0); clip-path: inset(100% 0 0 0); opacity: 0; }
+}
+
+/* Линии «рисуются» (blueprint): у path/line задать pathLength="1" */
+.fx-draw path, .fx-draw line, .fx-draw rect, .fx-draw circle, .fx-draw polyline, .fx-draw ellipse {
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.6s cubic-bezier(.6, 0, .2, 1);
+}
+.is-in .fx-draw path, .is-in .fx-draw line, .is-in .fx-draw rect, .is-in .fx-draw circle,
+.is-in .fx-draw polyline, .is-in .fx-draw ellipse, .fx-draw.is-in * { stroke-dashoffset: 0; }
+
+/* Скобки выделения вокруг чисел */
+.fx-brackets { position: relative; padding: 0 .35em; }
+.fx-brackets::before, .fx-brackets::after {
+    content: ''; position: absolute; top: -2px; bottom: -2px; width: 6px;
+    border: 1px solid currentColor; opacity: .5;
+}
+.fx-brackets::before { left: 0; border-right: 0; }
+.fx-brackets::after { right: 0; border-left: 0; }
+
+/* Бегущая строка */
+.fx-marquee { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Горизонтальная лента без полосы прокрутки */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Плавная смена цвета (морф расцветок сумки) */
+.fx-morph * { transition: fill .9s ease, stroke .9s ease; }
+
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.fx-float { animation: floaty 6s ease-in-out infinite; }
+
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.fx-pop { animation: pop .35s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+    .fx-reveal { opacity: 1; transform: none; transition: none; }
+    .fx-draw * { stroke-dashoffset: 0 !important; transition: none !important; }
+    .fx-fill { background-position: 0 0; transition: none; }
+    .fx-marquee, .fx-float, .fx-pop { animation: none; }
+    .fx-glitch-host:hover .fx-glitch::before, .fx-glitch-host:hover .fx-glitch::after { animation: none; opacity: 0; }
+}
