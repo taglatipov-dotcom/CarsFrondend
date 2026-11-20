@@ -22,6 +22,13 @@ const theme = {
     },
 }
 
+/* После деплоя старые файлы страниц удаляются: если у посетителя открыта прежняя версия
+   и он переходит на страницу, которую ещё не загружал, — просто перезагружаем сайт */
+window.addEventListener('vite:preloadError', (event) => {
+    event.preventDefault();
+    window.location.reload();
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ConfigProvider theme={theme} locale={ruRU}>

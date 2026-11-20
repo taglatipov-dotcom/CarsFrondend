@@ -52,7 +52,7 @@ export default function CarDetails() {
             setLoading(false);
             // Старая ссылка /car/7 или устаревшее название → понятный адрес
             if (data && slug !== carSlug(data)) {
-                navigate(`/car/${carSlug(data)}`, { replace: true });
+                navigate(`/cars/car/${carSlug(data)}`, { replace: true });
             }
         });
     }, [id]);
@@ -94,7 +94,7 @@ export default function CarDetails() {
         return (
             <div className="flex flex-col justify-center items-center min-h-[70vh] text-paper">
                 <h2 className="text-3xl font-bold mb-4">Автомобиль не найден</h2>
-                <Button type="primary" onClick={() => navigate('/catalog')} className="!bg-ink hover:!bg-ink/90">
+                <Button type="primary" onClick={() => navigate('/cars/catalog')} className="!bg-ink hover:!bg-ink/90">
                     Вернуться в каталог
                 </Button>
             </div>

@@ -21,11 +21,21 @@ const clientTypeLabel = (code) => CLIENT_TYPES.find((c) => c.value === code)?.la
 
 const { TextArea } = Input;
 
+/* Раздел сайта по полю source: заказы с /box и /bags приходят с source = box / bags,
+   всё остальное — заявки сайта авто */
+export const LEAD_SECTIONS = {
+    cars: { label: 'Авто', color: 'gold' },
+    box: { label: 'Боксы', color: 'red' },
+    bags: { label: 'Сумки', color: 'purple' },
+};
+const leadSection = (l) => (l.source === 'box' || l.source === 'bags' ? l.source : 'cars');
+
 export default function AdminLeads() {
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [sectionFilter, setSectionFilter] = useState('all');
     const [selected, setSelected] = useState(null);
 
     const load = useCallback(async () => {
@@ -68,6 +78,9 @@ export default function AdminLeads() {
         if (statusFilter !== 'all') {
             result = result.filter((l) => l.status === statusFilter);
         }
+        if (sectionFilter !== 'all') {
+            result = result.filter((l) => leadSection(l) === sectionFilter);
+        }
         if (search.trim()) {
             const q = search.toLowerCase();
             result = result.filter(
@@ -81,7 +94,7 @@ export default function AdminLeads() {
             );
         }
         return result;
-    }, [leads, search, statusFilter]);
+    }, [leads, search, statusFilter, sectionFilter]);
 
     const counts = useMemo(() => {
         return leads.reduce(
@@ -117,6 +130,14 @@ export default function AdminLeads() {
             render: fmtDate,
             sorter: (a, b) => new Date(a.created_at) - new Date(b.created_at),
             defaultSortOrder: 'descend',
+        },
+        {
+            title: 'Раздел',
+            width: 90,
+            render: (_, l) => {
+                const s = LEAD_SECTIONS[leadSection(l)];
+                return <Tag color={s.color}>{s.label}</Tag>;
+            },
         },
         {
             title: 'Телефон',
@@ -235,6 +256,15 @@ export default function AdminLeads() {
                 extra={
                     <Space>
                         <Select
+                            value={sectionFilter}
+                            onChange={setSectionFilter}
+                            style={{ width: 140 }}
+                            options={[
+                                { value: 'all', label: 'Все разделы' },
+                                ...Object.entries(LEAD_SECTIONS).map(([value, s]) => ({ value, label: s.label })),
+                            ]}
+                        />
+                        <Select
                             value={statusFilter}
                             onChange={setStatusFilter}
                             style={{ width: 160 }}
@@ -264,7 +294,7 @@ export default function AdminLeads() {
                     columns={columns}
                     dataSource={filtered}
                     pagination={{ pageSize: 20, showSizeChanger: false }}
-                    scroll={{ x: 1300 }}
+                    scroll={{ x: 1500 }}
                 />
             </Card>
 

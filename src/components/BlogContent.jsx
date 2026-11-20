@@ -98,7 +98,7 @@ export default function BlogContent() {
                         </div>
 
                         <div className="mt-12">
-                            <Link to="/blog" state={{ resetScroll: true }} className="block">
+                            <Link to="/cars/blog" state={{ resetScroll: true }} className="block">
                                 <Button
                                     type="primary"
                                     size="large"

@@ -120,7 +120,7 @@ export default function AdminLogin() {
 
                     <div className="mt-6 text-center">
                         <a
-                            href="/"
+                            href={import.meta.env.BASE_URL}
                             className="text-sm text-slate-400 hover:text-violet-600 transition-colors"
                         >
                             ← На главную

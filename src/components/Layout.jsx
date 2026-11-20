@@ -6,8 +6,9 @@ import {
     SendOutlined,
     DashboardOutlined,
     LoginOutlined,
+    ArrowLeftOutlined,
 } from '@ant-design/icons';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import LeadModal from './LeadModal';
 import { isAuthenticated } from '../services/AuthApi.js';
 
@@ -24,12 +25,12 @@ export default function Layout() {
     const authed = isAuthenticated();
 
     const navLinks = [
-        { path: '/', label: 'Главная' },
-        { path: '/catalog', label: 'Каталог' },
-        { path: '/calculator', label: 'Калькулятор' },
-        { path: '/about', label: 'О компании' },
-        { path: '/blog', label: 'Блог' },
-        { path: '/reviews', label: 'Отзывы' },
+        { path: '/cars', label: 'Главная' },
+        { path: '/cars/catalog', label: 'Каталог' },
+        { path: '/cars/calculator', label: 'Калькулятор' },
+        { path: '/cars/about', label: 'О компании' },
+        { path: '/cars/blog', label: 'Блог' },
+        { path: '/cars/reviews', label: 'Отзывы' },
     ];
 
     return (
@@ -39,15 +40,26 @@ export default function Layout() {
             {/* ============ HEADER ============ */}
             <Header className="sticky top-0 z-50 w-full !bg-pine-950/95 backdrop-blur-md border-b border-paper/10 px-3 sm:px-4 md:px-6 lg:px-8 h-20 flex items-center overflow-hidden">
 
-                {/* Логотип — сжимаемый */}
+                {/* Назад на витрину ilsatao.ru (Авто / Боксы / Сумки) */}
                 <Link
                     to="/"
+                    className="group flex items-center gap-2 flex-shrink-0 mr-3 sm:mr-4 md:mr-5 h-9 px-2.5 sm:px-3 rounded-full border border-paper/15 !text-paper/75 hover:!text-paper hover:border-brass/60 transition-colors"
+                    aria-label="Назад на главную ILSATAO"
+                    title="Назад на главную ILSATAO"
+                >
+                    <ArrowLeftOutlined className="text-sm transition-transform group-hover:-translate-x-0.5" />
+                    <span className="hidden sm:inline text-xs font-medium tracking-[0.12em]">ILSATAO</span>
+                </Link>
+
+                {/* Логотип — сжимаемый */}
+                <Link
+                    to="/cars"
                     state={{ resetScroll: true }}
                     className="flex items-center flex-shrink min-w-0"
                     aria-label="На главную"
                 >
                     <img
-                        src="/logo.svg"
+                        src={`${import.meta.env.BASE_URL}logo.svg`}
                         alt="ILSATAO"
                         className="h-8 sm:h-9 md:h-10 lg:h-11 w-auto max-w-[110px] sm:max-w-[140px] md:max-w-[170px] lg:max-w-none object-contain"
                     />
@@ -124,6 +136,13 @@ export default function Layout() {
                 }}
             >
                 <div className="flex flex-col gap-6 text-lg">
+                    <Link
+                        to="/"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 !text-paper/70 hover:!text-brass text-base pb-4 border-b border-paper/10"
+                    >
+                        <ArrowLeftOutlined /> На главную ILSATAO
+                    </Link>
                     {navLinks.map((link) => {
                         const isActive = location.pathname === link.path;
                         return (
@@ -176,7 +195,10 @@ export default function Layout() {
 
             {/* ============ CONTENT ============ */}
             <Content className="flex-1 relative z-10 !bg-transparent">
-                <Outlet />
+                {/* страницы грузятся отдельными файлами — шапка и подвал остаются на месте */}
+                <Suspense fallback={<div className="min-h-[60vh]" />}>
+                    <Outlet />
+                </Suspense>
             </Content>
 
             {/* ============ FOOTER ============ */}
@@ -184,13 +206,13 @@ export default function Layout() {
                 <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
 
                     <Link
-                        to="/"
+                        to="/cars"
                         state={{ resetScroll: true }}
                         className="flex items-center flex-shrink-0"
                         aria-label="На главную"
                     >
                         <img
-                            src="/logo.svg"
+                            src={`${import.meta.env.BASE_URL}logo.svg`}
                             alt="ILSATAO"
                             className="h-7 w-auto"
                         />
@@ -215,7 +237,7 @@ export default function Layout() {
                         <p className="m-0 whitespace-nowrap">© {new Date().getFullYear()} ILSATAO</p>
                         <span className="hidden md:inline text-paper/20">|</span>
                         <Link
-                            to="/privacy"
+                            to="/cars/privacy"
                             state={{ resetScroll: true }}
                             className="hover:text-brass transition-colors whitespace-nowrap"
                         >

@@ -31,7 +31,9 @@ const sections = [
     },
 ];
 
-export default function AboutContent() {
+/* asPage — отдельная страница /about: заголовок h1. На главной блок идёт ниже h1 первого экрана — там h2. */
+export default function AboutContent({ asPage = false }) {
+    const Heading = asPage ? 'h1' : 'h2';
     return (
         <div className="relative">
             <div className="max-w-7xl mx-auto px-4">
@@ -39,9 +41,9 @@ export default function AboutContent() {
             </div>
 
             <div className="pt-14 md:pt-20 pb-8 px-4 max-w-7xl mx-auto">
-                <h2 className="text-2xl md:text-4xl mb-4 text-paper">
+                <Heading className="text-2xl md:text-4xl mb-4 text-paper">
                     О компании ILSATAO
-                </h2>
+                </Heading>
                 <p className="text-paper/70 max-w-3xl text-lg md:text-xl m-0">
                     Поставки автомобилей из Китая для бизнеса — без поиска посредников и самостоятельной логистики.
                 </p>
@@ -114,7 +116,7 @@ export default function AboutContent() {
                         <p className="text-ink/80 leading-relaxed text-lg md:text-xl mb-8 flex-1">
                             В нашем каталоге представлены автомобили с китайского рынка — от доступных седанов до премиальных моделей.
                         </p>
-                        <Link to="/catalog" className="block">
+                        <Link to="/cars/catalog" className="block">
                             <Button
                                 type="primary"
                                 size="large"
@@ -134,7 +136,7 @@ export default function AboutContent() {
                         <p className="text-ink/80 leading-relaxed text-lg md:text-xl mb-8 flex-1">
                             Введите цену, год и двигатель — калькулятор покажет пошлину, НДС, утильсбор и итог под ключ. Для юрлица и физлица.
                         </p>
-                        <Link to="/calculator" state={{ resetScroll: true }} className="block">
+                        <Link to="/cars/calculator" state={{ resetScroll: true }} className="block">
                             <Button
                                 size="large"
                                 block

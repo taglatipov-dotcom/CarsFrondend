@@ -1,5 +1,6 @@
 import { Card } from 'antd';
 import { Link } from 'react-router-dom';
+import { usePageMeta } from '../utils/pageMeta.js';
 import {
     ArrowLeftOutlined,
     SafetyCertificateOutlined,
@@ -13,6 +14,10 @@ import {
 } from '@ant-design/icons';
 
 export default function Privacy() {
+    usePageMeta({
+        title: 'Политика конфиденциальности',
+        description: 'Порядок обработки и защиты персональных данных пользователей сайта ILSATAO.',
+    });
     const lastUpdate = '1 января 2025 г.';
 
     const sections = [
@@ -123,7 +128,7 @@ export default function Privacy() {
             <div className="max-w-6xl mx-auto">
 
                 <Link
-                    to="/"
+                    to="/cars"
                     className="inline-flex items-center gap-2 !text-paper font-semibold text-base mb-8 hover:!text-brass-lo transition-colors"
                 >
                     <ArrowLeftOutlined /> На главную

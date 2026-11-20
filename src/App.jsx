@@ -1,51 +1,73 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+
+/* Адреса сайта ILSATAO:
+ *   /            витрина (Hub) — три направления
+ *   /cars/...    сайт авто (Layout + страницы ниже)
+ *   /box         конструктор новогодних боксов
+ *   /bags        каталог сумок
+ *   /admin/...   ОДНА общая админка: авто, блог, отзывы, боксы, сумки, заявки
+ * Старые адреса без /cars (/catalog, /car/x, ...) nginx отдаёт 301-м; LegacyRedirect — то же на клиенте. */
+import { useEffect, lazy, Suspense } from 'react';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import About from './pages/About';
-import Catalog from './pages/Catalog';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import Reviews from './pages/Reviews';
-import CarDetails from './pages/CarDetails';
-import Privacy from './pages/Privacy';
-import Calculator from './pages/Calculator';
+import Hub from './pages/Hub';
 
-import AdminLayout from './pages/Admin/AdminLayout';
-import AdminCars from './pages/Admin/AdminCars';
-import AdminCarForm from './pages/Admin/AdminCarForm';
-import AdminBlogs from './pages/Admin/AdminBlogs';
-import AdminBlogForm from './pages/Admin/AdminBlogForm';
-import AdminReviews from './pages/Admin/AdminReviews';
-import AdminReviewForm from './pages/Admin/AdminReviewForm';
-import AdminLeads from './pages/Admin/AdminLeads';
-import AdminLogin from './pages/Admin/AdminLogin';
+/* Остальные страницы грузятся отдельными файлами по мере перехода:
+   посетитель главной не скачивает каталог, калькулятор и тем более админку
+   (Ant Design-таблицы, редактор Quill). Главная — сразу, это первый экран. */
+const About = lazy(() => import('./pages/About'));
+const Catalog = lazy(() => import('./pages/Catalog'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Reviews = lazy(() => import('./pages/Reviews'));
+const CarDetails = lazy(() => import('./pages/CarDetails'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Calculator = lazy(() => import('./pages/Calculator'));
+const Box = lazy(() => import('./pages/Box'));
+const Bags = lazy(() => import('./pages/Bags'));
+
+const AdminLayout = lazy(() => import('./pages/Admin/AdminLayout'));
+const AdminCars = lazy(() => import('./pages/Admin/AdminCars'));
+const AdminCarForm = lazy(() => import('./pages/Admin/AdminCarForm'));
+const AdminBlogs = lazy(() => import('./pages/Admin/AdminBlogs'));
+const AdminBlogForm = lazy(() => import('./pages/Admin/AdminBlogForm'));
+const AdminReviews = lazy(() => import('./pages/Admin/AdminReviews'));
+const AdminReviewForm = lazy(() => import('./pages/Admin/AdminReviewForm'));
+const AdminLeads = lazy(() => import('./pages/Admin/AdminLeads'));
+const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
+const AdminShop = lazy(() => import('./pages/Admin/AdminShop'));
 
 import { isAuthenticated } from './services/AuthApi.js';
 
 const STATIC_TITLES = {
-    '/':              'Главная',
-    '/about':         'О компании',
-    '/catalog':       'Каталог автомобилей',
-    '/calculator':    'Калькулятор растаможки',
-    '/blog':          'Блог и новости',
-    '/reviews':       'Отзывы клиентов',
-    '/privacy':       'Политика конфиденциальности',
+    '/cars':            'Автомобили из Китая для бизнеса',
+    '/cars/about':      'О компании',
+    '/cars/catalog':    'Каталог автомобилей',
+    '/cars/calculator': 'Калькулятор растаможки',
+    '/cars/blog':       'Блог и новости',
+    '/cars/reviews':    'Отзывы клиентов',
+    '/cars/privacy':    'Политика конфиденциальности',
+    '/box':             'Новогодние боксы',
+    '/bags':            'Сумки',
     '/admin':         'Админка',
     '/admin/login':   'Вход в админку',
     '/admin/cars':    'Автомобили — Админка',
     '/admin/blog':    'Статьи блога — Админка',
     '/admin/reviews': 'Отзывы — Админка',
     '/admin/leads':   'Заявки — Админка',
+    '/admin/box/items':   'Товары для бокса — Админка',
+    '/admin/box/presets': 'Готовые боксы — Админка',
+    '/admin/bags':        'Сумки — Админка',
 };
 
 const BASE_TITLE = 'ILSATAO';
 
 function resolveTitle(pathname) {
+    pathname = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
     if (STATIC_TITLES[pathname]) return STATIC_TITLES[pathname];
 
-    if (pathname.startsWith('/blog/')) return 'Статья — Блог';
-    if (pathname.startsWith('/car/')) return 'Автомобиль — Каталог';
+    if (pathname.startsWith('/cars/blog/')) return 'Статья — Блог';
+    if (pathname.startsWith('/cars/car/')) return 'Автомобиль — Каталог';
 
     if (pathname === '/Admin/cars/new') return 'Новое авто — Админка';
     if (/^\/admin\/cars\/\d+\/edit$/.test(pathname)) return 'Редактирование авто — Админка';
@@ -75,11 +97,17 @@ function ScrollToTop() {
             window.scrollTo(0, 0);
             return;
         }
-        if (location.pathname === '/') return;
+        if (location.pathname === '/' || location.pathname === '/cars') return;
         if (location.pathname.startsWith('/admin')) return;
         window.scrollTo(0, 0);
     }, [location.pathname, location.state]);
     return null;
+}
+
+/** Старые адреса сайта авто без /cars → тот же адрес с /cars (сохраняя ?query) */
+function LegacyRedirect() {
+    const { pathname, search } = useLocation();
+    return <Navigate to={`/cars${pathname}${search}`} replace />;
 }
 
 function RequireAuth({ children }) {
@@ -101,9 +129,15 @@ function App() {
         <BrowserRouter>
             <DocumentTitle />
             <ScrollToTop />
+            <Suspense fallback={<div className="min-h-screen bg-pine-950" />}>
             <Routes>
-                {/* ===== Публичная часть ===== */}
-                <Route path="/" element={<Layout />}>
+                {/* ===== Витрина и разделы ===== */}
+                <Route path="/" element={<Hub />} />
+                <Route path="/box" element={<Box />} />
+                <Route path="/bags" element={<Bags />} />
+
+                {/* ===== Сайт авто ===== */}
+                <Route path="/cars" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="about" element={<About />} />
                     <Route path="catalog" element={<Catalog />} />
@@ -114,6 +148,11 @@ function App() {
                     <Route path="car/:slug" element={<CarDetails />} />
                     <Route path="privacy" element={<Privacy />} />
                 </Route>
+
+                {/* ===== Старые адреса сайта авто ===== */}
+                {['catalog', 'calculator', 'about', 'blog', 'blog/:slug', 'reviews', 'privacy', 'car/:slug'].map((p) => (
+                    <Route key={p} path={`/${p}`} element={<LegacyRedirect />} />
+                ))}
 
                 {/* ===== Логин ===== */}
                 <Route path="/admin/login" element={<AdminLogin />} />
@@ -142,8 +181,13 @@ function App() {
                     <Route path="reviews/:id/edit" element={<AdminReviewForm />} />
 
                     <Route path="leads" element={<AdminLeads />} />
+
+                    <Route path="box/items" element={<AdminShop key="box_items" collection="box_items" />} />
+                    <Route path="box/presets" element={<AdminShop key="box_presets" collection="box_presets" />} />
+                    <Route path="bags" element={<AdminShop key="bags" collection="bags" />} />
                 </Route>
             </Routes>
+            </Suspense>
         </BrowserRouter>
     );
 }

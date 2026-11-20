@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Layout, Menu, Button, Popconfirm } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -9,6 +10,9 @@ import {
     InboxOutlined,
     LogoutOutlined,
     UserOutlined,
+    GiftOutlined,
+    ShoppingOutlined,
+    AppstoreOutlined,
 } from '@ant-design/icons';
 import { getUsername, logout } from '../../services/AuthApi.js';
 
@@ -31,6 +35,9 @@ export default function AdminLayout() {
     else if (p === '/Admin/reviews/new') selectedKey = 'reviews-new';
     else if (/^\/admin\/reviews\/\d+\/edit$/.test(p)) selectedKey = 'reviews-edit';
     else if (p === '/admin/leads') selectedKey = 'leads-list';
+    else if (p === '/admin/box/items') selectedKey = 'box-items';
+    else if (p === '/admin/box/presets') selectedKey = 'box-presets';
+    else if (p === '/admin/bags') selectedKey = 'bags-list';
 
     const handleLogout = () => {
         logout();
@@ -119,6 +126,40 @@ export default function AdminLayout() {
                             ],
                         },
                         {
+                            key: 'box-group',
+                            icon: <GiftOutlined />,
+                            label: 'Новогодние боксы',
+                            type: 'group',
+                            children: [
+                                {
+                                    key: 'box-items',
+                                    icon: <AppstoreOutlined />,
+                                    label: 'Товары для бокса',
+                                    onClick: () => navigate('/admin/box/items'),
+                                },
+                                {
+                                    key: 'box-presets',
+                                    icon: <GiftOutlined />,
+                                    label: 'Готовые боксы',
+                                    onClick: () => navigate('/admin/box/presets'),
+                                },
+                            ],
+                        },
+                        {
+                            key: 'bags-group',
+                            icon: <ShoppingOutlined />,
+                            label: 'Сумки',
+                            type: 'group',
+                            children: [
+                                {
+                                    key: 'bags-list',
+                                    icon: <ShoppingOutlined />,
+                                    label: 'Все сумки',
+                                    onClick: () => navigate('/admin/bags'),
+                                },
+                            ],
+                        },
+                        {
                             key: 'leads-group',
                             icon: <InboxOutlined />,
                             label: 'Заявки',
@@ -175,7 +216,9 @@ export default function AdminLayout() {
                 </Header>
 
                 <Content style={{ padding: 24 }}>
-                    <Outlet />
+                    <Suspense fallback={null}>
+                        <Outlet />
+                    </Suspense>
                 </Content>
             </Layout>
         </Layout>

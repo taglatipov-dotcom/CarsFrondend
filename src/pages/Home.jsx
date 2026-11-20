@@ -130,7 +130,7 @@ export default function Home() {
                         </div>
 
                         <Link
-                            to="/catalog"
+                            to="/cars/catalog"
                             state={{ resetScroll: true }}
                             className="text-brass hover:text-brass-hi text-lg font-medium underline underline-offset-4 decoration-brass/40 whitespace-nowrap"
                         >
@@ -175,7 +175,7 @@ export default function Home() {
                     )}
 
                     <div className="mt-10">
-                        <Link to="/catalog" state={{ resetScroll: true }}>
+                        <Link to="/cars/catalog" state={{ resetScroll: true }}>
                             <Button size="large" className="btn-ghost !h-12 !px-8 !rounded-md">
                                 Перейти в каталог
                             </Button>

@@ -327,7 +327,7 @@ export default function LeadModal({
                                         <span className="text-base text-ink/80 leading-snug">
                                             Я даю{' '}
                                             <Link
-                                                to="/privacy"
+                                                to="/cars/privacy"
                                                 target="_blank"
                                                 className="!text-brass-lo hover:!text-brass-lo font-semibold underline"
                                                 onClick={(e) => e.stopPropagation()}

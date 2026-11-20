@@ -27,7 +27,7 @@ export function carSlug(car) {
     return `${slugify(name) || 'car'}-${car.id}`;
 }
 
-export const carPath = (car) => `/car/${carSlug(car)}`;
+export const carPath = (car) => `/cars/car/${carSlug(car)}`;
 
 /** «zeekr-001-2026-7» → 7, «7» → 7 (старые ссылки), мусор → null */
 export function parseCarId(slug) {
@@ -36,4 +36,4 @@ export function parseCarId(slug) {
 }
 
 /** Статьи: свой slug из админки; если его нет — старая ссылка по id. */
-export const blogPath = (blog) => `/blog/${blog.slug || blog.id}`;
+export const blogPath = (blog) => `/cars/blog/${blog.slug || blog.id}`;

@@ -8,7 +8,7 @@ import { fetchCarCost, normalizeCostBreakdown } from '../services/MockApi.js';
 
 /** Ссылка на отдельный калькулятор с данными этой машины (там можно выбрать юрлицо). */
 function calculatorLink(raw) {
-    if (!raw) return '/calculator';
+    if (!raw) return '/cars/calculator';
     const p = new URLSearchParams();
     if (raw.china_price) p.set('price', raw.china_price);
     if (raw.year) p.set('year', raw.year);
@@ -22,7 +22,7 @@ function calculatorLink(raw) {
         p.set('power', raw.engine_power);
         p.set('unit', '2');
     }
-    return `/calculator?${p.toString()}`;
+    return `/cars/calculator?${p.toString()}`;
 }
 
 export default function CostCalculatorModal({ car, visible, onClose }) {

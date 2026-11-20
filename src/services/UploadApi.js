@@ -21,8 +21,8 @@ export async function uploadImage(file) {
 
     if (res.status === 401) {
         clearAuth();
-        if (window.location.pathname !== '/admin/login') {
-            window.location.href = '/Admin/login';
+        if (!window.location.pathname.toLowerCase().endsWith('/admin/login')) {
+            window.location.href = `${import.meta.env.BASE_URL}admin/login`;
         }
         throw new Error('Сессия истекла, войдите заново');
     }

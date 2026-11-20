@@ -52,14 +52,14 @@ const FRAME = 1 / 24;
    AV1 — лучше качество при том же весе; H.264 — для браузеров без AV1. */
 const VIDEO = {
     desktop: [
-        { src: '/video/hero-1440.av1.mp4', type: 'video/mp4; codecs="av01.0.12M.08"' },
-        { src: '/video/hero.mp4', type: 'video/mp4; codecs="avc1.640028"' },
+        { src: `${import.meta.env.BASE_URL}video/hero-1440.av1.mp4`, type: 'video/mp4; codecs="av01.0.12M.08"' },
+        { src: `${import.meta.env.BASE_URL}video/hero.mp4`, type: 'video/mp4; codecs="avc1.640028"' },
     ],
     mobile: [
-        { src: '/video/hero-mobile.av1.mp4', type: 'video/mp4; codecs="av01.0.05M.08"' },
-        { src: '/video/hero-mobile.mp4', type: 'video/mp4; codecs="avc1.640020"' },
+        { src: `${import.meta.env.BASE_URL}video/hero-mobile.av1.mp4`, type: 'video/mp4; codecs="av01.0.05M.08"' },
+        { src: `${import.meta.env.BASE_URL}video/hero-mobile.mp4`, type: 'video/mp4; codecs="avc1.640020"' },
     ],
-    poster: '/video/hero.jpg',
+    poster: `${import.meta.env.BASE_URL}video/hero.jpg`,
 };
 
 const reducedMotion = () =>
@@ -270,7 +270,7 @@ export default function RouteHero({ onLead }) {
                                 <Button size="large" onClick={onLead} className="btn-brass !h-12 !px-6 !rounded-md !font-semibold">
                                     Обсудить поставку
                                 </Button>
-                                <Link to="/calculator" state={{ resetScroll: true }}>
+                                <Link to="/cars/calculator" state={{ resetScroll: true }}>
                                     <Button size="large" className="btn-ghost !h-12 !px-6 !rounded-md">
                                         Рассчитать стоимость
                                     </Button>

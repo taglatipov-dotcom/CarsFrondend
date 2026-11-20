@@ -76,7 +76,7 @@ export default function ReviewsContent() {
                         </div>
 
                         <div className="mt-12">
-                            <Link to="/reviews" state={{ resetScroll: true }} className="block">
+                            <Link to="/cars/reviews" state={{ resetScroll: true }} className="block">
                                 <Button
                                     type="primary"
                                     size="large"

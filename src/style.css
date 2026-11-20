@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@400;500;600&display=swap');
+/* Шрифты Onest и Unbounded подключены в index.html через <link> — так браузер грузит их параллельно с CSS */
 @import "tailwindcss";
 
 /* ============ ПАЛИТРА «ХВОЯ И ЛАТУНЬ» ============

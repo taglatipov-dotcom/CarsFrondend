@@ -47,7 +47,7 @@ export default function BlogPost() {
         return (
             <div className="flex flex-col justify-center items-center min-h-[70vh] text-paper">
                 <h2 className="text-3xl font-bold mb-4">Статья не найдена</h2>
-                <Button type="primary" onClick={() => navigate('/blog')} className="!bg-ink hover:!bg-ink/90">
+                <Button type="primary" onClick={() => navigate('/cars/blog')} className="!bg-ink hover:!bg-ink/90">
                     Вернуться в блог
                 </Button>
             </div>
@@ -59,11 +59,11 @@ export default function BlogPost() {
             <div className="w-full md:w-3/4 mx-auto">
 
                 <div className="flex items-center gap-2 mb-8 text-base flex-wrap">
-                    <Link to="/" className="!text-paper/80 hover:!text-brass-lo transition-colors flex items-center gap-1.5">
+                    <Link to="/cars" className="!text-paper/80 hover:!text-brass-lo transition-colors flex items-center gap-1.5">
                         <HomeOutlined /> Главная
                     </Link>
                     <span className="text-ink/55">/</span>
-                    <Link to="/blog" className="!text-paper/80 hover:!text-brass-lo transition-colors">
+                    <Link to="/cars/blog" className="!text-paper/80 hover:!text-brass-lo transition-colors">
                         Блог
                     </Link>
                     <span className="text-ink/55">/</span>
@@ -117,7 +117,7 @@ export default function BlogPost() {
                     <Button
                         size="large"
                         icon={<ArrowLeftOutlined />}
-                        onClick={() => navigate('/blog')}
+                        onClick={() => navigate('/cars/blog')}
                         className="!h-12 !px-8 !rounded-lg !bg-paper/10 !text-paper !border-paper/15 hover:!bg-paper/20 hover:!text-paper !font-semibold !text-base"
                     >
                         Все статьи
